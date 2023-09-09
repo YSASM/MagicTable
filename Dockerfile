@@ -4,7 +4,7 @@ ADD . /app/src
 COPY nginx.conf /etc/nginx/conf.d/
 
 RUN mkdir /app/bin
-RUN cd /app/src && npm config set registry https://registry.npm.taobao.org && npm install -g npm@10.1.0 && npm install -g npm@9.2.0 &&  npm install && npm run build:prod && \
+RUN cd /app/src && npm config set registry https://registry.npm.taobao.org && npm install -g npm@10.1.0 &&  npm install && npm run build:prod && \
   cp -r dist/* /usr/share/nginx/html
 
 
