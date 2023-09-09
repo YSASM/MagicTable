@@ -77,12 +77,12 @@ module.exports = {
       //   // ws: false,
       //   pathRewrite:{'^/ad':''},
       // }
-      '/': {
+      '/jzapi': {
         target: 'https://jz.batiao8.com',
         // target:"http://192.168.3.251:9250/",
         // changeOrigin: true,
         // ws: false,
-        // pathRewrite: { '^/': '' },
+        pathRewrite: { '^/jzapi': '' },
       },
     },
   },
