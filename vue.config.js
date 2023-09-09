@@ -34,10 +34,10 @@ process.env.VUE_APP_UPDATE_TIME = time
 process.env.VUE_APP_VERSION = version
 
 const resolve = (dir) => path.join(__dirname, dir)
-const mockServer = () => {
-  if (process.env.NODE_ENV === 'development') return require('./mock')
-  else return ''
-}
+// const mockServer = () => {
+//   if (process.env.NODE_ENV === 'development') return require('./mock')
+//   else return ''
+// }
 
 module.exports = {
   publicPath,
@@ -55,7 +55,7 @@ module.exports = {
       warnings: true,
       errors: true,
     },
-    after: mockServer(),
+    // after: mockServer(),
     proxy: {
       // '/api': {
       //   target: 'http://9254.gr73299e.i8tkcg64.786129.grapps.cn',

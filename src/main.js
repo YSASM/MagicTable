@@ -15,10 +15,10 @@ import VueEasytable from "vue-easytable";
 
 Vue.use(VueEasytable);
 
-if (process.env.NODE_ENV === 'production') {
-  const { mockXHR } = require('@/utils/static')
-  mockXHR()
-}
+// if (process.env.NODE_ENV === 'production') {
+//   const { mockXHR } = require('@/utils/static')
+//   mockXHR()
+// }
 
 Vue.config.productionTip = false
 
