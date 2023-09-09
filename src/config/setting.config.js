@@ -65,7 +65,7 @@ const setting = {
   //代码生成机生成在view下的文件夹名称
   templateFolder: 'project',
   //是否显示终端donation打印
-  donation: true,
+  donation: false,
   //是否开启图片压缩
   imageCompression: true,
 }
