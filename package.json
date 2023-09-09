@@ -8,7 +8,7 @@
     "dev": "vue-cli-service serve",
     "serve:node18": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:node18": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
+    "build:prod": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
     "lint": "vue-cli-service lint --fix",
     "lint:prettier": "prettier {src,mock,library}/**/*.{html,vue,css,sass,scss,js,ts,md} --write",
     "clear": "rimraf node_modules&&npm install  --registry=--registry=https://registry.npmmirror.com",
