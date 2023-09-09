@@ -72,7 +72,8 @@ instance.interceptors.response.use(
     if (loadingInstance) loadingInstance.close()
 
     const { data, config } = response
-    const { code, msg } = data
+    const { code, message } = data
+    let msg = message.split(",")[0] + "[" + code + "]"
     // 操作正常Code数组
     const codeVerificationArray = isArray(successCode) ? [...successCode] : [...[successCode]]
     // 是否操作正常
@@ -84,7 +85,7 @@ instance.interceptors.response.use(
         `vue-admin-beautiful请求异常拦截:${JSON.stringify({
           url: config.url,
           code,
-          msg,
+          message: msg,
         })}` || 'Error'
       )
     }
@@ -94,7 +95,7 @@ instance.interceptors.response.use(
     const { response, message } = error
     if (error.response && error.response.data) {
       const { status, data } = response
-      handleCode(status, data.msg || message)
+      handleCode(status, data || message)
       return Promise.reject(error)
     } else {
       let { message } = error

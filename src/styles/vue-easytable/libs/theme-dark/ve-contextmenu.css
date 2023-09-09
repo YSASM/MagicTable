@@ -1,0 +1,71 @@
+/* ve-table */
+/* ve-pagination */
+/* ve-checkbox */
+/* ve-radio */
+/* ve-select */
+/* ve-dropdown */
+/* ve-contextmenu */
+.ve-contextmenu-popper {
+  z-index: 9999;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid #363636;
+  background-color: #363636;
+  box-shadow: 0 2px 12px 0 #0000001a;
+}
+.ve-contextmenu {
+  display: flex;
+  flex-direction: row;
+}
+.ve-contextmenu-panel {
+  min-width: 180px;
+  min-height: 50px;
+  overflow: hidden;
+}
+.ve-contextmenu-panel .ve-contextmenu-list {
+  min-height: 100%;
+  margin: 0;
+  padding: 6px 0;
+  list-style: none;
+  box-sizing: border-box;
+}
+.ve-contextmenu-panel .ve-contextmenu-list .ve-contextmenu-node {
+  display: flex;
+  align-items: center;
+  padding: 0 30px 0 20px;
+  height: 34px;
+  justify-content: center;
+  outline: none;
+  color: #ffffffd9;
+  cursor: pointer;
+}
+.ve-contextmenu-panel .ve-contextmenu-list .ve-contextmenu-node:not(.ve-contextmenu-panel .ve-contextmenu-list .ve-contextmenu-node-disabled):hover {
+  background: #666666;
+  color: #ffffffd9;
+}
+.ve-contextmenu-panel .ve-contextmenu-list .ve-contextmenu-node-active {
+  background: #666666;
+  color: #ffffffd9;
+}
+.ve-contextmenu-panel .ve-contextmenu-list .ve-contextmenu-node-label {
+  flex: 1;
+  padding: 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ve-contextmenu-panel .ve-contextmenu-list .ve-contextmenu-node-icon-postfix {
+  color: #ffffffd9;
+}
+.ve-contextmenu-panel .ve-contextmenu-list .ve-contextmenu-node-disabled {
+  color: #c0c4cc;
+  cursor: not-allowed;
+}
+.ve-contextmenu-panel .ve-contextmenu-list .ve-contextmenu-node-disabled .ve-contextmenu-node-icon-postfix {
+  color: #c0c4cc;
+}
+.ve-contextmenu-panel .ve-contextmenu-list .ve-contextmenu-node-separator {
+  height: 1px;
+  margin: 5px 0px;
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.12);
+}

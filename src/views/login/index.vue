@@ -109,8 +109,8 @@ export default {
     document.body.style.overflow = 'auto'
   },
   mounted() {
-    this.form.username = 'jiangyong'
-    this.form.password = 'jiangyong'
+    this.form.username = ''
+    this.form.password = ''
     // setTimeout(() => {
     //   this.handleLogin()
     // }, 3000)

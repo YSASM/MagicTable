@@ -4,7 +4,7 @@
 
 <script>
 import mtable from "@/components/MigicTable/index"
-import api from "@/api/user/userList/index"
+import api from "@/api/user/list/index"
 import _this from "@/main.js"
 export default {
   components: {
@@ -14,14 +14,14 @@ export default {
     let da = new Date()
     let data = {
       tableData: {
-        scrollWidth: 1700,
+        scrollWidth: 1800,
         pageSizeOption: [20, 50, 100, 200],
         tableData: [],
         fetchFun: api.getUserList,
         subfromFun0: this.editorUser,
         fliterOption: [
           {
-            name: 'id',
+            name: 'ID',
             key: 'id',
             type: "input"
           },
@@ -135,7 +135,7 @@ export default {
                 key: 'baidu'
               },
               {
-                name: '抖音推广',
+                name: '巨量推广',
                 key: 'ocean'
               },
               {
@@ -178,28 +178,14 @@ export default {
           size: 20,
         },
         columns: [
-          { field: "id", key: "id", title: "Id", align: "center", width: 10, },
+          { field: "id", key: "id", title: "ID", align: "center", width: 20, },
           {
             field: "name", key: "name", title: "用户名", align: "center", width: 25,
             renderBodyCell: ({ row, column, rowIndex }, h) => {
               return (
-                <div style={
-                  {
-                    'display': 'flex',
-                    'flex-direction': 'row'
-                  }
-                }>
-                  <span style={
-                    {
-                      'align-self': 'center',
-                      'margin-right': '5px'
-                    }
-                  }>{row.name}</span>
-                  <el-avatar style={
-                    {
-                      'align-self': 'center'
-                    }
-                  } size="small" src={row.avater}></el-avatar>
+                <div style="display:flex;flex-direction:row;justify-content:space-between;">
+                  <el-avatar style="align-self:center;margin-right:5px" size={18} src={row.avater}></el-avatar>
+                  <span style="align-self:center;">{row.name}</span>
                 </div>
               )
             }
@@ -207,12 +193,9 @@ export default {
           { field: "platform", key: "platform", title: "平台", align: "center", width: 25, },
           { field: "version", key: "version", title: "版本", align: "center", width: 25, },
           { field: "channel", key: "channel", title: "渠道", align: "center", width: 25, },
+          { field: "ad_source", key: "ad_source", title: "广告来源", align: "center", width: 25, },
           { field: "brand", key: "brand", title: "手机品牌", align: "center", width: 25, },
           { field: "model", key: "model", title: "手机型号", align: "center", width: 25, },
-          { field: "phone", key: "phone", title: "手机号", align: "center", width: 25, },
-          { field: "ad_identify", key: "ad_identify", title: "广告Id", align: "center", width: 25, },
-          { field: "ad_source", key: "ad_source", title: "广告来源", align: "center", width: 25, },
-          { field: "client_ip", key: "client_ip", title: "用户IP", align: "center", width: 25, },
           {
             field: "role", key: "role", title: "用户类型", align: "center", width: 25,
             renderBodyCell: ({ row, column, rowIndex }, h) => {
@@ -238,12 +221,38 @@ export default {
               );
             },
           },
-          { field: "vip_name", key: "vip_name", title: "会员类型", align: "center", width: 25, },
-          { field: "vip_expire_time", key: "vip_expire_time", title: "会员过期时间", align: "center", width: 30, },
-          { field: "active_time", key: "active_time", title: "激活时间", align: "center", width: 50, },
-          { field: "create_time", key: "create_time", title: "注册时间", align: "center", width: 50, },
           {
-            field: "utils", key: "utils", title: "操作", align: "center", width: 50, fixed: "right",
+            field: "vip_name", key: "vip_name", title: "会员类型", align: "center", width: 25,
+            renderBodyCell: ({ row, column, rowIndex }, h) => {
+              let tagType = {
+                "终生会员": 'success',
+                "普通会员": 'primary',
+                "非会员": 'info'
+              }
+              if (row.vip_expire_time != "" && row.vip_expire_time != "永不过期") {
+                return (
+                  <el-tooltip class="item" effect="dark" content={row.vip_expire_time} placement="top">
+                    <el-tag type={tagType[row.vip_name]}>{row.vip_name}</el-tag>
+                  </el-tooltip>
+                )
+              }
+              else {
+                return (
+                  <el-tag type={tagType[row.vip_name]}>{row.vip_name}</el-tag>
+                )
+              }
+            },
+          },
+          { field: "phone", key: "phone", title: "手机号", align: "center", width: 30, },
+          { field: "ad_identify", key: "ad_identify", title: "广告Id", align: "center", width: 25, },
+
+          { field: "client_ip", key: "client_ip", title: "用户IP", align: "center", width: 35, },
+
+          // { field: "vip_expire_time", key: "vip_expire_time", title: "会员过期时间", align: "center", width: 50, },
+          { field: "active_time", key: "active_time", title: "活跃时间", align: "center", width: 50, },
+          { field: "create_time", key: "create_time", title: "激活时间", align: "center", width: 50, },
+          {
+            field: "utils", key: "utils", title: "操作", align: "center", width: 25, fixed: "right",
             renderBodyCell: ({ row, column, rowIndex }, h) => {
               return (
                 <el-button type="danger" v-on:click={() => {
@@ -283,9 +292,6 @@ export default {
             },
           },
         ],
-        fromData: [],
-        showFrom: false,
-        subfromFun: async () => { }
       }
     }
     _this.tableData = data

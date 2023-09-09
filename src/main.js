@@ -9,10 +9,13 @@ import '@/layouts/export'
  * @description 生产环境默认都使用mock，如果正式用于生产环境时，记得去掉
  */
 // 引入样式
-import "vue-easytable/libs/theme-default/index.css";
+import "@/styles/vue-easytable/libs/theme-default/index.css";
+import zhCN from "vue-easytable/libs/locale/lang/zh-CN";
 // 引入组件库
 import VueEasytable from "vue-easytable";
 
+
+VueEasytable.VeLocale.use(zhCN);
 Vue.use(VueEasytable);
 
 // if (process.env.NODE_ENV === 'production') {

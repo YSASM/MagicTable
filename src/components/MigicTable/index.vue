@@ -123,6 +123,14 @@ export default {
       showFrom: false,
     }
     let _thisdata = _this.tableData.tableData
+    _this.tableData.tableData.columns.forEach(col => {
+      if (!col.ellipsis) {
+        col.ellipsis = {
+          showTitle: true,
+          lineClamp: 1,
+        }
+      }
+    })
     for (let k in _thisdata) {
       data[k] = _thisdata[k]
     }
