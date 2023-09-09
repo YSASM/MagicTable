@@ -9,6 +9,6 @@ RUN cd /app/src && npm config set registry https://registry.npm.taobao.org && np
 
 
 WORKDIR /app
-EXPOSE 9266
+EXPOSE 9263
 
 
