@@ -226,7 +226,7 @@ export default {
             },
           },
           {
-            field: "role", key: "role", title: "用户状态", align: "center", width: 25,
+            field: "status", key: "status", title: "用户状态", align: "center", width: 25,
             renderBodyCell: ({ row, column, rowIndex }, h) => {
               let tagType = {
                 "正常": 'success',
