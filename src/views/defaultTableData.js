@@ -1,3 +1,4 @@
+import _this from "@/main.js"
 let data = {
   tableData: {
     // 表格宽度
