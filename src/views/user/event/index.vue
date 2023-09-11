@@ -21,8 +21,8 @@ export default {
         subfromFun0: this.editorUserEventList,
         fliterOption: [
           {
-            name: 'ID',
-            key: 'id',
+            name: '用户ID',
+            key: 'user_id',
             type: "input"
           },
           {
@@ -128,30 +128,30 @@ export default {
             type: "time",
             value: [new Date(da.getFullYear(), da.getMonth(), da.getDate(), 0, 0, 0), new Date(da.getFullYear(), da.getMonth(), da.getDate(), 23, 59, 59)]
           },
-          {
-            name: '编辑',
-            type: 'fromButton',
-            disableLabel: true,
-            fromData: [
-              {
-                name: '关键字',
-                must: true,
-                key: 'ekey',
-                type: 'input',
-              },
-              {
-                name: '关键词',
-                must: true,
-                key: 'ename',
-                type: 'input',
-              }
-            ],
-            subfromData: {
-              ekey: '',
-              input: ''
-            },
-            subfromFunIndex: 0
-          }
+          // {
+          //   name: '编辑',
+          //   type: 'fromButton',
+          //   disableLabel: true,
+          //   fromData: [
+          //     {
+          //       name: '关键字',
+          //       must: true,
+          //       key: 'ekey',
+          //       type: 'input',
+          //     },
+          //     {
+          //       name: '关键词',
+          //       must: true,
+          //       key: 'ename',
+          //       type: 'input',
+          //     }
+          //   ],
+          //   subfromData: {
+          //     ekey: '',
+          //     input: ''
+          //   },
+          //   subfromFunIndex: 0
+          // }
         ],
         fliter: {
           page: 1,
@@ -167,7 +167,36 @@ export default {
           { field: "day", key: "day", title: "日期", align: "center", width: 25, sortBy: "" },
           { field: "source", key: "source", title: "来源", align: "center", width: 25, },
           { field: "type", key: "type", title: "类型", align: "center", width: 25, },
-          { field: "ename", key: "ename", title: "关键字名称", align: "center", width: 50, },
+          {
+            field: "ename", key: "ename", title: "关键字名称", align: "center", width: 50,
+            renderBodyCell: ({ row, column, rowIndex }, h) => {
+              return (
+                <span class="font-blue" v-on:click={() => {
+
+                  _this.tableData.tableData.fromData = [
+                    {
+                      name: '关键字',
+                      must: true,
+                      key: 'ekey',
+                      type: 'input',
+                      disablekey: "xxx",
+                      disableval: undefined
+                    },
+                    {
+                      name: '关键词',
+                      must: true,
+                      key: 'ename',
+                      type: 'input',
+                    }
+                  ]
+                  _this.tableData.tableData.showFrom = true
+                  _this.tableData.tableData.subfromData = { ekey: row.ekey, ename: row.ename }
+                  _this.tableData.tableData.subfromFunIndex = 0
+                }
+                } > <i class="el-icon-edit"></i>{row.ename}</span >
+              )
+            }
+          },
           { field: "ekey", key: "ekey", title: "关键字", align: "center", width: 50, },
           { field: "value", key: "value", title: "内容", align: "center", width: 25, },
           { field: "extra", key: "extra", title: "拓展内容", align: "center", width: 25, },

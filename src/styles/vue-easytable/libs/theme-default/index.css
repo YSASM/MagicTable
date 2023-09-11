@@ -1490,3 +1490,9 @@
   border-left: 1px solid #4d90fe;
   z-index: 50;
 }
+
+.ve-table .font-blue {
+  color: #409EFF;
+  width: 100%;
+  height: 100%
+}

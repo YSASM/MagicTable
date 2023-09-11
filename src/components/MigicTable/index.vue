@@ -39,13 +39,15 @@
     <el-dialog title="提示" :visible.sync="showFrom" width="30%">
       <el-form ref="form" label-width="100px">
         <el-form-item :label="item.name" v-for="item, index in fromData" :key="index" :required="item.must">
-          <el-input v-if="item.type == 'input'" v-model="subfromData[item.key]" clearable></el-input>
+          <el-input v-if="item.type == 'input'" v-model="subfromData[item.key]" clearable
+            :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval"></el-input>
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
-            placeholder="选择日期时间" :disabled="subfromData[item.disablekey] == item.disableval"
+            placeholder="选择日期时间" :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval"
             @change="subfromData[item.key] = subfromData[item.key].getTime()" style="width: 100%;">
           </el-date-picker>
           <el-switch v-if="item.type == 'switch'" v-model="subfromData[item.key]" :active-value="item.openValue"
-            :inactive-value="item.closeValue">
+            :inactive-value="item.closeValue"
+            :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval">
           </el-switch>
         </el-form-item>
       </el-form>
@@ -206,7 +208,7 @@ export default {
                       this.$message.success("复制成功")
                     }}>一键复制</el-button>
                   </div >
-                  <div style="color:#409EFF" type="text" slot="reference"><i class="el-icon-view"></i>{row[item.field]}</div>
+                  <div class="font-blue" type="text" slot="reference"><i class="el-icon-view"></i>{row[item.field]}</div>
                 </el-popover >
               )
             }
@@ -245,7 +247,7 @@ export default {
                       item.subFun(contant, this.fetchData);
                     }}>提交</el-button>
                   </div >
-                  <div style="color:#409EFF;width:100%;height:100%" on-click={() => { this.disableJsonEditorSub = false }} type="text" slot="reference"><i class="el-icon-edit"></i>{row[item.field]}</div>
+                  <div class="font-blue" on-click={() => { this.disableJsonEditorSub = false }} type="text" slot="reference"><i class="el-icon-edit"></i>{row[item.field]}</div>
                 </el-popover >
               )
             }
