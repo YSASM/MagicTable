@@ -166,7 +166,7 @@ export default {
             value: ''
           },
           {
-            name: 'id',
+            name: '时间',
             startKey: 'start_time',
             endKey: 'end_time',
             type: "time",
@@ -178,7 +178,7 @@ export default {
           size: 20,
         },
         columns: [
-          { field: "id", key: "id", title: "ID", align: "center", width: 20, },
+          { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "" },
           {
             field: "name", key: "name", title: "用户名", align: "center", width: 25,
             renderBodyCell: ({ row, column, rowIndex }, h) => {
@@ -249,18 +249,19 @@ export default {
           { field: "client_ip", key: "client_ip", title: "用户IP", align: "center", width: 35, },
 
           // { field: "vip_expire_time", key: "vip_expire_time", title: "会员过期时间", align: "center", width: 50, },
-          { field: "active_time", key: "active_time", title: "活跃时间", align: "center", width: 50, },
-          { field: "create_time", key: "create_time", title: "激活时间", align: "center", width: 50, },
+          { field: "active_time", key: "active_time", title: "活跃时间", align: "center", width: 50, sortBy: "" },
+          { field: "create_time", key: "create_time", title: "激活时间", align: "center", width: 50, sortBy: "desc" },
           {
             field: "utils", key: "utils", title: "操作", align: "center", width: 25, fixed: "right",
             renderBodyCell: ({ row, column, rowIndex }, h) => {
               return (
-                <el-button type="danger" v-on:click={() => {
+                <el-button type="warning" v-on:click={() => {
                   _this.tableData.tableData.fromData = [
                     {
                       name: '头像',
                       key: 'avater',
                       type: 'input',
+                      must: true
                     },
                     {
                       name: '会员过期时间',
@@ -292,6 +293,24 @@ export default {
             },
           },
         ],
+        tableShowJson: [
+          {
+            field: 'id',
+            value: '',
+            width: '500px'
+          },
+        ],
+        // tableEditorJson: [
+        //   {
+        //     field: 'client_ip',
+        //     value: '',
+        //     width: '800px',
+        //     subFun: async (data, fetchData) => {
+        //       console.log(data)
+        //       fetchData()
+        //     }
+        //   },
+        // ],
       }
     }
     _this.tableData = data

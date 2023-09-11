@@ -1,8 +1,9 @@
 <template>
-  <div class="container" v-if="overLoad">
+  <div class="container" v-if="overLoad" id="container" ref="container">
     <el-card class="fliter">
       <el-form v-model="fliter" class="fliter-box" :inline="true" size="mini" label-width="auto">
-        <el-form-item :label="item.name" class="fliter-item" v-for="item, index in fliterOption" :key="index">
+        <el-form-item :label="item.disableLabel ? '' : item.name" class="fliter-item" v-for="item, index in fliterOption"
+          :key="index">
           <el-input v-if="item.type == 'input'" v-model="item.value" clearable @keyup.enter.native="initData"></el-input>
           <el-select v-if="item.type == 'select'" v-model="item.value" @change="initData">
             <el-option v-for="i, ii in item.items" :key="ii" :label="i.name" :value="i.key">
@@ -12,6 +13,12 @@
             start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="item.opt ? item.opt : pickerOptions"
             @change="initData">
           </el-date-picker>
+          <el-button type="warning" v-if="item.type == 'fromButton'" @click="() => {
+            showFrom = true
+            fromData = item.fromData
+            subfromData = item.subfromData
+            subfromFunIndex = item.subfromFunIndex
+          }">{{ item.name }}</el-button>
         </el-form-item>
         <el-form-item class="fliter-item">
           <el-button type="primary" @click="fetchData">查询</el-button>
@@ -21,7 +28,7 @@
     <el-card class="table">
       <ve-table :scroll-width="scrollWidth" id="loading-container" :columns="columns" :table-data="tableData"
         :border-around="true" :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex"
-        :contextmenu-body-option="contextmenuBodyOption" />
+        :contextmenu-body-option="contextmenuBodyOption" :sort-option="sortOption" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
       <ve-pagination class="table-pagination" :total="totalCount" :page-index="fliter.page"
         :page-size-option="pageSizeOption" :page-size="fliter.size" @on-page-number-change="pageNumberChange"
@@ -31,7 +38,7 @@
 
     <el-dialog title="提示" :visible.sync="showFrom" width="30%">
       <el-form ref="form" label-width="100px">
-        <el-form-item :label="item.name" v-for="item, index in fromData" :key="index">
+        <el-form-item :label="item.name" v-for="item, index in fromData" :key="index" :required="item.must">
           <el-input v-if="item.type == 'input'" v-model="subfromData[item.key]" clearable></el-input>
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
             placeholder="选择日期时间" :disabled="subfromData[item.disablekey] == item.disableval"
@@ -52,7 +59,8 @@
 </template>
 <script>
 import _this from "@/main.js"
-const reflashKey = ["showFrom", "fromData", "subfromData", "subfromFunIndex"]
+import JsonEditor from 'vue-json-editor';
+const reflashKey = ["showFrom", "fromData", "subfromData", "subfromFunIndex", "disableJsonEditorSub"]
 
 
 export default {
@@ -60,8 +68,42 @@ export default {
   watch: {
 
   },
+  components: {
+    JsonEditor
+  },
   data() {
     let data = {
+      sort: 'create_time DESC',
+      sortOption: {
+        // sort always
+        sortAlways: true,
+        // multipleSort: true,
+        sortChange: (params) => {
+          let keys = Object.keys(params)
+          keys.forEach(key => {
+            if (params[key]) {
+              let arr = key.split('')
+              let k = ''
+              arr.forEach(i => {
+                console.log(i)
+                let code = i.charCodeAt()
+                if (code >= 65 && code <= 90 && k != '') {
+                  k += '_' + i.toLowerCase()
+                }
+                else {
+                  k += i
+                }
+
+              })
+              this.sort = k + ' ' + params[key].toUpperCase()
+              return
+            }
+
+          })
+          this.fetchData()
+          // this.sortChange(params);
+        },
+      },
       contextmenuBodyOption: {
         contextmenus: [
           {
@@ -121,18 +163,100 @@ export default {
       fromData: [],
       subfromData: {},
       showFrom: false,
+      tableShowJson: [],
+      disableJsonEditorSub: false,
+      tableEditorJson: []
     }
     let _thisdata = _this.tableData.tableData
-    _this.tableData.tableData.columns.forEach(col => {
+    // data更新
+    for (let k in _thisdata) {
+      data[k] = _thisdata[k]
+    }
+    data.columns.forEach(col => {
       if (!col.ellipsis) {
         col.ellipsis = {
           showTitle: true,
           lineClamp: 1,
         }
+        data.tableShowJson.forEach(item => {
+          if (item.field == col.field) {
+            col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+              let contant = item.value ? row[item.value] : row
+              let contanttype = typeof (contant)
+              let width = item.width
+              if (!width) {
+                width = "100%"
+              }
+              if (contanttype == 'string') {
+                try {
+                  contant = JSON.parse(contant)
+                } catch (e) {
+                  contant = {}
+                }
+              }
+              else if (contanttype != 'object') {
+                contant = {}
+              }
+              return (
+                <el-popover popper-class="popper-class pop-max-content" placement="top">
+                  <div style="text-align:center">
+                    <json-viewer expanded={true} value={contant} boxed sort style={"width:" + width + " !important;text-align:start"}></json-viewer>
+                    <el-button style={"width:" + width + " !important;margin-top:10px;"} type="primary" on-click={() => {
+                      this.$copyText(JSON.stringify(contant))
+                      this.$message.success("复制成功")
+                    }}>一键复制</el-button>
+                  </div >
+                  <div style="color:#409EFF" type="text" slot="reference"><i class="el-icon-view"></i>{row[item.field]}</div>
+                </el-popover >
+              )
+            }
+
+          }
+        })
+        data.tableEditorJson.forEach(item => {
+          if (item.field == col.field) {
+            col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+              let contant = item.value ? row[item.value] : row
+              let contanttype = typeof (contant)
+              let width = item.width
+              if (!width) {
+                width = "100%"
+              }
+              if (contanttype == 'string') {
+                try {
+                  contant = JSON.parse(contant)
+                } catch (e) {
+                  contant = {}
+                }
+              }
+              else if (contanttype != 'object') {
+                contant = {}
+              }
+              return (
+                <el-popover popper-class="popper-class pop-max-content" placement="top">
+                  <div style="text-align:center">
+                    <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left"} v-model={contant} showBtns={false} mode="code" on-has-error={() => {
+                      this.disableJsonEditorSub = true
+                    }} on-json-change={() => {
+                      this.disableJsonEditorSub = false
+                    }}></JsonEditor>
+                    <el-button disabled={this.disableJsonEditorSub} style={"width:" + width + " !important;margin-top:10px;"} type="primary" on-click={() => {
+                      this.colsePopover();
+                      item.subFun(contant, this.fetchData);
+                    }}>提交</el-button>
+                  </div >
+                  <div style="color:#409EFF;width:100%;height:100%" on-click={() => { this.disableJsonEditorSub = false }} type="text" slot="reference"><i class="el-icon-edit"></i>{row[item.field]}</div>
+                </el-popover >
+              )
+            }
+
+          }
+        })
       }
     })
-    for (let k in _thisdata) {
-      data[k] = _thisdata[k]
+    // 反向更新_this
+    for (let k in data) {
+      _this.tableData.tableData[k] = data[k]
     }
     return data
   },
@@ -166,7 +290,23 @@ export default {
     })
   },
   methods: {
+    colsePopover() {
+      this.$refs.container.click()
+    },
     subForm() {
+      let flage = false
+      let flageName = ''
+      this.fromData.forEach(item => {
+        if (item.must && this.subfromData[item.key] === '') {
+          flage = true
+          flageName = item.name
+        }
+      })
+      if (flage) {
+        this.$message.error(flageName + "不能为空")
+        return
+      }
+
       this.getter('subfromFun' + this.subfromFunIndex)(this.subfromData, this.fetchData)
       this.showFrom = false
     },
@@ -210,6 +350,7 @@ export default {
           this.fliter[item.key] = item.value
         }
       })
+      this.fliter.sort = this.sort
       this.fetchFun(this.fliter).then(res => {
         this.tableData = res.data.items
         this.formtData(this.tableData)

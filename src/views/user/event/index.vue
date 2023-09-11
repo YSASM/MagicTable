@@ -14,11 +14,11 @@ export default {
     let da = new Date()
     let data = {
       tableData: {
-        scrollWidth: 1700,
+        scrollWidth: 1500,
         pageSizeOption: [20, 50, 100, 200],
         tableData: [],
         fetchFun: api.getUserEventList,
-        subfromFun0: this.editorUser,
+        subfromFun0: this.editorUserEventList,
         fliterOption: [
           {
             name: 'ID',
@@ -26,8 +26,28 @@ export default {
             type: "input"
           },
           {
-            name: '广告来源',
-            key: 'ad_source',
+            name: '版本',
+            key: 'version',
+            type: "input"
+          },
+          {
+            name: '渠道',
+            key: 'channel',
+            type: "input"
+          },
+          {
+            name: '关键字',
+            key: 'ekey',
+            type: "input"
+          },
+          {
+            name: '内容',
+            key: 'value',
+            type: "input"
+          },
+          {
+            name: '事件来源',
+            key: 'source',
             type: "select",
             items: [
               {
@@ -35,111 +55,139 @@ export default {
                 key: ''
               },
               {
-                name: '自然流量',
-                key: 'free'
+                name: '客户端',
+                key: 'client'
               },
               {
-                name: '百度推广',
-                key: 'baidu'
+                name: '服务端',
+                key: 'server'
+              }
+            ],
+            value: 'client'
+          },
+          {
+            name: '事件来源',
+            key: 'type',
+            type: "select",
+            items: [
+              {
+                name: '全部类型',
+                key: ''
               },
               {
-                name: '巨量推广',
-                key: 'ocean'
+                name: 'click',
+                key: 'click'
               },
+              {
+                name: 'event',
+                key: 'event'
+              },
+              {
+                name: 'error',
+                key: 'error'
+              }
             ],
             value: ''
           },
           {
-            name: 'id',
+            name: '用户平台',
+            key: 'platform',
+            type: "select",
+            items: [
+              {
+                name: '全部平台',
+                key: ''
+              },
+              {
+                name: '安卓',
+                key: 'android'
+              },
+              {
+                name: '苹果',
+                key: 'ios'
+              },
+              {
+                name: '电脑端网页',
+                key: 'web'
+              },
+              {
+                name: '小程序',
+                key: 'wx-mp'
+              },
+              {
+                name: '移动端网页',
+                key: 'h5'
+              }
+            ],
+            value: ''
+          },
+          {
+            name: '时间',
             startKey: 'start_time',
             endKey: 'end_time',
             type: "time",
             value: [new Date(da.getFullYear(), da.getMonth(), da.getDate(), 0, 0, 0), new Date(da.getFullYear(), da.getMonth(), da.getDate(), 23, 59, 59)]
           },
+          {
+            name: '编辑',
+            type: 'fromButton',
+            disableLabel: true,
+            fromData: [
+              {
+                name: '关键字',
+                must: true,
+                key: 'ekey',
+                type: 'input',
+              },
+              {
+                name: '关键词',
+                must: true,
+                key: 'ename',
+                type: 'input',
+              }
+            ],
+            subfromData: {
+              ekey: '',
+              input: ''
+            },
+            subfromFunIndex: 0
+          }
         ],
         fliter: {
           page: 1,
           size: 20,
         },
-        // id	"3"
-        // day	"2023-09-09"
-        // source	"client"
-        // platform	"android"
-        // channel	"test"
-        // version	"1.2.3"
-        // user_id	"1"
-        // type	"click"
-        // ename	"client.guidle.clieck.ok.teset"
-        // ekey	"client.guidle.clieck.ok.teset"
-        // value	"11234"
-        // extra	""
-        // create_time	"2023-09-09 17:33:21"
         columns: [
-          { field: "id", key: "id", title: "ID", align: "center", width: 10, },
-          { field: "user_id", key: "user_id", title: "用户ID", align: "center", width: 10, },
-          { field: "channel", key: "channel", title: "渠道", align: "center", width: 10, },
-          { field: "version", key: "version", title: "版本", align: "center", width: 10, },
+          { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "" },
+          { field: "user_id", key: "user_id", title: "用户ID", align: "center", width: 20, },
+          { field: "channel", key: "channel", title: "渠道", align: "center", width: 25, },
+          { field: "version", key: "version", title: "版本", align: "center", width: 25, },
+          { field: "platform", key: "platform", title: "平台", align: "center", width: 25, },
 
-          { field: "day", key: "day", title: "日期", align: "center", width: 25, },
-          { field: "source", key: "source", title: "方式", align: "center", width: 25, },
+          { field: "day", key: "day", title: "日期", align: "center", width: 25, sortBy: "" },
+          { field: "source", key: "source", title: "来源", align: "center", width: 25, },
           { field: "type", key: "type", title: "类型", align: "center", width: 25, },
-          { field: "source", key: "source", title: "方式", align: "center", width: 25, },
-          { field: "ename", key: "ename", title: "关键字名称", align: "center", width: 25, },
-          { field: "ekey", key: "ekey", title: "关键字", align: "center", width: 25, },
+          { field: "ename", key: "ename", title: "关键字名称", align: "center", width: 50, },
+          { field: "ekey", key: "ekey", title: "关键字", align: "center", width: 50, },
           { field: "value", key: "value", title: "内容", align: "center", width: 25, },
           { field: "extra", key: "extra", title: "拓展内容", align: "center", width: 25, },
-
-
+          { field: "create_time", key: "create_time", title: "创建时间", align: "center", width: 50, sortBy: "desc" },
+        ],
+        tableShowJson: [
           {
-            field: "role", key: "role", title: "用户类型", align: "center", width: 25,
-            renderBodyCell: ({ row, column, rowIndex }, h) => {
-              let tagType = {
-                "临时用户": 'info',
-                "登录用户": 'primary'
-              }
-              return (
-                <el-tag type={tagType[row.role]}>{row.role}</el-tag>
-              );
-            },
+            field: 'id',
+            value: '',
+            width: '500px'
           },
           {
-            field: "status", key: "status", title: "用户状态", align: "center", width: 25,
-            renderBodyCell: ({ row, column, rowIndex }, h) => {
-              let tagType = {
-                "正常": 'success',
-                "禁用": 'danger',
-              }
-              return (
-                <el-tag type={tagType[row.status]}>{row.status}</el-tag>
-              );
-            },
-          },
-          { field: "vip_name", key: "vip_name", title: "会员类型", align: "center", width: 25, },
-          { field: "vip_expire_time", key: "vip_expire_time", title: "会员过期时间", align: "center", width: 50, },
-          { field: "active_time", key: "active_time", title: "激活时间", align: "center", width: 50, },
-          { field: "create_time", key: "create_time", title: "注册时间", align: "center", width: 50, },
-          {
-            field: "utils", key: "utils", title: "操作", align: "center", width: 50, fixed: "right",
-            renderBodyCell: ({ row, column, rowIndex }, h) => {
-              return (
-                <el-button type="danger" v-on:click={() => {
-                  _this.tableData.tableData.fromData = [
-                    {
-                      name: '头像',
-                      key: 'avater',
-                      type: 'input',
-                    }
-                  ]
-                  _this.tableData.tableData.showFrom = true
-                  _this.tableData.tableData.subfromData = {}
-                  _this.tableData.tableData.subfromFunIndex = 0
-                }}>编辑</el-button>
-              );
-            },
+            field: 'extra',
+            value: 'extra',
+            width: '500px'
           },
         ],
       }
     }
+
     _this.tableData = data
     data.show = false
     return data
@@ -148,20 +196,8 @@ export default {
     this.show = true
   },
   methods: {
-    editorUserEvent(subfromData, fetchData) {
-      if (subfromData.no_vip_expire_time) {
-        subfromData.no_vip_expire_time = undefined
-        subfromData.vip_expire_time = "-1"
-      }
-      else {
-        subfromData.vip_expire_time = String(Math.floor(subfromData.vip_expire_time / 1000))
-      }
-      if (subfromData.status == "正常") {
-        subfromData.status = "1"
-      } else {
-        subfromData.status = "2"
-      }
-      api.editorUserList(subfromData).then(() => {
+    editorUserEventList(subfromData, fetchData) {
+      api.editorUserEventList(subfromData).then(() => {
         fetchData()
       })
     }
