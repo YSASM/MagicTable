@@ -29,6 +29,10 @@ Vue.use(VueClipBoard)
 VueEasytable.VeLocale.use(zhCN);
 Vue.use(VueEasytable);
 
+import mtable from "@/components/MigicTable/index"
+
+Vue.component(mtable.name, mtable);
+
 // if (process.env.NODE_ENV === 'production') {
 //   const { mockXHR } = require('@/utils/static')
 //   mockXHR()

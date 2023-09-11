@@ -33,14 +33,11 @@ const actions = {
     return finallyAsyncRoutes
   },
   async setAllRoutes({ commit }) {
-    // let { data } = await getRouterList()
-    // data.push({ path: '*', redirect: '/404', hidden: true })
-    // let accessRoutes = convertRouter(data)
-    // commit('setAllRoutes', accessRoutes)
-    // return accessRoutes
-    const finallyAsyncRoutes = await filterAsyncRoutes([...asyncRoutes], permissions)
-    commit('setRoutes', finallyAsyncRoutes)
-    return finallyAsyncRoutes
+    let { data } = await getRouterList()
+    data.push({ path: '*', redirect: '/404', hidden: true })
+    let accessRoutes = convertRouter(data)
+    commit('setAllRoutes', accessRoutes)
+    return accessRoutes
   },
   setPartialRoutes({ commit }, accessRoutes) {
     commit('setPartialRoutes', accessRoutes)

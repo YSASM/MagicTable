@@ -15,8 +15,8 @@
           </el-date-picker>
           <el-button type="warning" v-if="item.type == 'fromButton'" @click="() => {
             showFrom = true
-            fromData = item.fromData
-            subfromData = item.subfromData
+            fromData = deepClone(item.fromData)
+            subfromData = deepClone(item.subfromData)
             subfromFunIndex = item.subfromFunIndex
           }">{{ item.name }}</el-button>
         </el-form-item>
@@ -25,10 +25,10 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="table">
-      <ve-table :scroll-width="scrollWidth" id="loading-container" :columns="columns" :table-data="tableData"
-        :border-around="true" :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex"
-        :contextmenu-body-option="contextmenuBodyOption" :sort-option="sortOption" />
+    <el-card class="table" id="table">
+      <ve-table :scroll-width="scrollWidth" :columns="columns" :table-data="tableData" :border-around="true"
+        :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex" :contextmenu-body-option="contextmenuBodyOption"
+        :sort-option="sortOption" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
       <ve-pagination class="table-pagination" :total="totalCount" :page-index="fliter.page"
         :page-size-option="pageSizeOption" :page-size="fliter.size" @on-page-number-change="pageNumberChange"
@@ -62,6 +62,7 @@
 <script>
 import _this from "@/main.js"
 import JsonEditor from 'vue-json-editor';
+import { deepClone } from "@/utils/index.js";
 const reflashKey = ["showFrom", "fromData", "subfromData", "subfromFunIndex", "disableJsonEditorSub"]
 
 
@@ -75,19 +76,19 @@ export default {
   },
   data() {
     let data = {
-      sort: 'create_time DESC',
+      sort: '',
       sortOption: {
         // sort always
         sortAlways: true,
         // multipleSort: true,
-        sortChange: (params) => {
+        sortChange: (params, defaultGet) => {
           let keys = Object.keys(params)
+          let sort = ""
           keys.forEach(key => {
             if (params[key]) {
               let arr = key.split('')
               let k = ''
               arr.forEach(i => {
-                console.log(i)
                 let code = i.charCodeAt()
                 if (code >= 65 && code <= 90 && k != '') {
                   k += '_' + i.toLowerCase()
@@ -97,12 +98,17 @@ export default {
                 }
 
               })
-              this.sort = k + ' ' + params[key].toUpperCase()
+              sort = k + ' ' + params[key].toUpperCase()
               return
             }
 
           })
-          this.fetchData()
+          if (defaultGet) {
+            return sort
+          } else {
+            this.sort = sort
+            this.fetchData()
+          }
           // this.sortChange(params);
         },
       },
@@ -147,7 +153,6 @@ export default {
       totalCount: 0,
       tableData: [],
       fetchFun: async (fliter) => { console.log(fliter) },
-      subfromFun: null,
       subfromFunIndex: 0,
       fliterOption: [
         {
@@ -174,11 +179,15 @@ export default {
     for (let k in _thisdata) {
       data[k] = _thisdata[k]
     }
+    let defaultSort = {}
     data.columns.forEach(col => {
       if (!col.ellipsis) {
         col.ellipsis = {
           showTitle: true,
           lineClamp: 1,
+        }
+        if (col.sortBy || col.sortBy === "") {
+          defaultSort[col.field] = col.sortBy
         }
         data.tableShowJson.forEach(item => {
           if (item.field == col.field) {
@@ -244,7 +253,9 @@ export default {
                     }}></JsonEditor>
                     <el-button disabled={this.disableJsonEditorSub} style={"width:" + width + " !important;margin-top:10px;"} type="primary" on-click={() => {
                       this.colsePopover();
-                      item.subFun(contant, this.fetchData);
+                      item.subFun(contant).then(() => {
+                        this.fetchData()
+                      });
                     }}>提交</el-button>
                   </div >
                   <div class="font-blue" on-click={() => { this.disableJsonEditorSub = false }} type="text" slot="reference"><i class="el-icon-edit"></i>{row[item.field]}</div>
@@ -256,6 +267,7 @@ export default {
         })
       }
     })
+    data.sort = data.sortOption.sortChange(defaultSort, true)
     // 反向更新_this
     for (let k in data) {
       _this.tableData.tableData[k] = data[k]
@@ -266,8 +278,18 @@ export default {
 
   },
   mounted() {
-
+    // 解决mounted获取不到dom
+    this.$once("hook:updated", function () {
+      // 表格加载
+      let target = document.querySelector("#table")
+      this.loadingInstance = this.$veLoading({
+        target: target,
+        name: "wave",
+      });
+      this.initData()
+    })
     this.$nextTick(() => {
+      // 将更改的数据更新到_this中
       reflashKey.forEach(key => {
         this.$watch(key, (v, ov) => {
           if (_this.tableData.tableData[key] != v) {
@@ -275,20 +297,14 @@ export default {
           }
         })
       })
-      this.loadingInstance = this.$veLoading({
-        target: document.querySelector("#loading-container"),
-        // 等同于
-        // target:"#loading-container"
-        name: "wave",
-      });
-      this.initData()
-      this.overLoad = true
+      // 监听_this更新数据
       setInterval(() => {
         let _thisdata = _this.tableData.tableData
         reflashKey.forEach(key => {
           this[key] = _thisdata[key]
         })
       }, 100)
+      this.overLoad = true
     })
   },
   methods: {
@@ -296,21 +312,28 @@ export default {
       this.$refs.container.click()
     },
     subForm() {
+      let that = this
       let flage = false
       let flageName = ''
-      this.fromData.forEach(item => {
-        if (item.must && this.subfromData[item.key] === '') {
+      that.fromData.forEach(item => {
+        if (item.must && that.subfromData[item.key] === '') {
           flage = true
           flageName = item.name
         }
       })
       if (flage) {
-        this.$message.error(flageName + "不能为空")
+        that.$message.error(flageName + "不能为空")
         return
       }
 
-      this.getter('subfromFun' + this.subfromFunIndex)(this.subfromData, this.fetchData)
-      this.showFrom = false
+      that.getter('subfromFun' + that.subfromFunIndex)(that.subfromData).then(() => {
+        that.fromData = []
+        that.subfromData = {}
+        that.subfromFunIndex = 0
+        that.showFrom = false
+        console.log(that, that.subfromData)
+        that.fetchData()
+      })
     },
     getter(s) {
       return this[s]
@@ -376,6 +399,7 @@ export default {
       })
       return data
     },
+    deepClone,
   }
 }
 </script>

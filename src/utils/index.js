@@ -240,3 +240,12 @@ export const off = (function () {
     }
   }
 })()
+
+/**
+ * @description 深拷贝
+ * @param obj
+ */
+
+export function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}

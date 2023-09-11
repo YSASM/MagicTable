@@ -15,7 +15,7 @@
   "git.autofetch": true,
   "git.confirmSync": false,
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "liveServer.settings.donotShowInfoMsg": true,
   "explorer.confirmDelete": false,
