@@ -99,7 +99,7 @@ let data = {
         renderBodyCell: ({ row, column, rowIndex }, h) => {
           return (
             <div>
-              <el-button v-on:click={() => {
+              <el-button type={row.white_list && row.white_list != ' ' ? 'success' : ''} v-on:click={() => {
                 _this.tableData.tableData.fromData = [
                   {
                     name: '白名单',
@@ -236,7 +236,22 @@ let data = {
                 }
                 _this.tableData.tableData.subfromFunIndex = "Editor"
               }}>编辑</el-button>
+              <el-popconfirm
+                title="确定删除吗？"
+                style="margin-left:10px"
+                on-confirm={() => {
+                  api.delConfigList({
+                    id: row.id
+                  }).then(res => {
+                    _this.initData()
+                    _this.$message.success("操作成功")
+                  })
+                }}
+              >
+                <el-button type="danger" slot="reference">删除</el-button>
+              </el-popconfirm>
             </div>
+
 
           );
         },

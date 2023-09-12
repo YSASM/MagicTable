@@ -21,6 +21,13 @@ export default {
       method: 'post',
       data,
     })
+  },
+  async delConfigList(params) {
+    return request({
+      url: '/admin/config',
+      method: 'delete',
+      params,
+    })
   }
 }
 

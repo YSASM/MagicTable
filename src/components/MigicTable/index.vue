@@ -383,6 +383,8 @@ export default {
       }, 100)
       this.overLoad = true
     })
+    _this.fetchData = this.fetchData
+    _this.initData = this.initData
   },
   methods: {
     colsePopover() {

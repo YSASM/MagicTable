@@ -1,4 +1,5 @@
 import _this from "@/main.js"
+// 使用_this可以在任何地方完成this相关操作
 let data = {
   tableData: {
     // 表格宽度
