@@ -162,6 +162,11 @@ export default {
         },
       },
       contextmenuBodyOption: {
+        afterMenuClick: ({ type, selectionRangeKeys, selectionRangeIndexes }) => {
+          if (type == "COPY") {
+            this.$message.success("复制成功")
+          }
+        },
         contextmenus: [
           {
             type: "COPY",
@@ -361,21 +366,21 @@ export default {
     for (let k in data) {
       _this.tableData.tableData[k] = data[k]
     }
+    data.PageId = location.hash.replace(/\//g, '_')
     return data
-  },
-  created() {
-
   },
   mounted() {
     // 解决mounted获取不到dom
     this.$once("hook:updated", function () {
       // 表格加载
       let target = document.querySelector("#table")
-      this.loadingInstance = this.$veLoading({
+      _this['loadingInstance' + this.PageId] = this.$veLoading({
         target: target,
         name: "wave",
       });
       this.initData()
+      _this.fetchData = this.fetchData
+      _this.initData = this.initData
     })
     this.$nextTick(() => {
       // 将更改的数据更新到_this中
@@ -395,8 +400,6 @@ export default {
       }, 100)
       this.overLoad = true
     })
-    _this.fetchData = this.fetchData
-    _this.initData = this.initData
   },
   methods: {
     colsePopover() {
@@ -461,7 +464,7 @@ export default {
       this.fetchData()
     },
     fetchData() {
-      this.loadingInstance.show();
+      _this['loadingInstance' + this.PageId].show();
       this.fliterOption.forEach(item => {
         if (item.type === 'time') {
           if (item.value && item.value.length > 1) {
@@ -481,7 +484,7 @@ export default {
         this.tableData = res.data.items
         this.formtData(this.tableData)
         this.totalCount = res.data.total
-        this.loadingInstance.close();
+        _this['loadingInstance' + this.PageId].close();
       })
     },
     initData() {
