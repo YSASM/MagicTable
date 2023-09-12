@@ -80,7 +80,13 @@ let data = {
             // 提交的字段名
             key: 'ekey',
             // 类型
-            type: 'input(输入框)|select(下拉菜单)|switch(开关)|timeOnly(选择一天的时间)',
+            type: 'input(输入框)|select(下拉菜单)|switch(开关)|timeOnly(选择一天的时间)|tags(可添加删除)',
+            // type为input时输入后的回调
+            inputed: (value) => {
+              value = "........."
+              // 设置_this.tableData.tableData.subfromData[上面填写的key]即可改变对应输入框值
+              _this.tableData.tableData.subfromData[key] = value
+            },
             // 当subfromData中的xxx字段等于undefined时禁用
             disablekey: "xxx",
             disableval: undefined,
@@ -93,6 +99,10 @@ let data = {
                 key: ''
               }
             ],
+            // type为tags时生效，填写与addTagText相同内容即可
+            tag: '+新标签',
+            // 添加标签按钮的文字
+            addTagText: '+新标签',
           }
         ],
         // 提交表单内容与fromData对应可设置fromData初始值如：subfromData:{ekey:123}
@@ -153,6 +163,8 @@ let data = {
         value: '',
         // 弹窗宽度
         width: '500px',
+        // 弹窗高度
+        height: '500px',
         // 提交的函数，要求异步函数
         subFun: async (data) => { }
       },

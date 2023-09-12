@@ -80,6 +80,27 @@ export const asyncRoutes = [
     ],
   },
   {
+    meta: {
+      title: '配置管理',
+      icon: 'config',
+      affix: true,
+    },
+    path: '/config',
+    component: Layout,
+    children: [
+      {
+        path: 'config',
+        name: 'config',
+        component: () => import('@/views/config/config/index'),
+        meta: {
+          title: '配置管理',
+          icon: 'home',
+          affix: false,
+        },
+      }
+    ],
+  },
+  {
     path: '*',
     redirect: '/404',
     hidden: true,

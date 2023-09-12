@@ -28,7 +28,7 @@
     <el-card class="table" id="table">
       <ve-table :scroll-width="scrollWidth" :columns="columns" :table-data="tableData" :border-around="true"
         :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex" :contextmenu-body-option="contextmenuBodyOption"
-        :sort-option="sortOption" />
+        :sort-option="sortOption" :column-width-resize-option="columnWidthResizeOption" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
       <ve-pagination class="table-pagination" :total="totalCount" :page-index="fliter.page"
         :page-size-option="pageSizeOption" :page-size="fliter.size" @on-page-number-change="pageNumberChange"
@@ -38,9 +38,11 @@
 
     <el-dialog title="提示" :visible.sync="showFrom" width="30%">
       <el-form ref="form" label-width="100px">
-        <el-form-item :label="item.name" v-for="item, index in fromData" :key="index" :required="item.must">
+        <el-form-item :prop="item.type" :label="item.name" v-for="item, index in  fromData " :key="index"
+          :required="item.must">
           <el-input v-if="item.type == 'input'" v-model="subfromData[item.key]" clearable
-            :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval"></el-input>
+            :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval"
+            @input="item.inputed"></el-input>
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
             placeholder="选择日期时间" :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval"
             @change="subfromData[item.key] = subfromData[item.key].getTime()" style="width: 100%;">
@@ -49,11 +51,33 @@
             :inactive-value="item.closeValue"
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval">
           </el-switch>
+          <div v-if="item.type == 'tags'" style="border: solid 1px #e6e6e6;width: 100%;padding: 10px;border-radius:10px;">
+            <el-tag :key="tag" v-for="tag in subfromData[item.key]"
+              :closable="!(item.disablekey && subfromData[item.disablekey] == item.disableval)"
+              :disable-transitions="false"
+              @close="() => { subfromData[item.key].splice(subfromData[item.key].indexOf(tag), 1); }">
+              {{ tag }}
+            </el-tag>
+            <el-input class="input-new-tag" v-model="item.tag" ref="saveTagInput" size="mini"
+              @keyup.enter.native="() => { if (item.tag && item.tag != item.addTagText) { subfromData[item.key].push(item.tag); item.tag = ''; } }"
+              @blur="() => { if (item.tag && item.tag != item.addTagText) { subfromData[item.key].push(item.tag); } item.tag = item.addTagText; }"
+              @focus="item.tag = ''" :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval">
+            </el-input>
+          </div>
+          <el-select v-if="item.type == 'select'" v-model="subfromData[item.key]" style="width: 100%;">
+            <el-option v-for="i, ii in item.items" :key="ii" :label="i.name" :value="i.key">
+            </el-option>
+          </el-select>
+          <JsonEditor v-if="item.type == 'jsonIinput'" copyable
+            :style='"width:" + item.width + " !important;text-align:left;height:" + item.height'
+            v-model="subfromData[item.key]" :showBtns="false" mode="code" @has-error="disabledSubFrom = true"
+            @json-change="disabledSubFrom = false"></JsonEditor>
+          <span style="font-size: 10px;color: red;position: absolute;bottom: -25px;right: 0;">{{ item.tips }}</span>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showFrom = false">取 消</el-button>
-        <el-button type="primary" @click="subForm">确
+        <el-button type="primary" @click="subForm" :disabled="disabledSubFrom || judgeFrom()">确
           定</el-button>
       </span>
     </el-dialog>
@@ -63,7 +87,7 @@
 import _this from "@/main.js"
 import JsonEditor from 'vue-json-editor';
 import { deepClone } from "@/utils/index.js";
-const reflashKey = ["showFrom", "fromData", "subfromData", "subfromFunIndex", "disableJsonEditorSub"]
+const reflashKey = ["showFrom", "fromData", "subfromData", "subfromFunIndex", "disableJsonEditorSub", "disabledSubFrom"]
 
 
 export default {
@@ -76,6 +100,21 @@ export default {
   },
   data() {
     let data = {
+      Error: Error,
+      console: console,
+      disabledSubFrom: false,
+      columnWidthResizeOption: {
+        // default false
+        enable: true,
+        // column resize min width
+        minWidth: 30,
+        // column size change
+        // sizeChange: ({ column, differWidth, columnWidth }) => {
+        //   this.columnResizeInfo.column = column;
+        //   this.columnResizeInfo.differWidth = differWidth;
+        //   this.columnResizeInfo.columnWidth = columnWidth;
+        // },
+      },
       sort: '',
       sortOption: {
         // sort always
@@ -172,7 +211,8 @@ export default {
       showFrom: false,
       tableShowJson: [],
       disableJsonEditorSub: false,
-      tableEditorJson: []
+      tableEditorJson: [],
+      tableEditorJsonContent: {}
     }
     let _thisdata = _this.tableData.tableData
     // data更新
@@ -227,42 +267,78 @@ export default {
         data.tableEditorJson.forEach(item => {
           if (item.field == col.field) {
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
-              let contant = item.value ? row[item.value] : row
-              let contanttype = typeof (contant)
               let width = item.width
               if (!width) {
                 width = "100%"
               }
-              if (contanttype == 'string') {
-                try {
-                  contant = JSON.parse(contant)
-                } catch (e) {
-                  contant = {}
+              let height = item.height
+              if (!height) {
+                height = "100%"
+              }
+              if (!this.tableEditorJsonContent[item.value + rowIndex]) {
+                let contanttype = typeof (row[item.value])
+                if (contanttype == 'string') {
+                  try {
+                    this.tableEditorJsonContent[item.value + rowIndex] = JSON.parse(row[item.value])
+                  } catch (e) {
+                    this.tableEditorJsonContent[item.value + rowIndex] = {}
+                  }
+                } else if (contanttype != 'object') {
+                  this.tableEditorJsonContent[item.value + rowIndex] = {}
+                } else {
+                  this.tableEditorJsonContent[item.value + rowIndex] = row[item.value]
                 }
               }
-              else if (contanttype != 'object') {
-                contant = {}
-              }
+
+
               return (
                 <el-popover popper-class="popper-class pop-max-content" placement="top">
                   <div style="text-align:center">
-                    <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left"} v-model={contant} showBtns={false} mode="code" on-has-error={() => {
-                      this.disableJsonEditorSub = true
-                    }} on-json-change={() => {
-                      this.disableJsonEditorSub = false
-                    }}></JsonEditor>
+                    <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left;height:" + height} v-model={this.tableEditorJsonContent[item.value + rowIndex]}
+                      show-btns={false}
+                      lang="zh"
+                      mode="code"
+                      expanded-on-start={true}
+                      on-has-error={() => {
+                        this.disableJsonEditorSub = true
+                      }} on-json-change={() => {
+                        this.disableJsonEditorSub = false
+                      }}></JsonEditor>
                     <el-button disabled={this.disableJsonEditorSub} style={"width:" + width + " !important;margin-top:10px;"} type="primary" on-click={() => {
                       this.colsePopover();
-                      item.subFun(contant).then(() => {
+                      let params = {
+                        id: row.id,
+                      }
+                      params[item.value] = JSON.stringify(this.tableEditorJsonContent[item.value + rowIndex])
+                      item.subFun(params).then(() => {
+                        this.$message.success("操作成功")
                         this.fetchData()
                       });
                     }}>提交</el-button>
                   </div >
-                  <div class="font-blue" on-click={() => { this.disableJsonEditorSub = false }} type="text" slot="reference"><i class="el-icon-edit"></i>{row[item.field]}</div>
+                  <div class="font-blue" type="text" slot="reference"><i class="el-icon-edit"></i>{row[item.field]}</div>
                 </el-popover >
               )
             }
 
+          }
+        })
+        data.tableSwitch.forEach(item => {
+          if (item.field == col.field) {
+            col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+              return (
+                <el-switch on-change={() => {
+                  let params = {
+                    id: row.id,
+                  }
+                  params[item.value] = row[item.value]
+                  item.subFun(params).then(() => {
+                    this.$message.success("操作成功")
+                    this.fetchData()
+                  });
+                }} v-model={row[item.value]} active-value={item.openValue} inactive-value={item.closeValue} ></el-switch>
+              )
+            }
           }
         })
       }
@@ -311,6 +387,16 @@ export default {
     colsePopover() {
       this.$refs.container.click()
     },
+    judgeFrom() {
+      let that = this
+      let flage = false
+      that.fromData.forEach(item => {
+        if (item.must && that.subfromData[item.key] === '') {
+          flage = true
+        }
+      })
+      return flage
+    },
     subForm() {
       let that = this
       let flage = false
@@ -331,7 +417,7 @@ export default {
         that.subfromData = {}
         that.subfromFunIndex = 0
         that.showFrom = false
-        console.log(that, that.subfromData)
+        this.$message.success("操作成功")
         that.fetchData()
       })
     },
@@ -436,5 +522,24 @@ export default {
     border: 1px solid #eee;
     border-top: 0;
   }
+
+  .el-tag .el-tag {
+    margin-right: 10px;
+  }
+
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
+
 }
 </style>
