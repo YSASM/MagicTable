@@ -212,7 +212,8 @@ export default {
       tableShowJson: [],
       disableJsonEditorSub: false,
       tableEditorJson: [],
-      tableEditorJsonContent: {}
+      tableEditorJsonContent: {},
+      tableSwitch: []
     }
     let _thisdata = _this.tableData.tableData
     // data更新
