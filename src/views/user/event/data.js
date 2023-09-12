@@ -157,7 +157,7 @@ let data = {
       { field: "source", key: "source", title: "来源", align: "center", width: 25, },
       { field: "type", key: "type", title: "类型", align: "center", width: 25, },
       {
-        field: "ename", key: "ename", title: "关键字名称", align: "center", width: 50,
+        field: "ename", key: "ename", title: "关键词", align: "center", width: 50,
         renderBodyCell: ({ row, column, rowIndex }, h) => {
           return (
             <span class="font-blue" v-on:click={() => {
@@ -178,6 +178,7 @@ let data = {
                   type: 'input',
                 }
               ]
+              _this.tableData.tableData.fromTitle = "编辑关键词"
               _this.tableData.tableData.showFrom = true
               _this.tableData.tableData.subfromData = { ekey: row.ekey, ename: row.ename }
               _this.tableData.tableData.subfromFunIndex = 0

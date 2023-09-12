@@ -18,6 +18,9 @@
             fromData = deepClone(item.fromData)
             subfromData = deepClone(item.subfromData)
             subfromFunIndex = item.subfromFunIndex
+            if (item.fromTitle) {
+              fromTitle = item.fromTitle
+            }
           }">{{ item.name }}</el-button>
         </el-form-item>
         <el-form-item class="fliter-item">
@@ -36,10 +39,17 @@
     </el-card>
     <!-- {{ showFrom }} -->
 
-    <el-dialog title="提示" :visible.sync="showFrom" width="30%">
-      <el-form ref="form" label-width="100px">
-        <el-form-item :prop="item.type" :label="item.name" v-for="item, index in  fromData " :key="index"
-          :required="item.must">
+    <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%">
+      <el-form v-model="subfromData" ref="form" label-width="100px">
+        <el-form-item :prop="item.key" :label="item.name" v-for="item, index in  fromData " :key="index" :rules="item.must ? {
+          required: true, trigger: 'blur', validator: (rule, value, callback) => {
+            if (value, subfromData[item.key] == '') {
+              callback(new Error('必填项'));
+            } else {
+              callback();
+            }
+          }
+        } : {}">
           <el-input v-if="item.type == 'input'" v-model="subfromData[item.key]" clearable
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval"
             @input="item.inputed"></el-input>
@@ -52,7 +62,7 @@
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval">
           </el-switch>
           <div v-if="item.type == 'tags'" style="border: solid 1px #e6e6e6;width: 100%;padding: 10px;border-radius:10px;">
-            <el-tag :key="tag" v-for="tag in subfromData[item.key]"
+            <el-tag :key="index" v-for="tag, index in subfromData[item.key]"
               :closable="!(item.disablekey && subfromData[item.disablekey] == item.disableval)"
               :disable-transitions="false"
               @close="() => { subfromData[item.key].splice(subfromData[item.key].indexOf(tag), 1); }">
@@ -87,7 +97,7 @@
 import _this from "@/main.js"
 import JsonEditor from 'vue-json-editor';
 import { deepClone } from "@/utils/index.js";
-const reflashKey = ["showFrom", "fromData", "subfromData", "subfromFunIndex", "disableJsonEditorSub", "disabledSubFrom"]
+var reflashKey = []
 
 
 export default {
@@ -193,6 +203,7 @@ export default {
       tableData: [],
       fetchFun: async (fliter) => { console.log(fliter) },
       subfromFunIndex: 0,
+      fromTitle: '操作',
       fliterOption: [
         {
           name: '测试',
@@ -345,6 +356,7 @@ export default {
       }
     })
     data.sort = data.sortOption.sortChange(defaultSort, true)
+    reflashKey = Object.keys(data)
     // 反向更新_this
     for (let k in data) {
       _this.tableData.tableData[k] = data[k]
@@ -402,6 +414,7 @@ export default {
     },
     subForm() {
       let that = this
+      that.showFrom = false
       let flage = false
       let flageName = ''
       that.fromData.forEach(item => {
@@ -419,7 +432,6 @@ export default {
         that.fromData = []
         that.subfromData = {}
         that.subfromFunIndex = 0
-        that.showFrom = false
         this.$message.success("操作成功")
         that.fetchData()
       })

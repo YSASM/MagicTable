@@ -290,6 +290,7 @@ let data = {
                   closeValue: "禁用",
                 }
               ]
+              _this.tableData.tableData.fromTitle = "编辑"
               _this.tableData.tableData.showFrom = true
               _this.tableData.tableData.subfromData = { vip_expire_time: row.vip_expire_time == "永不过期" ? new Date().getTime() : row.vip_expire_time, user_id: row.id, avater: row.avater, status: row.status, no_vip_expire_time: row.vip_expire_time == "永不过期" }
               _this.tableData.tableData.subfromFunIndex = 0

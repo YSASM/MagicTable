@@ -64,6 +64,7 @@ let data = {
           name: "",
           desc: "",
         },
+        fromTitle: "新建",
         subfromFunIndex: "Add"
       }
     ],
@@ -109,6 +110,7 @@ let data = {
                     addTagText: '+新标签',
                   }
                 ]
+                _this.tableData.tableData.fromTitle = "白名单"
                 _this.tableData.tableData.showFrom = true
                 _this.tableData.tableData.subfromData = { id: row.id, white_list: row.white_list && row.white_list != ' ' ? row.white_list.split(",") : [] }
                 _this.tableData.tableData.subfromFunIndex = "WhitList"
@@ -234,6 +236,7 @@ let data = {
                   start_bucket: row.start_bucket,
                   end_bucket: row.end_bucket,
                 }
+                _this.tableData.tableData.fromTitle = "编辑"
                 _this.tableData.tableData.subfromFunIndex = "Editor"
               }}>编辑</el-button>
               <el-popconfirm
