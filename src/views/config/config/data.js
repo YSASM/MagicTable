@@ -58,105 +58,11 @@ let data = {
             key: 'desc',
             type: 'input',
             must: true
-          },
-          {
-            name: '生效渠道',
-            key: 'channel',
-            type: 'input',
-          },
-          {
-            name: '生效版本',
-            key: 'version',
-            type: 'input',
-          },
-          {
-            name: '配置层数',
-            key: 'layer',
-            type: 'input',
-            inputed: (value) => {
-              value = value.replace(/[^0-9]/g, '');
-              if (value != '' && value < 1) { value = 1; } if (value != '' && value > 10) { value = 10; }
-              _this.tableData.tableData.subfromData.layer = value
-            },
-            tips: "1-10的数字"
-          },
-          {
-            name: '开始桶号',
-            key: 'start_bucket',
-            type: 'input',
-            inputed: (value) => {
-              value = value.replace(/[^0-9]/g, '');
-              if (value != '' && value < 0) { value = 0; } if (value != '' && value > 100) { value = 100; }
-              _this.tableData.tableData.subfromData.start_bucket = value
-            },
-            tips: '0-100的数字'
-          },
-          {
-            name: '结束桶号',
-            key: 'end_bucket',
-            type: 'input',
-            inputed: (value) => {
-              value = value.replace(/[^0-9]/g, '');
-              if (value != '' && value < 0) { value = 0; } if (value != '' && value > 100) { value = 100; }
-              _this.tableData.tableData.subfromData.end_bucket = value
-            },
-            tips: '0-100的数字'
-          },
-          {
-            name: '用户平台',
-            key: 'platform',
-            type: "select",
-            items: [
-              {
-                name: '全部平台',
-                key: ''
-              },
-              {
-                name: '安卓',
-                key: 'android'
-              },
-              {
-                name: '苹果',
-                key: 'ios'
-              },
-              {
-                name: '电脑端网页',
-                key: 'web'
-              },
-              {
-                name: '小程序',
-                key: 'wx-mp'
-              },
-              {
-                name: '移动端网页',
-                key: 'h5'
-              }
-            ],
-          },
-          {
-            name: '状态',
-            key: 'status',
-            type: 'switch',
-            openValue: "1",
-            closeValue: "2",
-          },
-          {
-            name: '配置参数',
-            key: 'params',
-            type: 'jsonIinput',
-          },
+          }
         ],
         subfromData: {
-          name: "新建配置",
-          params: {},
+          name: "",
           desc: "",
-          status: "1",
-          layer: 1,
-          platform: "",
-          channel: "",
-          version: "",
-          start_bucket: 0,
-          end_bucket: 0,
         },
         subfromFunIndex: "Add"
       }
