@@ -25,6 +25,26 @@ let data = {
         type: "input"
       },
       {
+        name: '用户版本',
+        key: 'version',
+        type: "input"
+      },
+      {
+        name: '用户渠道',
+        key: 'channel',
+        type: "input"
+      },
+      {
+        name: '手机品牌',
+        key: 'brand',
+        type: "input"
+      },
+      {
+        name: '手机型号',
+        key: 'model',
+        type: "input"
+      },
+      {
         name: '支付类型',
         key: 'pay_type',
         type: "select",
@@ -77,14 +97,52 @@ let data = {
         value: ''
       },
       {
-        name: '用户版本',
-        key: 'version',
-        type: "input"
-      },
-      {
-        name: '渠道',
-        key: 'channel',
-        type: "input"
+        name: '推广平台',
+        key: 'source',
+        type: "select",
+        items: [
+          {
+            name: '全部来源',
+            key: ''
+          },
+          {
+            name: '自然流量',
+            key: 'free'
+          },
+          {
+            name: '百度推广',
+            key: 'baidu'
+          },
+          {
+            name: '巨量推广',
+            key: 'ocean'
+          },
+          {
+            name: '腾讯推广',
+            key: 'tencent'
+          },
+          {
+            name: '快手推广',
+            key: 'kuaishou'
+          },
+          {
+            name: 'vivo推广',
+            key: 'vivo'
+          },
+          {
+            name: 'oppo推广',
+            key: 'oppo'
+          },
+          {
+            name: '华为推广',
+            key: 'huawei'
+          },
+          {
+            name: '星图推广',
+            key: 'xingtu'
+          }
+        ],
+        value: ''
       },
       {
         name: '时间',
