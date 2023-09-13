@@ -147,7 +147,7 @@ let data = {
       size: 20,
     },
     columns: [
-      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "" },
+      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
       { field: "user_id", key: "user_id", title: "用户ID", align: "center", width: 20, },
       { field: "channel", key: "channel", title: "渠道", align: "center", width: 25, },
       { field: "version", key: "version", title: "版本", align: "center", width: 25, },

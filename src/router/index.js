@@ -106,13 +106,13 @@ export const asyncRoutes = [
       icon: 'el-icon-s-order',
       affix: true,
     },
-    path: '/bill',
+    path: '/order',
     component: Layout,
     children: [
       {
-        path: 'bill',
-        name: 'bill',
-        component: () => import('@/views/bill/bill/index'),
+        path: 'order',
+        name: 'order',
+        component: () => import('@/views/order/order/index'),
         meta: {
           title: '订单管理',
           icon: 'el-icon-s-order',

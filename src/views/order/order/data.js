@@ -1,4 +1,4 @@
-import api from "@/api/bill/bill/index"
+import api from "@/api/order/order/index"
 import _this from "@/main.js"
 let da = new Date()
 let data = {
@@ -17,6 +17,11 @@ let data = {
       {
         name: '订单号',
         key: 'out_trade_no',
+        type: "input"
+      },
+      {
+        name: '商品名称',
+        key: 'goods_name',
         type: "input"
       },
       {
@@ -77,6 +82,11 @@ let data = {
         type: "input"
       },
       {
+        name: '渠道',
+        key: 'channel',
+        type: "input"
+      },
+      {
         name: '时间',
         startKey: 'start_time',
         endKey: 'end_time',
@@ -94,7 +104,7 @@ let data = {
     // goods_name	"月度会员"
     // goods_source	"test"
     columns: [
-      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "" },
+      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
       { field: "user_id", key: "user_id", title: "用户ID", align: "center", width: 25, sortBy: "" },
       { field: "user_name", key: "user_name", title: "用户名", align: "center", width: 25, showOverflow: true },
       { field: "user_source", key: "user_source", title: "推广来源", align: "center", width: 25 },

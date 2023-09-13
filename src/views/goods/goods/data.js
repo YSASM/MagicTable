@@ -114,7 +114,7 @@ let data = {
       size: 20,
     },
     columns: [
-      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "desc" },
+      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "desc", fixed: "left", },
       { field: "name", key: "name", title: "名称", align: "center", width: 20 },
       { field: "type", key: "type", title: "类型", align: "center", width: 20 },
       { field: "price", key: "price", title: "价格", align: "center", width: 20, endStr: "元" },

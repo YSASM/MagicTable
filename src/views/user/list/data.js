@@ -185,7 +185,7 @@ let data = {
       size: 20,
     },
     columns: [
-      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "" },
+      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
       {
         field: "name", key: "name", title: "用户名", align: "center", width: 25,
         renderBodyCell: ({ row, column, rowIndex }, h) => {

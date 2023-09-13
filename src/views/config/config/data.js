@@ -14,22 +14,8 @@ let data = {
         })
       })
     },
-    subfromFunEditor: (data) => {
-      return new Promise((resolve, reject) => {
-        data.params = JSON.stringify(data.params)
-        api.editorConfigList(data).then(res => {
-          resolve(res)
-        })
-      })
-    },
-    subfromFunAdd: (data) => {
-      return new Promise((resolve, reject) => {
-        data.params = JSON.stringify(data.params)
-        api.addConfigList(data).then(res => {
-          resolve(res)
-        })
-      })
-    },
+    subfromFunEditor: api.editorConfigList,
+    subfromFunAdd: api.addConfigList,
     fliterOption: [
       {
         name: '配置名称',
@@ -40,6 +26,16 @@ let data = {
         name: '配置内容',
         key: 'params',
         type: "input"
+      },
+      {
+        name: '状态',
+        key: 'status',
+        type: "switch",
+        openValue: "1",
+        openStr: "查看开启",
+        closeValue: "null",
+        closeStr: "查看所有",
+        value: '',
       },
       {
         name: '新建',
@@ -81,7 +77,7 @@ let data = {
     // create_time	""
     // update_time	""
     columns: [
-      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "" },
+      { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
       { field: "name", key: "name", title: "名称", align: "center", width: 20, showOverflow: true },
       { field: "params", key: "params", title: "内容", align: "center", width: 20 },
       { field: "desc", key: "desc", title: "描述", align: "center", width: 20, showOverflow: true },
@@ -90,12 +86,22 @@ let data = {
       { field: "channel", key: "channel", title: "渠道", align: "center", width: 20 },
       { field: "version", key: "version", title: "版本", align: "center", width: 20 },
       { field: "status", key: "status", title: "状态", align: "center", width: 20 },
-      { field: "start_bucket", key: "start_bucket", title: "开始桶号", align: "center", width: 20 },
-      { field: "end_bucket", key: "end_bucket", title: "结束桶号", align: "center", width: 20 },
+      {
+        field: "bucket", key: "bucket", title: "流量区间", align: "center", width: 20,
+        renderBodyCell: ({ row, column, rowIndex }, h) => {
+          return (<span>{row.start_bucket + '~' + row.end_bucket}</span>)
+        }
+      },
+      {
+        field: "bucketBFS", key: "bucketBFS", title: "流量百分比", align: "center", width: 25,
+        renderBodyCell: ({ row, column, rowIndex }, h) => {
+          return (<span>{row.end_bucket - row.start_bucket + 1 + '%'}</span>)
+        }
+      },
       { field: "create_time", key: "create_time", title: "创建时间", align: "center", width: 50, sortBy: "desc" },
       { field: "update_time", key: "update_time", title: "更新时间", align: "center", width: 50, sortBy: "" },
       {
-        field: "utils", key: "utils", title: "操作", align: "center", width: 50, fixed: "right",
+        field: "utils", key: "utils", title: "操作", align: "center", width: 60, fixed: "right",
         renderBodyCell: ({ row, column, rowIndex }, h) => {
           return (
             <div>
@@ -142,10 +148,16 @@ let data = {
                     name: '配置层数',
                     key: 'layer',
                     type: 'input',
-                    inputed: (value) => {
+                    must: true,
+                    rule: (value) => {
                       value = value.replace(/[^0-9]/g, '');
-                      if (value != '' && value < 1) { value = 1; } if (value != '' && value > 10) { value = 10; }
                       _this.tableData.subfromData.layer = value
+                      if (value != '' && parseInt(value) < 1) {
+                        return '层数最小为1'
+                      }
+                      if (value != '' && parseInt(value) > 10) {
+                        return '层数最大为10';
+                      }
                     },
                     tips: "1-10的数字"
                   },
@@ -153,10 +165,16 @@ let data = {
                     name: '开始桶号',
                     key: 'start_bucket',
                     type: 'input',
-                    inputed: (value) => {
+                    must: true,
+                    rule: (value) => {
                       value = value.replace(/[^0-9]/g, '');
-                      if (value != '' && value < 0) { value = 0; } if (value != '' && value > 100) { value = 100; }
                       _this.tableData.subfromData.start_bucket = value
+                      if (value != '' && parseInt(value) >= parseInt(_this.tableData.subfromData.end_bucket)) {
+                        return "开始桶号要小于结束桶号"
+                      }
+                      if (value != '' && parseInt(value) < 1) {
+                        return "开始桶号最小为1"
+                      }
                     },
                     tips: '0-100的数字'
                   },
@@ -164,10 +182,16 @@ let data = {
                     name: '结束桶号',
                     key: 'end_bucket',
                     type: 'input',
-                    inputed: (value) => {
+                    must: true,
+                    rule: (value) => {
                       value = value.replace(/[^0-9]/g, '');
-                      if (value != '' && value < 0) { value = 0; } if (value != '' && value > 100) { value = 100; }
                       _this.tableData.subfromData.end_bucket = value
+                      if (value != '' && parseInt(value) <= parseInt(_this.tableData.subfromData.start_bucket)) {
+                        return "结束桶号要大于开始桶号"
+                      }
+                      if (value != '' && parseInt(value) > 100) {
+                        return "结束桶号最大为100"
+                      }
                     },
                     tips: '0-100的数字'
                   },
@@ -209,23 +233,11 @@ let data = {
                     openValue: "1",
                     closeValue: "2",
                   },
-                  {
-                    name: '配置参数',
-                    key: 'params',
-                    type: 'jsonIinput',
-                  },
                 ]
                 _this.tableData.showFrom = true
-                let params
-                try {
-                  params = JSON.parse(row.params)
-                } catch (e) {
-                  params = {}
-                }
                 _this.tableData.subfromData = {
                   id: row.id,
                   name: row.name,
-                  params: params,
                   desc: row.desc,
                   status: row.status,
                   layer: row.layer,

@@ -2,8 +2,9 @@
   <div class="container" v-if="overLoad" id="container" ref="container">
     <el-card class="fliter">
       <el-form v-model="fliter" class="fliter-box" :inline="true" size="mini" label-width="auto">
-        <el-form-item :label="item.disableLabel ? '' : item.name" class="fliter-item" v-for="item, index in fliterOption"
-          :key="index">
+        <el-form-item
+          :label="item.type === 'switch' && item.openStr && item.closeStr ? item.value == item.openValue ? item.openStr : item.value == item.closeValue ? item.closeStr : item.name : item.disableLabel ? '' : item.name"
+          class="fliter-item" v-for="item, index in fliterOption" :key="index">
           <el-input v-if="item.type == 'input'" v-model="item.value" clearable @keyup.enter.native="initData"></el-input>
           <el-select v-if="item.type == 'select'" v-model="item.value" @change="initData">
             <el-option v-for="i, ii in item.items" :key="ii" :label="i.name" :value="i.key">
@@ -13,6 +14,9 @@
             start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="item.opt ? item.opt : pickerOptions"
             @change="initData">
           </el-date-picker>
+          <el-switch v-if="item.type == 'switch'" v-model="item.value" :active-value="item.openValue"
+            :inactive-value="item.closeValue" @change="initData">
+          </el-switch>
           <el-button type="warning" v-if="item.type == 'fromButton'" @click="() => {
             showFrom = true
             fromData = deepClone(item.fromData)
@@ -42,12 +46,25 @@
     <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%">
       <el-form v-model="subfromData" ref="form" label-width="100px">
         <el-form-item :prop="item.key" :label="item.name" v-for="item, index in  fromData " :key="index" :rules="item.must ? {
-          required: true, trigger: 'blur', validator: (rule, value, callback) => {
-            if (value, subfromData[item.key] == '') {
-              callback(new Error('必填项'));
-            } else {
-              callback();
+          required: true, trigger: item.trigger || 'change', validator: (rule, value, callback) => {
+            if (subfromData[item.key] == '') {
+              disabledSubFrom[item.key] = true
+              $forceUpdate();
+              callback('必填项')
+              return
             }
+            if (item.rule) {
+              let cb = item.rule(subfromData[item.key])
+              if (cb) {
+                disabledSubFrom[item.key] = true
+                $forceUpdate();
+                callback(cb)
+                return
+              }
+            }
+            delete disabledSubFrom[item.key]
+            $forceUpdate();
+            callback();
           }
         } : {}">
           <el-input v-if="item.type == 'input'" v-model="subfromData[item.key]" clearable
@@ -80,15 +97,16 @@
           </el-select>
           <JsonEditor v-if="item.type == 'jsonIinput'" copyable
             :style='"width:" + item.width + " !important;text-align:left;height:" + item.height'
-            v-model="subfromData[item.key]" :showBtns="false" mode="code" @has-error="disabledSubFrom = true"
-            @json-change="disabledSubFrom = false"></JsonEditor>
+            v-model="subfromData[item.key]" :showBtns="false" mode="code" @has-error="jsonEditorDisabledSubFrom = true"
+            @json-change="jsonEditorDisabledSubFrom = false"></JsonEditor>
           <span v-if="item.type == 'text'" :style="'color:' + item.color || 'black'">{{ subfromData[item.key] }}</span>
           <span style="font-size: 10px;color: red;position: absolute;bottom: -25px;right: 0;">{{ item.tips }}</span>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showFrom = false">取 消</el-button>
-        <el-button type="primary" @click="subForm" :disabled="disabledSubFrom || judgeFrom()">确
+        <el-button type="primary" @click="subForm"
+          :disabled="Object.keys(disabledSubFrom).length > 0 || jsonEditorDisabledSubFrom">确
           定</el-button>
       </span>
     </el-dialog>
@@ -113,7 +131,8 @@ export default {
     let data = {
       Error: Error,
       console: console,
-      disabledSubFrom: false,
+      jsonEditorDisabledSubFrom: false,
+      disabledSubFrom: {},
       columnWidthResizeOption: {
         // default false
         enable: true,
@@ -286,7 +305,7 @@ export default {
                     }}>一键复制</el-button>
                   </div >
                   {col.showOverflow ?
-                    <el-tooltip slot="reference" class="item" effect="dark" content={fieldContent} placement="top">
+                    <el-tooltip style="width: 100%;display: block;" slot="reference" class="item" effect="dark" content={fieldContent} placement="top">
                       <div class="font-blue" type="text"><i class="el-icon-view"></i>{fieldContent}</div>
                     </el-tooltip> :
                     <div slot="reference" class="font-blue" type="text"><i class="el-icon-view"></i>{fieldContent}</div>
@@ -354,7 +373,7 @@ export default {
                     }}>提交</el-button>
                   </div >
                   {col.showOverflow ?
-                    <el-tooltip slot="reference" class="item" effect="dark" content={fieldContent} placement="top">
+                    <el-tooltip style="width: 100%;display: block;" slot="reference" class="item" effect="dark" content={fieldContent} placement="top">
                       <div class="font-blue" type="text"><i class="el-icon-edit" show-overflow-tooltip="true"></i>{fieldContent}</div>
                     </el-tooltip> :
                     <div slot="reference" class="font-blue" type="text"><i class="el-icon-edit" show-overflow-tooltip="true"></i>{fieldContent}</div>
@@ -527,6 +546,9 @@ export default {
             this.fliter[item.startKey] = ''
             this.fliter[item.endKey] = ''
           }
+        }
+        else if (item.type === 'switch' && item.value === 'null') {
+          this.fliter[item.key] = ""
         }
         else {
           this.fliter[item.key] = item.value
