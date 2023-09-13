@@ -115,17 +115,17 @@
 <script>
 import _this from "@/main.js"
 import JsonEditor from 'vue-json-editor';
+import JsonViewer from 'vue-json-viewer'
 import { deepClone } from "@/utils/index.js";
 var reflashKey = []
-
-
 export default {
   name: 'mtable',
   watch: {
 
   },
   components: {
-    JsonEditor
+    JsonEditor,
+    JsonViewer
   },
   data() {
     let data = {
@@ -298,7 +298,7 @@ export default {
               return (
                 <el-popover popper-class="popper-class pop-max-content" placement="top">
                   <div style="text-align:center">
-                    <json-viewer expanded={true} value={contant} boxed sort style={"width:" + width + " !important;text-align:start"}></json-viewer>
+                    <JsonViewer expanded={true} value={contant} boxed sort style={"width:" + width + " !important;text-align:start"}></JsonViewer>
                     <el-button style={"width:" + width + " !important;margin-top:10px;"} type="primary" on-click={() => {
                       this.$copyText(JSON.stringify(contant))
                       this.$message.success("复制成功")

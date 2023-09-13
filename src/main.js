@@ -14,14 +14,6 @@ import zhCN from "vue-easytable/libs/locale/lang/zh-CN";
 // 引入组件库
 import VueEasytable from "vue-easytable";
 
-import JsonViewer from 'vue-json-viewer'
-
-Vue.use(JsonViewer)
-
-import VueJsonEditor from 'vue-json-editor';
-
-Vue.use(VueJsonEditor)
-
 import VueClipBoard from 'vue-clipboard2' // copyText
 
 Vue.use(VueClipBoard)
