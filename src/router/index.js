@@ -42,7 +42,7 @@ export const asyncRoutes = [
         component: () => import('@/views/index/index'),
         meta: {
           title: '首页',
-          icon: 'home',
+          icon: 'el-icon-s-home',
           affix: false,
         },
       },
@@ -51,7 +51,7 @@ export const asyncRoutes = [
   {
     meta: {
       title: '用户管理',
-      icon: 'home',
+      icon: 'el-icon-user',
       affix: true,
     },
     path: '/user',
@@ -63,7 +63,7 @@ export const asyncRoutes = [
         component: () => import('@/views/user/list/index'),
         meta: {
           title: '用户列表',
-          icon: 'home',
+          icon: 'el-icon-user-solid',
           affix: false,
         },
       },
@@ -73,7 +73,7 @@ export const asyncRoutes = [
         component: () => import('@/views/user/event/index'),
         meta: {
           title: '用户日志',
-          icon: 'home',
+          icon: 'el-icon-date',
           affix: false,
         },
       },
@@ -82,7 +82,7 @@ export const asyncRoutes = [
   {
     meta: {
       title: '商品管理',
-      icon: 'goods',
+      icon: 'el-icon-goods',
       affix: true,
     },
     path: '/goods',
@@ -94,7 +94,28 @@ export const asyncRoutes = [
         component: () => import('@/views/goods/goods/index'),
         meta: {
           title: '商品管理',
-          icon: 'home',
+          icon: 'el-icon-goods',
+          affix: false,
+        },
+      }
+    ],
+  },
+  {
+    meta: {
+      title: '订单管理',
+      icon: 'el-icon-s-order',
+      affix: true,
+    },
+    path: '/bill',
+    component: Layout,
+    children: [
+      {
+        path: 'bill',
+        name: 'bill',
+        component: () => import('@/views/bill/bill/index'),
+        meta: {
+          title: '订单管理',
+          icon: 'el-icon-s-order',
           affix: false,
         },
       }
@@ -103,7 +124,7 @@ export const asyncRoutes = [
   {
     meta: {
       title: '配置管理',
-      icon: 'config',
+      icon: 'el-icon-setting',
       affix: true,
     },
     path: '/config',
@@ -115,7 +136,7 @@ export const asyncRoutes = [
         component: () => import('@/views/config/config/index'),
         meta: {
           title: '配置管理',
-          icon: 'home',
+          icon: 'el-icon-setting',
           affix: false,
         },
       }

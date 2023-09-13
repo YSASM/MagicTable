@@ -231,7 +231,7 @@ export default {
       tableEditorJsonContent: {},
       tableSwitch: []
     }
-    let _thisdata = _this.tableData.tableData
+    let _thisdata = _this.tableData
     // data更新
     for (let k in _thisdata) {
       data[k] = _thisdata[k]
@@ -284,7 +284,12 @@ export default {
                       this.$message.success("复制成功")
                     }}>一键复制</el-button>
                   </div >
-                  <div class="font-blue" type="text" slot="reference"><i class="el-icon-view"></i>{fieldContent}</div>
+                  {col.showOverflow ?
+                    <el-tooltip slot="reference" class="item" effect="dark" content={fieldContent} placement="top">
+                      <div class="font-blue" type="text"><i class="el-icon-view"></i>{fieldContent}</div>
+                    </el-tooltip> :
+                    <div slot="reference" class="font-blue" type="text"><i class="el-icon-view"></i>{fieldContent}</div>
+                  }
                 </el-popover >
               )
             }
@@ -347,7 +352,12 @@ export default {
                       });
                     }}>提交</el-button>
                   </div >
-                  <div class="font-blue" type="text" slot="reference"><i class="el-icon-edit"></i>{fieldContent}</div>
+                  {col.showOverflow ?
+                    <el-tooltip slot="reference" class="item" effect="dark" content={fieldContent} placement="top">
+                      <div class="font-blue" type="text"><i class="el-icon-edit" show-overflow-tooltip="true"></i>{fieldContent}</div>
+                    </el-tooltip> :
+                    <div slot="reference" class="font-blue" type="text"><i class="el-icon-edit" show-overflow-tooltip="true"></i>{fieldContent}</div>
+                  }
                 </el-popover >
               )
             }
@@ -378,9 +388,16 @@ export default {
               row[col.field] = ''
             }
             let fieldContent = col.startStr + row[col.field] + col.endStr
-            return (
-              <span>{fieldContent}</span>
-            )
+            if (col.showOverflow) {
+              return (
+                <el-tooltip class="item" effect="dark" content={fieldContent} placement="top">
+                  <span>{fieldContent}</span>
+                </el-tooltip>
+              )
+            }
+            else {
+              return (<span>{fieldContent}</span>)
+            }
           }
         }
       }
@@ -389,7 +406,7 @@ export default {
     reflashKey = Object.keys(data)
     // 反向更新_this
     for (let k in data) {
-      _this.tableData.tableData[k] = data[k]
+      _this.tableData[k] = data[k]
     }
     data.PageId = location.hash.replace(/\//g, '_')
     return data
@@ -411,14 +428,14 @@ export default {
       // 将更改的数据更新到_this中
       reflashKey.forEach(key => {
         this.$watch(key, (v, ov) => {
-          if (_this.tableData.tableData[key] != v) {
-            _this.tableData.tableData[key] = v
+          if (_this.tableData[key] != v) {
+            _this.tableData[key] = v
           }
         })
       })
       // 监听_this更新数据
       setInterval(() => {
-        let _thisdata = _this.tableData.tableData
+        let _thisdata = _this.tableData
         reflashKey.forEach(key => {
           this[key] = _thisdata[key]
         })
@@ -509,6 +526,12 @@ export default {
         this.tableData = res.data.items
         this.formtData(this.tableData)
         this.totalCount = res.data.total
+        setTimeout(() => {
+          const elements = document.querySelectorAll('*[title]');
+          for (let i = 0; i < elements.length; i++) {
+            elements[i].removeAttribute('title');
+          }
+        }, 1000)
         _this['loadingInstance' + this.PageId].close();
       })
     },

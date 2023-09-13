@@ -1,31 +1,14 @@
-import api from "@/api/config/config/index"
+import api from "@/api/bill/bill/index"
 import _this from "@/main.js"
 let data = {
   tableData: {
     scrollWidth: 1500,
     pageSizeOption: [20, 50, 100, 200],
     tableData: [],
-    fetchFun: api.getConfigList,
-    subfromFunWhitList: (data) => {
-      return new Promise((resolve, reject) => {
-        data.white_list = data.white_list.length > 0 ? data.white_list.toLocaleString() : " "
-        api.editorConfigList(data).then(res => {
-          resolve(res)
-        })
-      })
-    },
+    fetchFun: api.getBillList,
     subfromFunEditor: (data) => {
       return new Promise((resolve, reject) => {
-        data.params = JSON.stringify(data.params)
-        api.editorConfigList(data).then(res => {
-          resolve(res)
-        })
-      })
-    },
-    subfromFunAdd: (data) => {
-      return new Promise((resolve, reject) => {
-        data.params = JSON.stringify(data.params)
-        api.addConfigList(data).then(res => {
+        api.billRefund(data).then(res => {
           resolve(res)
         })
       })

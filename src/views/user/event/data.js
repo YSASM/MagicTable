@@ -162,7 +162,7 @@ let data = {
           return (
             <span class="font-blue" v-on:click={() => {
 
-              _this.tableData.tableData.fromData = [
+              _this.tableData.fromData = [
                 {
                   name: '关键字',
                   must: true,
@@ -178,10 +178,10 @@ let data = {
                   type: 'input',
                 }
               ]
-              _this.tableData.tableData.fromTitle = "编辑关键词"
-              _this.tableData.tableData.showFrom = true
-              _this.tableData.tableData.subfromData = { ekey: row.ekey, ename: row.ename }
-              _this.tableData.tableData.subfromFunIndex = 0
+              _this.tableData.fromTitle = "编辑关键词"
+              _this.tableData.showFrom = true
+              _this.tableData.subfromData = { ekey: row.ekey, ename: row.ename }
+              _this.tableData.subfromFunIndex = 0
             }
             } > <i class="el-icon-edit"></i>{row.ename}</span >
           )

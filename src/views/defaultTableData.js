@@ -85,8 +85,8 @@ let data = {
             // type为input时输入后的回调
             inputed: (value) => {
               value = "........."
-              // 设置_this.tableData.tableData.subfromData[上面填写的key]即可改变对应输入框值
-              _this.tableData.tableData.subfromData[key] = value
+              // 设置_this.tableData.subfromData[上面填写的key]即可改变对应输入框值
+              _this.tableData.subfromData[key] = value
             },
             // 当subfromData中的xxx字段等于undefined时禁用
             disablekey: "xxx",
@@ -131,13 +131,13 @@ let data = {
         fixed: "right",
         // 自定义单元格内容，返回jsx使用
         renderBodyCell: ({ row, column, rowIndex }, h) => {
-          // 在表格中使用表单将fromData,showFrom,subfromData,subfromFunIndex注册进_this.tableData.tableData即可
+          // 在表格中使用表单将fromData,showFrom,subfromData,subfromFunIndex注册进_this.tableData即可
           return (
             <el-button type="warning" v-on:click={() => {
-              _this.tableData.tableData.fromData = []
-              _this.tableData.tableData.showFrom = true
-              _this.tableData.tableData.subfromData = {}
-              _this.tableData.tableData.subfromFunIndex = 0
+              _this.tableData.fromData = []
+              _this.tableData.showFrom = true
+              _this.tableData.subfromData = {}
+              _this.tableData.subfromFunIndex = 0
             }}>编辑</el-button>
           );
         }

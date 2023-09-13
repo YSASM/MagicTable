@@ -63,7 +63,7 @@ let data = {
             must: true,
             inputed: (value) => {
               value = value.replace(/[^0-9]/g, '');
-              _this.tableData.tableData.subfromData.price = value
+              _this.tableData.subfromData.price = value
             },
           },
           {
@@ -74,7 +74,7 @@ let data = {
             must: true,
             inputed: (value) => {
               value = value.replace(/[^0-9]/g, '');
-              _this.tableData.tableData.subfromData.origin_price = value
+              _this.tableData.subfromData.origin_price = value
             },
           },
           {
@@ -128,7 +128,7 @@ let data = {
           return (
             <div>
               <el-button type="warning" v-on:click={() => {
-                _this.tableData.tableData.fromData = [
+                _this.tableData.fromData = [
                   {
                     name: '商品名称',
                     key: 'name',
@@ -149,7 +149,7 @@ let data = {
                     must: true,
                     inputed: (value) => {
                       value = value.replace(/[^0-9]/g, '');
-                      _this.tableData.tableData.subfromData.price = value
+                      _this.tableData.subfromData.price = value
                     },
                   },
                   {
@@ -160,7 +160,7 @@ let data = {
                     must: true,
                     inputed: (value) => {
                       value = value.replace(/[^0-9]/g, '');
-                      _this.tableData.tableData.subfromData.origin_price = value
+                      _this.tableData.subfromData.origin_price = value
                     },
                   },
                   {
@@ -182,14 +182,14 @@ let data = {
                     type: 'jsonIinput',
                   },
                 ]
-                _this.tableData.tableData.showFrom = true
+                _this.tableData.showFrom = true
                 let params
                 try {
                   params = JSON.parse(row.params)
                 } catch (e) {
                   params = {}
                 }
-                _this.tableData.tableData.subfromData = {
+                _this.tableData.subfromData = {
                   id: row.id,
                   name: row.name,
                   type: row.type,
@@ -199,8 +199,8 @@ let data = {
                   sign_value: row.sign_value,
                   checked: row.checked,
                 }
-                _this.tableData.tableData.fromTitle = "编辑"
-                _this.tableData.tableData.subfromFunIndex = "Editor"
+                _this.tableData.fromTitle = "编辑"
+                _this.tableData.subfromFunIndex = "Editor"
               }}>编辑</el-button>
               <el-popconfirm
                 title="确定删除吗？"
