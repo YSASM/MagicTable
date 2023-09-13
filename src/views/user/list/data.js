@@ -204,29 +204,28 @@ let data = {
       { field: "brand", key: "brand", title: "手机品牌", align: "center", width: 25, },
       { field: "model", key: "model", title: "手机型号", align: "center", width: 25, },
       {
-        field: "role", key: "role", title: "用户类型", align: "center", width: 25,
-        renderBodyCell: ({ row, column, rowIndex }, h) => {
-          let tagType = {
-            "临时用户": 'info',
-            "登录用户": 'primary'
+        field: "role", key: "role", title: "用户类型", align: "center", width: 25, showTag: {
+          "临时用户": {
+            type: 'info',
+            content: '临时用户'
+          },
+          "登录用户": {
+            type: 'primary',
+            content: '登录用户'
           }
-          return (
-            <el-tag type={tagType[row.role]}>{row.role}</el-tag>
-          );
-        },
+        }
       },
       {
-        field: "status", key: "status", title: "用户状态", align: "center", width: 25,
-        renderBodyCell: ({ row, column, rowIndex }, h) => {
-          let tagType = {
-            "正常": 'success',
-            "禁用": 'danger',
-            "": 'info'
-          }
-          return (
-            <el-tag type={tagType[row.status]}>{row.status}</el-tag>
-          );
-        },
+        field: "status", key: "status", title: "用户状态", align: "center", width: 25, showTag: {
+          "正常": {
+            type: 'success',
+            content: '正常'
+          },
+          "禁用": {
+            type: 'danger',
+            content: '禁用'
+          },
+        }
       },
       {
         field: "vip_name", key: "vip_name", title: "会员类型", align: "center", width: 25,

@@ -82,6 +82,7 @@
             :style='"width:" + item.width + " !important;text-align:left;height:" + item.height'
             v-model="subfromData[item.key]" :showBtns="false" mode="code" @has-error="disabledSubFrom = true"
             @json-change="disabledSubFrom = false"></JsonEditor>
+          <span v-if="item.type == 'text'" :style="'color:' + item.color || 'black'">{{ subfromData[item.key] }}</span>
           <span style="font-size: 10px;color: red;position: absolute;bottom: -25px;right: 0;">{{ item.tips }}</span>
         </el-form-item>
       </el-form>
@@ -382,6 +383,13 @@ export default {
             }
           }
         })
+        if (col.showTag) {
+          col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+            return (
+              <el-tag type={col.showTag[row[col.field]].type}>{col.showTag[row[col.field]].content}</el-tag>
+            );
+          }
+        }
         if (!col.renderBodyCell) {
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
             if (!row[col.field]) {
@@ -390,7 +398,7 @@ export default {
             let fieldContent = col.startStr + row[col.field] + col.endStr
             if (col.showOverflow) {
               return (
-                <el-tooltip class="item" effect="dark" content={fieldContent} placement="top">
+                <el-tooltip style="width: 100%;display: block;" class="item" effect="dark" content={fieldContent} placement="top">
                   <span>{fieldContent}</span>
                 </el-tooltip>
               )
@@ -467,6 +475,9 @@ export default {
           flage = true
           flageName = item.name
         }
+        if (item.unsub) {
+          that.subfromData[item.key] = undefined
+        }
       })
       if (flage) {
         that.$message.error(flageName + "不能为空")
@@ -532,6 +543,9 @@ export default {
             elements[i].removeAttribute('title');
           }
         }, 1000)
+        _this['loadingInstance' + this.PageId].close();
+      }).catch(e => {
+        console.log(e)
         _this['loadingInstance' + this.PageId].close();
       })
     },
