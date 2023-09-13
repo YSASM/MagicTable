@@ -81,6 +81,27 @@ export const asyncRoutes = [
   },
   {
     meta: {
+      title: '商品管理',
+      icon: 'goods',
+      affix: true,
+    },
+    path: '/goods',
+    component: Layout,
+    children: [
+      {
+        path: 'goods',
+        name: 'goods',
+        component: () => import('@/views/goods/goods/index'),
+        meta: {
+          title: '商品管理',
+          icon: 'home',
+          affix: false,
+        },
+      }
+    ],
+  },
+  {
+    meta: {
       title: '配置管理',
       icon: 'config',
       affix: true,

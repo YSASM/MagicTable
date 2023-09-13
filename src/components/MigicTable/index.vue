@@ -238,6 +238,12 @@ export default {
     }
     let defaultSort = {}
     data.columns.forEach(col => {
+      if (!col.startStr) {
+        col.startStr = ''
+      }
+      if (!col.endStr) {
+        col.endStr = ''
+      }
       if (!col.ellipsis) {
         col.ellipsis = {
           showTitle: true,
@@ -249,6 +255,10 @@ export default {
         data.tableShowJson.forEach(item => {
           if (item.field == col.field) {
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+              if (!row[col.field]) {
+                row[col.field] = ''
+              }
+              let fieldContent = col.startStr + row[col.field] + col.endStr
               let contant = item.value ? row[item.value] : row
               let contanttype = typeof (contant)
               let width = item.width
@@ -274,7 +284,7 @@ export default {
                       this.$message.success("复制成功")
                     }}>一键复制</el-button>
                   </div >
-                  <div class="font-blue" type="text" slot="reference"><i class="el-icon-view"></i>{row[item.field]}</div>
+                  <div class="font-blue" type="text" slot="reference"><i class="el-icon-view"></i>{fieldContent}</div>
                 </el-popover >
               )
             }
@@ -284,6 +294,10 @@ export default {
         data.tableEditorJson.forEach(item => {
           if (item.field == col.field) {
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+              if (!row[col.field]) {
+                row[col.field] = ''
+              }
+              let fieldContent = col.startStr + row[col.field] + col.endStr
               let width = item.width
               if (!width) {
                 width = "100%"
@@ -333,7 +347,7 @@ export default {
                       });
                     }}>提交</el-button>
                   </div >
-                  <div class="font-blue" type="text" slot="reference"><i class="el-icon-edit"></i>{row[item.field]}</div>
+                  <div class="font-blue" type="text" slot="reference"><i class="el-icon-edit"></i>{fieldContent}</div>
                 </el-popover >
               )
             }
@@ -358,6 +372,17 @@ export default {
             }
           }
         })
+        if (!col.renderBodyCell) {
+          col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+            if (!row[col.field]) {
+              row[col.field] = ''
+            }
+            let fieldContent = col.startStr + row[col.field] + col.endStr
+            return (
+              <span>{fieldContent}</span>
+            )
+          }
+        }
       }
     })
     data.sort = data.sortOption.sortChange(defaultSort, true)
