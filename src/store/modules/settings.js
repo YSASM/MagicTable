@@ -5,7 +5,7 @@
 
 import defaultSettings from '@/config'
 
-const { tabsBar, logo, layout, header } = defaultSettings
+const { tabsBar, logo, layout, header, baseURL } = defaultSettings
 const theme = JSON.parse(localStorage.getItem('vue-admin-beautiful-theme')) || ''
 const state = () => ({
   tabsBar: theme.tabsBar || tabsBar,
@@ -14,6 +14,7 @@ const state = () => ({
   layout: theme.layout || layout,
   header: theme.header || header,
   device: 'desktop',
+  baseURL: baseURL
 })
 const getters = {
   collapse: (state) => state.collapse,
@@ -22,8 +23,13 @@ const getters = {
   layout: (state) => state.layout,
   logo: (state) => state.logo,
   tabsBar: (state) => state.tabsBar,
+  baseURL: (state) => state.baseURL,
 }
 const mutations = {
+  changeBaseUrl: (state, url) => {
+    console.log(url)
+    if (url) state.baseURL = url
+  },
   changeLayout: (state, layout) => {
     if (layout) state.layout = layout
   },
@@ -47,6 +53,9 @@ const mutations = {
   },
 }
 const actions = {
+  changeBaseUrl({ commit }, url) {
+    commit('changeBaseUrl', url)
+  },
   changeLayout({ commit }, layout) {
     commit('changeLayout', layout)
   },

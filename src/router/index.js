@@ -42,7 +42,7 @@ export const asyncRoutes = [
         component: () => import('@/views/index/index'),
         meta: {
           title: '首页',
-          icon: 'el-icon-s-home',
+          icon: 'home',
           affix: false,
         },
       },
@@ -51,7 +51,7 @@ export const asyncRoutes = [
   {
     meta: {
       title: '用户管理',
-      icon: 'el-icon-user',
+      icon: 'user',
       affix: true,
     },
     path: '/user',
@@ -63,7 +63,7 @@ export const asyncRoutes = [
         component: () => import('@/views/user/list/index'),
         meta: {
           title: '用户列表',
-          icon: 'el-icon-user-solid',
+          icon: 'user-friends',
           affix: false,
         },
       },
@@ -73,7 +73,7 @@ export const asyncRoutes = [
         component: () => import('@/views/user/event/index'),
         meta: {
           title: '用户日志',
-          icon: 'el-icon-date',
+          icon: 'users',
           affix: false,
         },
       },
@@ -82,7 +82,7 @@ export const asyncRoutes = [
   {
     meta: {
       title: '商品管理',
-      icon: 'el-icon-goods',
+      icon: 'cube',
       affix: true,
     },
     path: '/goods',
@@ -94,7 +94,7 @@ export const asyncRoutes = [
         component: () => import('@/views/goods/goods/index'),
         meta: {
           title: '商品管理',
-          icon: 'el-icon-goods',
+          icon: 'cube',
           affix: false,
         },
       }
@@ -103,7 +103,7 @@ export const asyncRoutes = [
   {
     meta: {
       title: '订单管理',
-      icon: 'el-icon-s-order',
+      icon: 'donate',
       affix: true,
     },
     path: '/order',
@@ -115,7 +115,7 @@ export const asyncRoutes = [
         component: () => import('@/views/order/order/index'),
         meta: {
           title: '订单管理',
-          icon: 'el-icon-s-order',
+          icon: 'donate',
           affix: false,
         },
       }
@@ -124,7 +124,7 @@ export const asyncRoutes = [
   {
     meta: {
       title: '配置管理',
-      icon: 'el-icon-setting',
+      icon: 'cogs',
       affix: true,
     },
     path: '/config',
@@ -136,7 +136,28 @@ export const asyncRoutes = [
         component: () => import('@/views/config/config/index'),
         meta: {
           title: '配置管理',
-          icon: 'el-icon-setting',
+          icon: 'cogs',
+          affix: false,
+        },
+      }
+    ],
+  },
+  {
+    meta: {
+      title: '其他工具',
+      icon: 'atom',
+      affix: true,
+    },
+    path: '/utils',
+    component: Layout,
+    children: [
+      {
+        path: 'ico',
+        name: 'ico',
+        component: () => import('@/views/utils/ico/index'),
+        meta: {
+          title: '图标',
+          icon: 'icons',
           affix: false,
         },
       }

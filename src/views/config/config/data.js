@@ -79,7 +79,7 @@ let data = {
     columns: [
       { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
       { field: "name", key: "name", title: "名称", align: "center", width: 20, showOverflow: true },
-      { field: "params", key: "params", title: "内容", align: "center", width: 20 },
+      { field: "params", key: "params", title: "配置参数", align: "center", width: 20 },
       { field: "desc", key: "desc", title: "描述", align: "center", width: 20, showOverflow: true },
       { field: "layer", key: "layer", title: "层数", align: "center", width: 20 },
       { field: "platform", key: "platform", title: "平台", align: "center", width: 20 },
@@ -257,7 +257,7 @@ let data = {
                   api.delConfigList({
                     id: row.id
                   }).then(res => {
-                    _this.initData()
+                    _this.methods.initData()
                     _this.$message.success("操作成功")
                   })
                 }}

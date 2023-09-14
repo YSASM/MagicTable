@@ -6,22 +6,8 @@ let data = {
     pageSizeOption: [20, 50, 100, 200],
     tableData: [],
     fetchFun: api.getGoodsList,
-    subfromFunEditor: (data) => {
-      return new Promise((resolve, reject) => {
-        data.params = JSON.stringify(data.params)
-        api.editorGoodsList(data).then(res => {
-          resolve(res)
-        })
-      })
-    },
-    subfromFunAdd: (data) => {
-      return new Promise((resolve, reject) => {
-        data.params = JSON.stringify(data.params)
-        api.addGoodsList(data).then(res => {
-          resolve(res)
-        })
-      })
-    },
+    subfromFunEditor: api.editorGoodsList,
+    subfromFunAdd: api.addGoodsList,
     fliterOption: [
       {
         name: '商品ID',
@@ -89,17 +75,11 @@ let data = {
             type: 'switch',
             openValue: "true",
             closeValue: "false",
-          },
-          {
-            name: '配置参数',
-            key: 'params',
-            type: 'jsonIinput',
-          },
+          }
         ],
         subfromData: {
           name: "",
           type: "",
-          params: {},
           price: "0",
           origin_price: "0",
           sign_value: "",
@@ -121,7 +101,7 @@ let data = {
       { field: "origin_price", key: "origin_price", title: "原价", align: "center", width: 20, endStr: "元" },
       { field: "checked", key: "checked", title: "是否选中", align: "center", width: 20 },
       { field: "sign_value", key: "sign_value", title: "签约时间", align: "center", width: 20 },
-      { field: "params", key: "params", title: "内容", align: "center", width: 20 },
+      { field: "params", key: "params", title: "配置参数", align: "center", width: 20 },
       {
         field: "utils", key: "utils", title: "操作", align: "center", width: 50, fixed: "right",
         renderBodyCell: ({ row, column, rowIndex }, h) => {
@@ -176,24 +156,12 @@ let data = {
                     openValue: "true",
                     closeValue: "false",
                   },
-                  {
-                    name: '配置参数',
-                    key: 'params',
-                    type: 'jsonIinput',
-                  },
                 ]
                 _this.tableData.showFrom = true
-                let params
-                try {
-                  params = JSON.parse(row.params)
-                } catch (e) {
-                  params = {}
-                }
                 _this.tableData.subfromData = {
                   id: row.id,
                   name: row.name,
                   type: row.type,
-                  params: params,
                   price: (row.price * 100).toString(),
                   origin_price: (row.origin_price * 100).toString(),
                   sign_value: row.sign_value,
@@ -209,7 +177,7 @@ let data = {
                   api.delGoodsList({
                     id: row.id
                   }).then(res => {
-                    _this.initData()
+                    _this.methods.initData()
                     _this.$message.success("操作成功")
                   })
                 }}

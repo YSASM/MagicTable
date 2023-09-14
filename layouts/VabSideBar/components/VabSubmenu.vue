@@ -1,8 +1,8 @@
 <template>
   <el-submenu ref="subMenu" :index="handlePath(item.path)" :popper-append-to-body="false">
     <template slot="title">
-      <!-- <vab-icon v-if="item.meta && item.meta.icon" :icon="['fas', item.meta.icon]" class="vab-fas-icon" /> -->
-      <i :class="item.meta.icon"></i>
+      <vab-icon v-if="item.meta && item.meta.icon" :icon="['fas', item.meta.icon]" class="vab-fas-icon" />
+      <!-- <i :class="item.meta.icon"></i> -->
       <vab-remix-icon v-if="item.meta && item.meta.remixIcon" :icon-class="item.meta.remixIcon" class="vab-remix-icon" />
       <span>{{ item.meta.title }}</span>
     </template>

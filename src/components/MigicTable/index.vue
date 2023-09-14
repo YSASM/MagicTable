@@ -448,8 +448,9 @@ export default {
         name: "wave",
       });
       this.initData()
-      _this.fetchData = this.fetchData
-      _this.initData = this.initData
+      _this.methods = {}
+      _this.methods.fetchData = this.fetchData
+      _this.methods.initData = this.initData
     })
     this.$nextTick(() => {
       // 将更改的数据更新到_this中
@@ -461,7 +462,7 @@ export default {
         })
       })
       // 监听_this更新数据
-      setInterval(() => {
+      this.watchTableData = setInterval(() => {
         let _thisdata = _this.tableData
         reflashKey.forEach(key => {
           this[key] = _thisdata[key]
@@ -469,6 +470,17 @@ export default {
       }, 100)
       this.overLoad = true
     })
+  },
+  beforeDestroy() {
+    // 销毁时清理_this
+    _this.tableData = {}
+    _this.methods = {}
+    clearInterval(this.watchTableData)
+    this.watchTableData = null
+    reflashKey.forEach(key => {
+      this.$watch(key, (v, ov) => { }, { immediate: true })
+    })
+    reflashKey = []
   },
   methods: {
     colsePopover() {

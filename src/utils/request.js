@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
 import {
-  baseURL,
   contentType,
   debounce,
   invalidCode,
@@ -17,7 +16,6 @@ import router from '@/router'
 import { isArray } from '@/utils/validate'
 
 let loadingInstance
-
 /**
  * @author https://vue-admin-beautiful.com （不想保留author可删除）
  * @description 处理code异常
@@ -42,8 +40,9 @@ const handleCode = (code, msg) => {
   }
 }
 
+
+
 const instance = axios.create({
-  baseURL,
   timeout: requestTimeout,
   headers: {
     'Content-Type': contentType,
@@ -115,4 +114,14 @@ instance.interceptors.response.use(
   }
 )
 
-export default instance
+function Request(info) {
+  try {
+    info.baseURL = store.getters['settings/baseURL']
+  } catch (e) {
+    Vue.prototype.$baseMessage(`获取baseURL失败:` + e, 'error')
+  }
+
+  return instance(info)
+}
+
+export default Request
