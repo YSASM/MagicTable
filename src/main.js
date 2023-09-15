@@ -47,4 +47,7 @@ let vue = new Vue({
   store,
   render: (h) => h(App),
 })
+vue.methods = {}
+vue.globa = {}
+vue.tableData = {}
 export default vue

@@ -6,7 +6,7 @@
           :label="item.type === 'switch' && item.openStr && item.closeStr ? item.value == item.openValue ? item.openStr : item.value == item.closeValue ? item.closeStr : item.name : item.disableLabel ? '' : item.name"
           class="fliter-item" v-for="item, index in fliterOption" :key="index">
           <el-input v-if="item.type == 'input'" v-model="item.value" clearable @keyup.enter.native="initData"></el-input>
-          <el-select v-if="item.type == 'select'" v-model="item.value" @change="initData">
+          <el-select v-if="item.type == 'select'" v-model="item.value" @change="initData" :filterable="item.filterable">
             <el-option v-for="i, ii in item.items" :key="ii" :label="i.name" :value="i.key">
             </el-option>
           </el-select>
@@ -128,7 +128,8 @@
               :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able">
             </el-input>
           </div>
-          <el-select v-if="item.type == 'select'" v-model="subfromData[item.key]" style="width: 100%;">
+          <el-select v-if="item.type == 'select'" v-model="subfromData[item.key]" style="width: 100%;"
+            :filterable="item.filterable">
             <el-option v-for="i, ii in item.items" :key="ii" :label="i.name" :value="i.key">
             </el-option>
           </el-select>
@@ -266,7 +267,6 @@ export default {
       data[k] = _thisdata[k]
     }
     reflashKey = Object.keys(data)
-    data.fliterOptionDefault = utils.deepClone(data.fliterOption)
     data.columnsOpt = []
     data.PageId = location.hash.replace(/\//g, '_')
     data.Error = Error
@@ -285,13 +285,15 @@ export default {
         target: target,
         name: "wave",
       });
-      // 初始化表格内容
-      this.initData()
+      if (!_this.globa.donotFetch) {
+        // 初始化表格内容
+        this.initData()
+      }
       // 将_this.methods暴露出去，_this.methods中的函数在任何一个文件中都能调用
-      _this.methods = {}
       _this.methods.fetchData = this.fetchData
       _this.methods.initData = this.initData
       _this.methods.upDateTable = this.upDateTable
+      _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
     })
     this.$nextTick(() => {
       // 将更改的数据更新到_this中
@@ -300,7 +302,6 @@ export default {
           _this.tableData[key] = this[key]
         })
       })
-      console.log(_this.tableData.sort, this.sort)
       // 监听_this更新数据
       this.watchTableData = setInterval(() => {
         for (let i in reflashKey) {
@@ -491,7 +492,16 @@ export default {
       return data
     },
     deepClone: utils.deepClone,
+    upDateAppendFliterOption(obj) {
+      for (let i in this.fliterOption) {
+        if (obj.key == this.fliterOption[i].key) {
+          this.fliterOption[i] = obj
+        }
+      }
+      this.$forceUpdate()
+    },
     upDateTable() {
+      this.fliterOptionDefault = utils.deepClone(this.fliterOption)
       let defaultSort = {}
       this.columnsOpt = utils.deepClone(this.columns)
       this.columnsOpt.forEach(col => {
@@ -522,6 +532,10 @@ export default {
                 else if (subfromData[key].includes('***|')) {
                   let temp = subfromData[key].split('|')[1]
                   subfromData[key] = utils[temp](row[key])
+                }
+                else if (subfromData[key].includes('&&&|')) {
+                  let temp = subfromData[key].split('|')[1]
+                  subfromData[key] = row[temp]
                 }
               }
               let disabled = btn.disablekey && subfromData[btn.disablekey] == btn.disableval ? !btn.able : btn.able

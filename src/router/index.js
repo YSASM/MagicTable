@@ -175,6 +175,16 @@ export const asyncRoutes = [
           icon: 'cogs',
           affix: false,
         },
+      },
+      {
+        path: 'paper',
+        name: 'paper',
+        component: () => import('@/views/paper/paper/index'),
+        meta: {
+          title: '试卷管理',
+          icon: 'cogs',
+          affix: false,
+        },
       }
     ],
   },

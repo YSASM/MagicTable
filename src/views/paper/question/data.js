@@ -15,10 +15,11 @@ let data = {
         type: "input"
       },
       {
-        name: "试卷id",
-        key: "special_id",
-        type: "input",
-        value: "1099"
+        name: "试卷名称",
+        key: "paper_id",
+        type: "select",
+        items: [],
+        filterable: true,
       }
     ],
     fliter: {
