@@ -3,6 +3,7 @@ import * as lodash from 'lodash'
 import { Loading, Message, MessageBox, Notification } from 'element-ui'
 import store from '@/store'
 import { getAccessToken } from '@/utils/accessToken'
+import { baseUrlList } from '@/config'
 
 const accessToken = store.getters['user/accessToken']
 const layout = store.getters['settings/layout']
@@ -13,9 +14,18 @@ const install = (Vue) => {
     return accessToken || getAccessToken()
   }
   /* 全局标题 */
+
   Vue.prototype.$baseTitle = (() => {
     return title
   })()
+  Vue.prototype.$getBaseTitle = () => {
+    for (let i in baseUrlList) {
+      if (baseUrlList[i].url == store.getters['settings/baseURL']) {
+        return baseUrlList[i].name
+      }
+    }
+    return title
+  }
   /* 全局加载层 */
   Vue.prototype.$baseLoading = (index, text) => {
     let loading

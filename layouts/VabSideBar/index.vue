@@ -5,7 +5,7 @@
       :collapse="collapse" :collapse-transition="false" :default-active="activeMenu" :default-openeds="defaultOpens"
       :text-color="variables['menu-color']" :unique-opened="uniqueOpened" mode="vertical">
       <template v-for="route in routes">
-        <vab-side-bar-item :key="route.path" :full-path="route.path" :item="route" />
+        <vab-side-bar-item :full-path="route.path" :item="route" />
       </template>
     </el-menu>
   </el-scrollbar>

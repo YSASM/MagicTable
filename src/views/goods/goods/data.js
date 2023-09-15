@@ -8,6 +8,7 @@ let data = {
     fetchFun: api.getGoodsList,
     subfromFunEditor: api.editorGoodsList,
     subfromFunAdd: api.addGoodsList,
+    subfromFunDel: api.delGoodsList,
     fliterOption: [
       {
         name: '商品ID',
@@ -26,7 +27,7 @@ let data = {
       },
       {
         name: '新建',
-        type: 'fromButton',
+        type: 'formButton',
         disableLabel: true,
         fromData: [
           {
@@ -47,9 +48,8 @@ let data = {
             type: 'input',
             tips: '单位：分',
             must: true,
-            inputed: (value) => {
-              value = value.replace(/[^0-9]/g, '');
-              _this.tableData.subfromData.price = value
+            rule: {
+              onlyNum: true,
             },
           },
           {
@@ -58,9 +58,8 @@ let data = {
             type: 'input',
             tips: '单位：分',
             must: true,
-            inputed: (value) => {
-              value = value.replace(/[^0-9]/g, '');
-              _this.tableData.subfromData.origin_price = value
+            rule: {
+              onlyNum: true,
             },
           },
           {
@@ -104,91 +103,80 @@ let data = {
       { field: "params", key: "params", title: "配置参数", align: "center", width: 20 },
       {
         field: "utils", key: "utils", title: "操作", align: "center", width: 50, fixed: "right",
-        renderBodyCell: ({ row, column, rowIndex }, h) => {
-          return (
-            <div>
-              <el-button type="warning" v-on:click={() => {
-                _this.tableData.fromData = [
-                  {
-                    name: '商品名称',
-                    key: 'name',
-                    type: 'input',
-                    must: true
-                  },
-                  {
-                    name: '商品类型',
-                    key: 'type',
-                    type: 'input',
-                    must: true
-                  },
-                  {
-                    name: '商品价格',
-                    key: 'price',
-                    type: 'input',
-                    tips: '单位：分',
-                    must: true,
-                    inputed: (value) => {
-                      value = value.replace(/[^0-9]/g, '');
-                      _this.tableData.subfromData.price = value
-                    },
-                  },
-                  {
-                    name: '商品原价',
-                    key: 'origin_price',
-                    type: 'input',
-                    tips: '单位：分',
-                    must: true,
-                    inputed: (value) => {
-                      value = value.replace(/[^0-9]/g, '');
-                      _this.tableData.subfromData.origin_price = value
-                    },
-                  },
-                  {
-                    name: '签约时间',
-                    key: 'sign_value',
-                    type: 'input',
-                    tips: '1m、3m、12m等'
-                  },
-                  {
-                    name: '是否选中',
-                    key: 'checked',
-                    type: 'switch',
-                    openValue: "true",
-                    closeValue: "false",
-                  },
-                ]
-                _this.tableData.showFrom = true
-                _this.tableData.subfromData = {
-                  id: row.id,
-                  name: row.name,
-                  type: row.type,
-                  price: (row.price * 100).toString(),
-                  origin_price: (row.origin_price * 100).toString(),
-                  sign_value: row.sign_value,
-                  checked: row.checked,
-                }
-                _this.tableData.fromTitle = "编辑"
-                _this.tableData.subfromFunIndex = "Editor"
-              }}>编辑</el-button>
-              <el-popconfirm
-                title="确定删除吗？"
-                style="margin-left:10px"
-                on-confirm={() => {
-                  api.delGoodsList({
-                    id: row.id
-                  }).then(res => {
-                    _this.methods.initData()
-                    _this.$message.success("操作成功")
-                  })
-                }}
-              >
-                <el-button type="danger" slot="reference">删除</el-button>
-              </el-popconfirm>
-            </div>
-
-
-          );
-        },
+        buttons: [
+          {
+            name: '编辑',
+            type: 'formButton',
+            buttonTypeOpt: 'warning',
+            fromData: [
+              {
+                name: '商品名称',
+                key: 'name',
+                type: 'input',
+                must: true
+              },
+              {
+                name: '商品类型',
+                key: 'type',
+                type: 'input',
+                must: true
+              },
+              {
+                name: '商品价格',
+                key: 'price',
+                type: 'input',
+                tips: '单位：分',
+                must: true,
+                rule: {
+                  onlyNum: true,
+                },
+              },
+              {
+                name: '商品原价',
+                key: 'origin_price',
+                type: 'input',
+                tips: '单位：分',
+                must: true,
+                rule: {
+                  onlyNum: true,
+                },
+              },
+              {
+                name: '签约时间',
+                key: 'sign_value',
+                type: 'input',
+                tips: '1m、3m、12m等'
+              },
+              {
+                name: '是否选中',
+                key: 'checked',
+                type: 'switch',
+                openValue: "true",
+                closeValue: "false",
+              },
+            ],
+            subfromData: {
+              id: "***",
+              name: "***",
+              type: "***",
+              price: "***|yuanToFen",
+              origin_price: "***|yuanToFen",
+              sign_value: "***",
+              checked: "***",
+            },
+            fromTitle: "编辑",
+            subfromFunIndex: "Editor"
+          },
+          {
+            name: '删除',
+            type: 'confirmButton',
+            buttonTypeOpt: 'danger',
+            subfromData: {
+              id: "***",
+            },
+            subfromFunIndex: "Del"
+          }
+        ],
       },
     ],
     tableShowJson: [

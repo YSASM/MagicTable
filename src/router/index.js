@@ -54,6 +54,7 @@ export const asyncRoutes = [
       icon: 'user',
       affix: true,
     },
+    contentPage: true,
     path: '/user',
     component: Layout,
     children: [
@@ -85,6 +86,7 @@ export const asyncRoutes = [
       icon: 'cube',
       affix: true,
     },
+    contentPage: true,
     path: '/goods',
     component: Layout,
     children: [
@@ -106,6 +108,7 @@ export const asyncRoutes = [
       icon: 'donate',
       affix: true,
     },
+    contentPage: true,
     path: '/order',
     component: Layout,
     children: [
@@ -127,6 +130,7 @@ export const asyncRoutes = [
       icon: 'cogs',
       affix: true,
     },
+    contentPage: true,
     path: '/config',
     component: Layout,
     children: [
@@ -144,25 +148,57 @@ export const asyncRoutes = [
   },
   {
     meta: {
-      title: '其他工具',
-      icon: 'atom',
+      title: '考题管理',
+      icon: 'cogs',
       affix: true,
     },
-    path: '/utils',
+    contentPage: true,
+    path: '/question',
     component: Layout,
     children: [
       {
-        path: 'ico',
-        name: 'ico',
-        component: () => import('@/views/utils/ico/index'),
+        path: 'question',
+        name: 'question',
+        component: () => import('@/views/question/question/index'),
         meta: {
-          title: '图标',
-          icon: 'icons',
+          title: '考题管理',
+          icon: 'cogs',
           affix: false,
         },
       }
     ],
   },
+  // {
+  //   meta: {
+  //     title: '其他工具',
+  //     icon: 'atom',
+  //     affix: true,
+  //   },
+  //   path: '/utils',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'newPage',
+  //       name: 'newPage',
+  //       component: () => import('@/views/utils/creatNewPage/index'),
+  //       meta: {
+  //         title: '创建页面',
+  //         icon: 'pager',
+  //         affix: false,
+  //       },
+  //     },
+  //     {
+  //       path: 'ico',
+  //       name: 'ico',
+  //       component: () => import('@/views/utils/ico/index'),
+  //       meta: {
+  //         title: '图标',
+  //         icon: 'icons',
+  //         affix: false,
+  //       },
+  //     }
+  //   ],
+  // },
   {
     path: '*',
     redirect: '/404',

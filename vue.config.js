@@ -84,6 +84,13 @@ module.exports = {
         // ws: false,
         pathRewrite: { '^/jzapi': '' },
       },
+      '/kctapi': {
+        target: 'http://kct3.batiao8.com/',
+        // target:"http://192.168.3.251:9250/",
+        // changeOrigin: true,
+        // ws: false,
+        pathRewrite: { '^/kctapi': '' },
+      },
     },
   },
   configureWebpack() {

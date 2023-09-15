@@ -1,6 +1,6 @@
 import api from "@/api/user/event/index"
 import _this from "@/main.js"
-let da = new Date()
+import utils from "@/utils"
 let data = {
   tableData: {
     scrollWidth: 1500,
@@ -115,11 +115,11 @@ let data = {
         startKey: 'start_time',
         endKey: 'end_time',
         type: "time",
-        value: [new Date(da.getFullYear(), da.getMonth(), da.getDate(), 0, 0, 0), new Date(da.getFullYear(), da.getMonth(), da.getDate(), 23, 59, 59)]
+        value: utils.defaultDate()
       },
       // {
       //   name: '编辑',
-      //   type: 'fromButton',
+      //   type: 'formButton',
       //   disableLabel: true,
       //   fromData: [
       //     {
@@ -158,34 +158,35 @@ let data = {
       { field: "type", key: "type", title: "类型", align: "center", width: 25, },
       {
         field: "ename", key: "ename", title: "关键词", align: "center", width: 50,
-        renderBodyCell: ({ row, column, rowIndex }, h) => {
-          return (
-            <span class="font-blue" v-on:click={() => {
+        buttons: [
+          {
+            name: 'ename',
+            type: 'textFormButton',
+            fromData: [
+              {
+                name: '关键字',
+                must: true,
+                key: 'ekey',
+                type: 'input',
+                disablekey: "xxx",
+                disableval: undefined
+              },
+              {
+                name: '关键词',
+                must: true,
+                key: 'ename',
+                type: 'input',
+              }
+            ],
+            fromTitle: "编辑关键词",
+            subfromData: {
+              ekey: "***",
+              ename: "***"
+            },
+            subfromFunIndex: 0
+          }
 
-              _this.tableData.fromData = [
-                {
-                  name: '关键字',
-                  must: true,
-                  key: 'ekey',
-                  type: 'input',
-                  disablekey: "xxx",
-                  disableval: undefined
-                },
-                {
-                  name: '关键词',
-                  must: true,
-                  key: 'ename',
-                  type: 'input',
-                }
-              ]
-              _this.tableData.fromTitle = "编辑关键词"
-              _this.tableData.showFrom = true
-              _this.tableData.subfromData = { ekey: row.ekey, ename: row.ename }
-              _this.tableData.subfromFunIndex = 0
-            }
-            } > <i class="el-icon-edit"></i>{row.ename}</span >
-          )
-        }
+        ],
       },
       { field: "ekey", key: "ekey", title: "关键字", align: "center", width: 50, },
       { field: "value", key: "value", title: "内容", align: "center", width: 25, },

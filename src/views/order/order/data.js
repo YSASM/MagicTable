@@ -1,6 +1,6 @@
 import api from "@/api/order/order/index"
 import _this from "@/main.js"
-let da = new Date()
+import utils from "@/utils"
 let data = {
   tableData: {
     scrollWidth: 2000,
@@ -149,7 +149,7 @@ let data = {
         startKey: 'start_time',
         endKey: 'end_time',
         type: "time",
-        value: [new Date(da.getFullYear(), da.getMonth(), da.getDate(), 0, 0, 0), new Date(da.getFullYear(), da.getMonth(), da.getDate(), 23, 59, 59)]
+        value: utils.defaultDate()
       },
     ],
     fliter: {
@@ -164,12 +164,12 @@ let data = {
     columns: [
       { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
       { field: "user_id", key: "user_id", title: "用户ID", align: "center", width: 25, sortBy: "" },
-      { field: "user_name", key: "user_name", title: "用户名", align: "center", width: 25, showOverflow: true },
+      { field: "user_name", key: "user_name", title: "用户名", align: "center", width: 25, showOverflow: "user_name" },
       { field: "user_source", key: "user_source", title: "推广来源", align: "center", width: 25 },
       { field: "goods_id", key: "goods_id", title: "商品ID", align: "center", width: 25 },
       { field: "goods_name", key: "goods_name", title: "商品名", align: "center", width: 25 },
       { field: "goods_source", key: "goods_source", title: "商品来源", align: "center", width: 25 },
-      { field: "out_trade_no", key: "out_trade_no", title: "订单号", align: "center", width: 25, showOverflow: true },
+      { field: "out_trade_no", key: "out_trade_no", title: "订单号", align: "center", width: 25, showOverflow: "out_trade_no" },
       { field: "total_fee", key: "total_fee", title: "付款金额", align: "center", width: 25, endStr: '元' },
       {
         field: "pay_type", key: "pay_type", title: "支付方式", align: "center", width: 30, showTag: {
@@ -216,34 +216,38 @@ let data = {
       { field: "update_time", key: "update_time", title: "更新时间", align: "center", width: 50, sortBy: "" },
       {
         field: "utils", key: "utils", title: "操作", align: "center", width: 50, fixed: "right",
-        renderBodyCell: ({ row, column, rowIndex }, h) => {
-          return (
-            <div>
-              <el-button disabled={row.status != '2'} type="danger" v-on:click={() => {
-                _this.tableData.fromData = [
-                  {
-                    name: '金额',
-                    key: 'total_fee',
-                    type: 'text',
-                    unsub: true
-                  },
-                  {
-                    name: '密码',
-                    key: 'password',
-                    type: 'input',
-                    must: true
-                  }
-                ]
-                _this.tableData.fromTitle = "白名单"
-                _this.tableData.showFrom = true
-                _this.tableData.subfromData = { id: row.id, total_fee: row.total_fee + '元', password: '' }
-                _this.tableData.subfromFunIndex = "Refund"
-              }}>退款</el-button>
-            </div>
-
-
-          );
-        },
+        buttons: [
+          {
+            name: '退款',
+            type: 'formButton',
+            buttonTypeOpt: 'danger',
+            disablekey: "status",
+            disableval: "2",
+            able: true,
+            fromData: [
+              {
+                name: '退款',
+                key: 'total_fee',
+                type: 'text',
+                endStr: "元",
+                unsub: true
+              },
+              {
+                name: '密码',
+                key: 'password',
+                type: 'input',
+                must: true
+              }
+            ],
+            fromTitle: '退款',
+            subfromData: {
+              id: "***",
+              total_fee: "***",
+              password: ''
+            },
+            subfromFunIndex: "Refund"
+          }
+        ],
       },
     ],
     tableShowJson: [

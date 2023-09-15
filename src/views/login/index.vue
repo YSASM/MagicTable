@@ -11,6 +11,20 @@
           <div class="title">hello !</div>
           <div class="title-tips">欢迎来到{{ title }}！</div>
           <el-form-item prop="username" style="margin-top: 40px">
+            <el-dropdown @command="changeBaseUrlCommand">
+              <span style="cursor: pointer">
+                链接切换
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown" class="tabs-more">
+                <el-dropdown-item :command="item" v-for="item, i in baseUrlList" :key="i">
+                  <vab-icon :icon="baseURL == item.url ? ['fas', 'check'] : ['fas', 'paperclip']" />
+                  {{ item.name }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-form-item>
+          <el-form-item prop="username" style="margin-top: 40px">
             <span class="svg-container svg-container-admin">
               <vab-icon :icon="['fas', 'user']" />
             </span>
@@ -41,7 +55,7 @@
 
 <script>
 import { isPassword } from '@/utils/validate'
-
+import { baseUrlList } from '@/config'
 export default {
   name: 'Login',
   directives: {
@@ -68,7 +82,7 @@ export default {
     }
     return {
       nodeEnv: process.env.NODE_ENV,
-      title: this.$baseTitle,
+      title: this.$getBaseTitle(),
       form: {
         username: '',
         password: '',
@@ -92,6 +106,8 @@ export default {
       loading: false,
       passwordType: 'password',
       redirect: undefined,
+      baseUrlList,
+      baseURL: this.$store.getters['settings/baseURL']
     }
   },
   watch: {
@@ -116,6 +132,13 @@ export default {
     // }, 3000)
   },
   methods: {
+    changeBaseUrlCommand(command) {
+      this.title = command.name
+      this.$store.dispatch('settings/changeBaseUrl', command.url)
+      this.baseURL = this.$store.getters['settings/baseURL']
+      this.title = this.$getBaseTitle()
+      this.$message.success("切换成功|当前:" + this.title + "[" + this.baseURL + "]")
+    },
     handlePassword() {
       this.passwordType === 'password' ? (this.passwordType = '') : (this.passwordType = 'password')
       this.$nextTick(() => {

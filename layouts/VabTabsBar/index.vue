@@ -7,18 +7,6 @@
     </el-tabs>
 
     <div class="dropdown-container">
-      <el-dropdown @command="changeBaseUrlCommand">
-        <span style="cursor: pointer">
-          链接切换
-          <i class="el-icon-arrow-down el-icon--right"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown" class="tabs-more">
-          <el-dropdown-item :command="item.url" v-for="item, i in baseUrlList" :key="i">
-            <vab-icon :icon="baseURL == item.url ? ['fas', 'check'] : ['fas', 'paperclip']" />
-            {{ item.name }}
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
       <el-dropdown @command="handleCommand">
         <span style="cursor: pointer">
           更多操作
@@ -52,7 +40,7 @@
 <script>
 import path from 'path'
 import { mapGetters } from 'vuex'
-import { baseUrlList } from '@/config'
+
 import _this from '@/main.js'
 
 export default {
@@ -61,8 +49,6 @@ export default {
     return {
       affixtabs: [],
       tabActive: '',
-      baseUrlList,
-      baseURL: this.$store.getters['settings/baseURL']
     }
   },
 
@@ -180,13 +166,6 @@ export default {
         case 'closeAlltabs':
           this.closeAlltabs()
           break
-      }
-    },
-    changeBaseUrlCommand(command) {
-      this.$store.dispatch('settings/changeBaseUrl', command)
-      this.baseURL = this.$store.getters['settings/baseURL']
-      if (_this.initData) {
-        _this.methods.initData()
       }
     },
     async refreshRoute() {

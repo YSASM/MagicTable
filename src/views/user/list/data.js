@@ -1,6 +1,6 @@
 import api from "@/api/user/list/index"
 import _this from "@/main.js"
-let da = new Date()
+import utils from "@/utils"
 let data = {
   tableData: {
     scrollWidth: 1800,
@@ -177,7 +177,7 @@ let data = {
         startKey: 'start_time',
         endKey: 'end_time',
         type: "time",
-        value: [new Date(da.getFullYear(), da.getMonth(), da.getDate(), 0, 0, 0), new Date(da.getFullYear(), da.getMonth(), da.getDate(), 23, 59, 59)]
+        value: utils.defaultDate()
       },
     ],
     fliter: {
@@ -228,26 +228,20 @@ let data = {
         }
       },
       {
-        field: "vip_name", key: "vip_name", title: "会员类型", align: "center", width: 25,
-        renderBodyCell: ({ row, column, rowIndex }, h) => {
-          let tagType = {
-            "终生会员": 'success',
-            "普通会员": 'primary',
-            "非会员": 'info'
+        field: "vip_name", key: "vip_name", title: "会员类型", align: "center", width: 25, showTag: {
+          "终生会员": {
+            type: 'success',
+            content: "终生会员"
+          },
+          "普通会员": {
+            type: 'primary',
+            content: "普通会员"
+          },
+          "非会员": {
+            type: 'info',
+            content: "非会员"
           }
-          if (row.vip_expire_time != "" && row.vip_expire_time != "永不过期") {
-            return (
-              <el-tooltip class="item" effect="dark" content={row.vip_expire_time} placement="top">
-                <el-tag type={tagType[row.vip_name]}>{row.vip_name}</el-tag>
-              </el-tooltip>
-            )
-          }
-          else {
-            return (
-              <el-tag type={tagType[row.vip_name]}>{row.vip_name}</el-tag>
-            )
-          }
-        },
+        }, showOverflow: "vip_expire_time"
       },
       { field: "phone", key: "phone", title: "手机号", align: "center", width: 30, },
       { field: "ad_identify", key: "ad_identify", title: "广告Id", align: "center", width: 25, },

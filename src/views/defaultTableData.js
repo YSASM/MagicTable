@@ -53,7 +53,7 @@ let data = {
         // 提交的字段名
         key: 'platform',
         // 类型
-        type: "input(输入框)|select(下拉菜单)|time(时间范围选择)|fromButton(表单弹窗按钮)",
+        type: "input(输入框)|select(下拉菜单)|time(时间范围选择)|formButton(表单弹窗按钮)",
         // 初始值
         value: "",
         // type为select时生效
@@ -71,7 +71,7 @@ let data = {
         endKey: 'end_time',
         // 不显示label
         disableLabel: true,
-        // type为fromButton时生效表单弹窗可编辑内容
+        // type为formButton时生效表单弹窗可编辑内容
         fromData: [
           {
             // label显示内容
