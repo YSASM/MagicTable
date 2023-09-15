@@ -30,12 +30,16 @@
         <el-form-item class="fliter-item">
           <el-button type="primary" @click="fetchData">查询</el-button>
         </el-form-item>
+        <el-form-item class="fliter-item">
+          <el-button @click="fliterOption = deepClone(fliterOptionDefault); fetchData()">清空筛选</el-button>
+        </el-form-item>
       </el-form>
     </el-card>
     <el-card class="table" id="table">
       <ve-table :scroll-width="scrollWidth" :columns="columnsOpt" :table-data="tableData" :border-around="true"
-        :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex" :contextmenu-body-option="contextmenuBodyOption"
-        :sort-option="sortOption" :column-width-resize-option="columnWidthResizeOption" />
+        :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex" :contextmenu-header-option="contextmenuBodyOption"
+        :contextmenu-body-option="contextmenuBodyOption" :sort-option="sortOption"
+        :column-width-resize-option="columnWidthResizeOption" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
       <ve-pagination class="table-pagination" :total="totalCount" :page-index="fliter.page"
         :page-size-option="pageSizeOption" :page-size="fliter.size" @on-page-number-change="pageNumberChange"
@@ -151,7 +155,7 @@ import _this from "@/main.js"
 import { requests } from "../../api/default";
 import JsonEditor from 'vue-json-editor';
 import JsonViewer from 'vue-json-viewer'
-import utils from "@/utils/index.js";
+import utils from "@/utils";
 var reflashKey = []
 export default {
   name: 'mtable',
@@ -262,6 +266,7 @@ export default {
       data[k] = _thisdata[k]
     }
     reflashKey = Object.keys(data)
+    data.fliterOptionDefault = utils.deepClone(data.fliterOption)
     data.columnsOpt = []
     data.PageId = location.hash.replace(/\//g, '_')
     data.Error = Error
@@ -449,6 +454,9 @@ export default {
         return
       }
       fun(this.fliter).then(res => {
+        if (!res.data.items) {
+          res.data.items = []
+        }
         this.tableData = res.data.items
         this.formtData(this.tableData)
         this.totalCount = res.data.total
@@ -475,9 +483,9 @@ export default {
       let fieldIndex = 0
       data.forEach(res => {
         res.fieldIndex = fieldIndex
-        for (let k in res) {
-          res[k] = res[k].toLocaleString()
-        }
+        // for (let k in res) {
+        //   res[k] = res[k].toLocaleString()
+        // }
         fieldIndex++
       })
       return data
@@ -590,7 +598,7 @@ export default {
               if (!row[col.field]) {
                 row[col.field] = ''
               }
-              let fieldContent = col.startStr + row[col.field] + col.endStr
+              let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
               let contant = item.value ? row[item.value] : row
               let contanttype = typeof (contant)
               let width = item.width
@@ -629,7 +637,7 @@ export default {
               if (!row[col.field]) {
                 row[col.field] = ''
               }
-              let fieldContent = col.startStr + row[col.field] + col.endStr
+              let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
               let width = item.width
               if (!width) {
                 width = "100%"
@@ -719,7 +727,7 @@ export default {
         if (col.showOverflow) {
           let renderBodyCell = col.renderBodyCell
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
-            let fieldContent = row[col.field]
+            let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
             if (!row[col.field]) {
               fieldContent = ''
             }

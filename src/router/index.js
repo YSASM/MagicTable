@@ -148,20 +148,30 @@ export const asyncRoutes = [
   },
   {
     meta: {
-      title: '考题管理',
+      title: '试卷考试',
       icon: 'cogs',
       affix: true,
     },
     contentPage: true,
-    path: '/question',
+    path: '/paper',
     component: Layout,
     children: [
       {
         path: 'question',
         name: 'question',
-        component: () => import('@/views/question/question/index'),
+        component: () => import('@/views/paper/question/index'),
         meta: {
           title: '考题管理',
+          icon: 'cogs',
+          affix: false,
+        },
+      },
+      {
+        path: 'grade',
+        name: 'grade',
+        component: () => import('@/views/paper/grade/index'),
+        meta: {
+          title: '试卷栏目',
           icon: 'cogs',
           affix: false,
         },

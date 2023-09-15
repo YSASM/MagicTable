@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-import utils from '@/utils/index.js'
+import utils from '@/utils'
 import Editor from 'vue2-ace-editor'
 export default {
   props: {
