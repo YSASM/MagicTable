@@ -164,6 +164,7 @@ export default {
   },
   data() {
     let data = {
+      sort: '',
       jsonEditorDisabledSubFrom: false,
       disabledSubFrom: {},
       columnWidthResizeOption: {
@@ -178,7 +179,6 @@ export default {
         //   this.columnResizeInfo.columnWidth = columnWidth;
         // },
       },
-      sort: '',
       sortOption: {
         // sort always
         sortAlways: true,
@@ -262,10 +262,6 @@ export default {
       data[k] = _thisdata[k]
     }
     reflashKey = Object.keys(data)
-    // 反向更新_this
-    for (let k in data) {
-      _this.tableData[k] = data[k]
-    }
     data.columnsOpt = []
     data.PageId = location.hash.replace(/\//g, '_')
     data.Error = Error
@@ -293,29 +289,18 @@ export default {
       _this.methods.upDateTable = this.upDateTable
     })
     this.$nextTick(() => {
-      // 限制两个任务，防止冲突
-      let wait = false
       // 将更改的数据更新到_this中
       reflashKey.forEach(key => {
         this.$watch(key, (v, ov) => {
-          if (!wait) {
-            wait = true
-            if (_this.tableData[key] != v) {
-              _this.tableData[key] = v
-            }
-            wait = false
-          }
+          _this.tableData[key] = this[key]
         })
       })
+      console.log(_this.tableData.sort, this.sort)
       // 监听_this更新数据
       this.watchTableData = setInterval(() => {
-        if (!wait) {
-          wait = true
-          let _thisdata = _this.tableData
-          reflashKey.forEach(key => {
-            this[key] = _thisdata[key]
-          })
-          wait = false
+        for (let i in reflashKey) {
+          let key = reflashKey[i]
+          this[key] = _this.tableData[key]
         }
       }, 100)
       this.overLoad = true
@@ -781,6 +766,11 @@ export default {
         // }
       })
       this.sort = this.sortChange(defaultSort, true)
+      // 更新_this
+      for (let i in reflashKey) {
+        let key = reflashKey[i]
+        _this.tableData[key] = this[key]
+      }
       this.$forceUpdate()
     }
   }
