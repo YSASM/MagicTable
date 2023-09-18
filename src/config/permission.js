@@ -16,6 +16,7 @@ VabProgress.configure({
   showSpinner: false,
 })
 router.beforeResolve(async (to, from, next) => {
+
   if (progressBar) VabProgress.start()
   let hasToken = store.getters['user/accessToken']
 

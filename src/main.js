@@ -49,5 +49,6 @@ let vue = new Vue({
 })
 vue.methods = {}
 vue.globa = {}
+vue.launchFuns = {}
 vue.tableData = {}
 export default vue

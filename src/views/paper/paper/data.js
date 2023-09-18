@@ -34,12 +34,44 @@ let data = {
         value: ""
       },
       {
+        name: "试卷年级",
+        key: "grade_id",
+        type: "select",
+        items: [
+          {
+            name: '所有年级',
+            key: ''
+          },
+          {
+            name: '幼儿',
+            key: '1'
+          },
+          {
+            name: '小学',
+            key: '2'
+          },
+          {
+            name: '初中',
+            key: '3'
+          },
+          {
+            name: '高中',
+            key: '4'
+          },
+          {
+            name: '职中',
+            key: '5'
+          }
+        ],
+        value: ''
+      },
+      {
         name: '新建',
         type: 'formButton',
         disableLabel: true,
         fromData: [
           {
-            name: '年级名称',
+            name: '试卷名称',
             key: 'name',
             type: 'input',
             must: true
@@ -73,9 +105,10 @@ let data = {
       size: 20,
     },
     columns: [
-      { field: "id", key: "id", title: "ID", align: "center", width: 20, fixed: "left", },
+      { field: "id", key: "id", title: "ID", align: "center", width: 20, fixed: "left", sortBy: "desc" },
       { field: "name", key: "name", title: "年级名称", align: "center", width: 30, },
       { field: "type_name", key: "type_name", title: "类型", align: "center", width: 30, },
+      { field: "grade_name", key: "grade_name", title: "年级", align: "center", width: 30, },
       {
         field: "utils", key: "utils", title: "操作", align: "center", width: 60, fixed: "right",
         buttons: [

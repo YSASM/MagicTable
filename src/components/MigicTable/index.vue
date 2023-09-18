@@ -5,11 +5,18 @@
         <el-form-item
           :label="item.type === 'switch' && item.openStr && item.closeStr ? item.value == item.openValue ? item.openStr : item.value == item.closeValue ? item.closeStr : item.name : item.disableLabel ? '' : item.name"
           class="fliter-item" v-for="item, index in fliterOption" :key="index">
-          <el-input v-if="item.type == 'input'" v-model="item.value" clearable @keyup.enter.native="initData"></el-input>
+          <el-input v-if="item.type == 'input'" :type="item.rows != undefined ? 'textarea' : ''" :rows="item.rows"
+            v-model="item.value" clearable @keyup.enter.native="initData"></el-input>
           <el-select v-if="item.type == 'select'" v-model="item.value" @change="initData" :filterable="item.filterable">
             <el-option v-for="i, ii in item.items" :key="ii" :label="i.name" :value="i.key">
             </el-option>
           </el-select>
+          <el-cascader v-if="item.type == 'cascader'" v-model="item.value" :options="item.items" :show-all-levels="false"
+            @change="(data) => { console.log(data) }">
+            <template slot-scope="{ node, data }">
+              <span>{{ data.name }}</span>
+            </template>
+          </el-cascader>
           <el-date-picker v-if="item.type == 'time'" v-model="item.value" type="datetimerange" range-separator="至"
             start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="item.opt ? item.opt : pickerOptions"
             @change="initData">
@@ -18,13 +25,30 @@
             :inactive-value="item.closeValue" @change="initData">
           </el-switch>
           <el-button type="warning" v-if="item.type == 'formButton'" @click="() => {
-            showFrom = true
-            fromData = deepClone(item.fromData)
-            subfromData = deepClone(item.subfromData)
-            subfromFunIndex = item.subfromFunIndex
-            if (item.fromTitle) {
-              fromTitle = item.fromTitle
+            if (item.beforeShow) {
+              item.beforeShow(item).then(res => {
+                item = res
+                showFrom = true
+                fromData = deepClone(item.fromData)
+                subfromData = deepClone(item.subfromData)
+                subfromFunIndex = item.subfromFunIndex
+                if (item.fromTitle) {
+                  fromTitle = item.fromTitle
+                }
+                initForm()
+              })
             }
+            else {
+              showFrom = true
+              fromData = deepClone(item.fromData)
+              subfromData = deepClone(item.subfromData)
+              subfromFunIndex = item.subfromFunIndex
+              if (item.fromTitle) {
+                fromTitle = item.fromTitle
+              }
+              initForm()
+            }
+
           }">{{ item.name }}</el-button>
         </el-form-item>
         <el-form-item class="fliter-item">
@@ -39,7 +63,7 @@
       <ve-table :scroll-width="scrollWidth" :columns="columnsOpt" :table-data="tableData" :border-around="true"
         :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex" :contextmenu-header-option="contextmenuBodyOption"
         :contextmenu-body-option="contextmenuBodyOption" :sort-option="sortOption"
-        :column-width-resize-option="columnWidthResizeOption" />
+        :column-width-resize-option="columnWidthResizeOption" :editOption="editOption" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
       <ve-pagination class="table-pagination" :total="totalCount" :page-index="fliter.page"
         :page-size-option="pageSizeOption" :page-size="fliter.size" @on-page-number-change="pageNumberChange"
@@ -50,8 +74,8 @@
     <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%">
       <el-form v-model="subfromData" ref="form" label-width="100px">
         <el-form-item :prop="item.key" :label="item.name" v-for="item, index in  fromData " :key="index" :rules="item.must ? {
-          required: true, trigger: item.trigger || 'change', validator: (rule, value, callback) => {
-            if (subfromData[item.key] == '') {
+          required: true, trigger: item.trigger || ['blur', 'change'], validator: (rule, value, callback) => {
+            if (subfromData[item.key] === '') {
               disabledSubFrom[item.key] = true
               $forceUpdate();
               callback('必填项')
@@ -60,7 +84,7 @@
             if (item.rule) {
               if (typeof (item.rule) == 'object') {
                 if (item.rule.onlyNum) {
-                  subfromData[item.key] = subfromData[item.key].replace(/[^0-9]/g, '');
+                  subfromData[item.key] = String(subfromData[item.key]).replace(/[^0-9]/g, '');
                   if (item.rule.minNum) {
                     let minNum = item.rule.minNum
                     if (typeof (minNum) == 'string') {
@@ -85,6 +109,9 @@
                       return
                     }
                   }
+                  if (subfromData[item.key] != '') {
+                    subfromData[item.key] = parseInt(subfromData[item.key])
+                  }
                 }
               }
               else {
@@ -102,7 +129,8 @@
             callback();
           }
         } : {}">
-          <el-input v-if="item.type == 'input'" v-model="subfromData[item.key]" clearable
+          <el-input v-if="item.type == 'input'" :type="item.rows != undefined ? 'textarea' : ''" :rows="item.rows"
+            v-model="subfromData[item.key]" clearable
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
             @input="item.inputed"></el-input>
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
@@ -184,6 +212,31 @@ export default {
         //   this.columnResizeInfo.columnWidth = columnWidth;
         // },
       },
+      editOption: {
+        // beforeStartCellEditing: ({ row, column, cellValue }) => {
+        //   return true
+        // },
+        // beforeCellValueChange: ({ row, column, changeValue }) => {
+        //   console.log("beforeCellValueChange");
+        //   console.log("row::", row);
+        //   console.log("column::", column);
+        //   console.log("changeValue::", changeValue);
+
+        //   console.log("---");
+
+        //   if (column.field === "number" && !/^\d+$/.test(changeValue)) {
+        //     alert("请输入数字");
+        //     return false;
+        //   }
+        // },
+        afterCellValueChange: ({ row, column, changeValue }) => {
+          let params = {}
+          params[column.field] = changeValue
+          this.tableEditorSubFun(params).then(res => {
+            this.$message.success("操作成功")
+          })
+        },
+      },
       sortOption: {
         // sort always
         sortAlways: true,
@@ -236,6 +289,7 @@ export default {
       totalCount: 0,
       tableData: [],
       fetchFun: async (fliter) => { console.log(fliter) },
+      tableEditorSubFun: async (data) => { console.log(data) },
       subfromFunIndex: 0,
       fromTitle: '操作',
       fliterOption: [
@@ -275,10 +329,29 @@ export default {
     return data
   },
   mounted() {
+    // 初始化_this.globa|methods|launchFuns
+    if (_this['globa' + this.PageId]) {
+      _this.globa = _this['globa' + this.PageId]
+    }
+    else {
+      _this['globa' + this.PageId] = _this.globa
+    }
+    if (_this['methods' + this.PageId]) {
+      _this.methods = _this['methods' + this.PageId]
+    }
+    else {
+      _this['methods' + this.PageId] = _this.methods
+    }
+    if (_this['launchFuns' + this.PageId]) {
+      _this.launchFuns = _this['launchFuns' + this.PageId]
+    }
+    else {
+      _this['launchFuns' + this.PageId] = _this.launchFuns
+    }
     // 初始化表格设置
     this.upDateTable()
     // 解决mounted获取不到dom
-    this.$once("hook:updated", function () {
+    this.$once("hook:updated", async function () {
       // 初始化表格加载
       let target = document.querySelector("#table")
       _this['loadingInstance' + this.PageId] = this.$veLoading({
@@ -286,6 +359,7 @@ export default {
         name: "wave",
       });
       if (!_this.globa.donotFetch) {
+        _this.globa.donotFetch = undefined
         // 初始化表格内容
         this.initData()
       }
@@ -294,6 +368,19 @@ export default {
       _this.methods.initData = this.initData
       _this.methods.upDateTable = this.upDateTable
       _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
+      _this.globa.PageId = this.PageId
+      _this.globa.reflashKey = this.reflashKey
+      for (let key in _this.launchFuns) {
+        let value = _this.launchFuns[key]
+        if (typeof (value) == 'function') {
+          await value()
+        }
+      }
+      if (!_this.globa.fliterOptionDefault) {
+        _this.globa.fliterOptionDefault = utils.deepClone(this.fliterOption)
+      }
+      this.fliterOptionDefault = utils.deepClone(_this.globa.fliterOptionDefault)
+      _this.launchFuns = {}
     })
     this.$nextTick(() => {
       // 将更改的数据更新到_this中
@@ -316,6 +403,8 @@ export default {
     // 销毁时清理_this
     _this.tableData = {}
     _this.methods = {}
+    _this.globa = {}
+    // 清空监听器和计时器
     clearInterval(this.watchTableData)
     this.watchTableData = null
     reflashKey.forEach(key => {
@@ -429,9 +518,12 @@ export default {
       this.fliter.size = s
       this.fetchData()
     },
-    fetchData() {
-      _this['loadingInstance' + this.PageId].show();
-      this.fliterOption.forEach(item => {
+    getFliter() {
+      for (let i in this.fliterOption) {
+        let item = this.fliterOption[i]
+        if (item.unsub) {
+          continue
+        }
         if (item.type === 'time') {
           if (item.value && item.value.length > 1) {
             this.fliter[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
@@ -447,8 +539,22 @@ export default {
         else {
           this.fliter[item.key] = item.value
         }
-      })
+      }
       this.fliter.sort = this.sort
+    },
+    async fetchData() {
+      _this['loadingInstance' + this.PageId].show();
+      let origin_fliter = utils.deepClone(this.fliter)
+      this.getFliter()
+      for (let i in this.fliterOption) {
+        let item = this.fliterOption[i]
+        if (item.beforFetch) {
+          let p = {}
+          p[item.key] = item.value
+          await item.beforFetch(p)
+        }
+      }
+      this.getFliter()
       let fun = this.getter('fetchFun')
       if (!fun) {
         this.$message.error("空链接")
@@ -468,9 +574,11 @@ export default {
             elements[i].removeAttribute('title');
           }
         }, 1000)
+        this.fliter = utils.deepClone(origin_fliter)
         _this['loadingInstance' + this.PageId].close();
       }).catch(e => {
         console.log(e)
+        this.fliter = utils.deepClone(origin_fliter)
         _this['loadingInstance' + this.PageId].close();
       })
     },
@@ -478,6 +586,13 @@ export default {
       this.fliter.page = 1
       this.fliter.size = this.pageSizeOption[0]
       this.fetchData()
+    },
+    initForm() {
+      this.fromData.forEach(item => {
+        if (item.must && this.subfromData[item.key] === '') {
+          this.disabledSubFrom[item.key] = true
+        }
+      })
     },
     // 格式化表格内容
     formtData(data) {
@@ -495,13 +610,16 @@ export default {
     upDateAppendFliterOption(obj) {
       for (let i in this.fliterOption) {
         if (obj.key == this.fliterOption[i].key) {
-          this.fliterOption[i] = obj
+          for (let j in obj) {
+            if (obj[j]) {
+              this.fliterOption[i][j] = obj[j]
+            }
+          }
         }
       }
       this.$forceUpdate()
     },
     upDateTable() {
-      this.fliterOptionDefault = utils.deepClone(this.fliterOption)
       let defaultSort = {}
       this.columnsOpt = utils.deepClone(this.columns)
       this.columnsOpt.forEach(col => {
@@ -564,25 +682,58 @@ export default {
                 }
               }
               if (btn.type == 'formButton') {
-                elements.push(<el-button disabled={disabled} type={btnType} v-on:click={() => {
-                  this.fromData = utils.deepClone(btn.fromData)
-                  this.showFrom = true
-                  this.subfromData = subfromData
-                  this.subfromFunIndex = btn.subfromFunIndex
-                  if (btn.fromTitle) {
-                    this.fromTitle = btn.fromTitle
+                elements.push(<el-button disabled={disabled} type={btnType} v-on:click={async () => {
+
+                  if (btn.beforeShow) {
+                    btn.beforeShow(btn).then(res => {
+                      btn = res
+                      this.fromData = utils.deepClone(btn.fromData)
+                      this.showFrom = true
+                      this.subfromData = subfromData
+                      this.subfromFunIndex = btn.subfromFunIndex
+                      if (btn.fromTitle) {
+                        this.fromTitle = btn.fromTitle
+                      }
+                      this.initForm()
+                    })
+                  }
+                  else {
+                    this.fromData = utils.deepClone(btn.fromData)
+                    this.showFrom = true
+                    this.subfromData = subfromData
+                    this.subfromFunIndex = btn.subfromFunIndex
+                    if (btn.fromTitle) {
+                      this.fromTitle = btn.fromTitle
+                    }
+                    this.initForm()
                   }
                 }
                 }>{btn.name}</el-button>)
               }
               else if (btn.type == 'textFormButton') {
-                elements.push(<span class="font-blue" v-on:click={() => {
-                  this.fromData = utils.deepClone(btn.fromData)
-                  this.showFrom = true
-                  this.subfromData = subfromData
-                  this.subfromFunIndex = btn.subfromFunIndex
-                  if (btn.fromTitle) {
-                    this.fromTitle = btn.fromTitle
+                elements.push(<span class="font-blue" v-on:click={async () => {
+                  if (btn.beforeShow) {
+                    btn.beforeShow(btn).then(res => {
+                      btn = res
+                      this.fromData = utils.deepClone(btn.fromData)
+                      this.showFrom = true
+                      this.subfromData = subfromData
+                      this.subfromFunIndex = btn.subfromFunIndex
+                      if (btn.fromTitle) {
+                        this.fromTitle = btn.fromTitle
+                      }
+                      this.initForm()
+                    })
+                  }
+                  else {
+                    this.fromData = utils.deepClone(btn.fromData)
+                    this.showFrom = true
+                    this.subfromData = subfromData
+                    this.subfromFunIndex = btn.subfromFunIndex
+                    if (btn.fromTitle) {
+                      this.fromTitle = btn.fromTitle
+                    }
+                    this.initForm()
                   }
                 }
                 } > <i class="el-icon-edit"></i>{row[btn.name] || btn.name}</span >)

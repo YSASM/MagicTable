@@ -40,7 +40,7 @@ let data = {
       size: 20,
     },
     columns: [
-      { field: "id", key: "id", title: "ID", align: "center", width: 20, fixed: "left", },
+      { field: "id", key: "id", title: "ID", align: "center", width: 20, fixed: "left", sortBy: "desc" },
       { field: "name", key: "name", title: "年级名称", align: "center", width: 30, },
       { field: "status", key: "status", title: "状态", align: "center", width: 30, },
       {
