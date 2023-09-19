@@ -4,7 +4,11 @@ ADD . /app/src
 COPY nginx.conf /etc/nginx/conf.d/
 
 RUN mkdir /app/bin
-RUN cd /app/src && npm config set registry https://registry.npm.taobao.org && npm install -g yarn &&  yarn && yarn run build && cp -r dist/* /usr/share/nginx/html
+RUN cd /app/src 
+RUN npm install -g yarn 
+RUN yarn 
+RUN yarn run build
+RUN cp -r dist/* /usr/share/nginx/html
 
 
 WORKDIR /app
