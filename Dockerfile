@@ -7,11 +7,12 @@ RUN mkdir /app/bin
 RUN cd /app/src 
 RUN npm install -g yarn 
 RUN yarn 
+RUN ls
 RUN yarn run build
 RUN cp -r dist/* /usr/share/nginx/html
 
 
-WORKDIR /app/src
+WORKDIR /app
 EXPOSE 9266
 
 
