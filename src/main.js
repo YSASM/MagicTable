@@ -66,12 +66,14 @@ vue.setDefaultLaunchFuns = () => { return {} }
 vue.checkInfo = (PageId) => {
   return vue['Info' + PageId]
 }
+
 vue.getPageInfo = (PageId) => {
   vue.globa = vue['Info' + PageId].globa
   vue.methods = vue['Info' + PageId].methods
   vue.launchFuns = vue['Info' + PageId].launchFuns
   vue.tableData = vue['Info' + PageId].tableData
 }
+
 vue.updatePageInfo = (PageId) => {
   vue.globa = vue.setDefaultGloba()
   vue.methods = vue.setDefaultMethods()
