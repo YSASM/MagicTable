@@ -11,11 +11,8 @@
             <el-option v-for="i, ii in item.items" :key="ii" :label="i.name" :value="i.key">
             </el-option>
           </el-select>
-          <el-cascader v-if="item.type == 'cascader'" v-model="item.value" :options="item.items" :show-all-levels="false"
-            @change="(data) => { console.log(data) }">
-            <template slot-scope="{ node, data }">
-              <span>{{ data.name }}</span>
-            </template>
+          <el-cascader v-if="item.type == 'cascader'" v-model="item.value" :options="item.items"
+            :props="cascaderOptionProps" :show-all-levels="false" @change="initData">
           </el-cascader>
           <el-date-picker v-if="item.type == 'time'" v-model="item.value" type="datetimerange" range-separator="至"
             start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="item.opt ? item.opt : pickerOptions"
@@ -161,6 +158,9 @@
             <el-option v-for="i, ii in item.items" :key="ii" :label="i.name" :value="i.key">
             </el-option>
           </el-select>
+          <el-cascader v-if="item.type == 'cascader'" v-model="subfromData[item.key]" :options="item.items"
+            style="width: 100%;" :props="cascaderOptionProps" :show-all-levels="false">
+          </el-cascader>
           <JsonEditor v-if="item.type == 'jsonIinput'" copyable
             :style='"width:" + item.width + " !important;text-align:left;height:" + item.height'
             v-model="subfromData[item.key]" :showBtns="false" mode="code" @has-error="jsonEditorDisabledSubFrom = true"
@@ -197,6 +197,13 @@ export default {
   },
   data() {
     let data = {
+      cascaderOptionProps: {
+        value: "key",
+        label: "name",
+        children: "children",
+        checkStrictly: true,
+        emitPath:false
+      },
       sort: '',
       jsonEditorDisabledSubFrom: false,
       disabledSubFrom: {},

@@ -157,6 +157,16 @@ export const asyncRoutes = [
     component: Layout,
     children: [
       {
+        path: 'special',
+        name: 'special',
+        component: () => import('@/views/paper/special/index'),
+        meta: {
+          title: '章节管理',
+          icon: 'cogs',
+          affix: false,
+        },
+      },
+      {
         path: 'question',
         name: 'question',
         component: () => import('@/views/paper/question/index'),
