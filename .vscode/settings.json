@@ -35,7 +35,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "mohd-akram.vscode-html-format"
   },
   "editor.suggest.snippetsPreventQuickSuggestions": false,
   "prettier.htmlWhitespaceSensitivity": "ignore",
