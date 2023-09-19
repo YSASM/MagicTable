@@ -11,7 +11,7 @@ RUN yarn run build
 RUN cp -r dist/* /usr/share/nginx/html
 
 
-WORKDIR /app
+WORKDIR /app/src
 EXPOSE 9266
 
 
