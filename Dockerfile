@@ -1,10 +1,11 @@
-FROM registry.cn-shanghai.aliyuncs.com/devcon/webdev:v1.2.0
+FROM registry.cn-shanghai.aliyuncs.com/devcon/webdev:v1.0.0
 ADD . /app/src
-RUN yarn config set registry https://registry.npm.taobao.org/
 
-# COPY nginx.conf /etc/nginx/conf.d/
-# # RUN cd /app/src && yarn && yarn run build && cp -r dist/* /usr/share/nginx/html
-# RUN cd /app/src && cp -r test_dist/* /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/
+
+
+RUN cd /app/src && npm config set registry https://registry.npm.taobao.org  &&  npm install --legacy-peer-deps && npm run build && cp -r dist/* /usr/share/nginx/html
+
 
 WORKDIR /app
 EXPOSE 9266
