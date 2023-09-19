@@ -1,11 +1,10 @@
-FROM registry.cn-shanghai.aliyuncs.com/devcon/webdev:v1.0.0
+FROM registry.cn-shanghai.aliyuncs.com/devcon/webdev:v1.1.0
 ADD . /app/src
 
 COPY nginx.conf /etc/nginx/conf.d/
 
 RUN mkdir /app/bin
-RUN npm install -g yarn 
-RUN cd /app/src && yarn && ls && yarn run build
+RUN cd /app/src && yarn && yarn run build
 RUN cp -r dist/* /usr/share/nginx/html
 
 
