@@ -47,10 +47,22 @@ let vue = new Vue({
   store,
   render: (h) => h(App),
 })
+// 存储一些全局函数
 vue.methods = {}
+// 存储一些全局变量
 vue.globa = {}
+// 存储一些函数，在页面创建时会运行这些函数
 vue.launchFuns = {}
+// 存储与表格进行交互的信息修改tableData，页面中的变量也会跟着改变
 vue.tableData = {}
+// 设置globa初始值，在data.js中必须使用这个函数实现，否则只能拿到空信息{}
+vue.setDefaultGloba = () => { return {} }
+// 设置methodds初始值，其他同上
+vue.setDefaultMethods = () => { return {} }
+// 设置launchFuns初始值，其他同上
+vue.setDefaultLaunchFuns = () => { return {} }
+// tableData会直接引入组件，所以不需要这样设置
+
 vue.checkInfo = (PageId) => {
   return vue['Info' + PageId]
 }
@@ -75,7 +87,5 @@ vue.updatePageInfo = (PageId) => {
     tableData: vue.tableData
   }
 }
-vue.setDefaultGloba = () => { return {} }
-vue.setDefaultMethods = () => { return {} }
-vue.setDefaultLaunchFuns = () => { return {} }
+
 export default vue

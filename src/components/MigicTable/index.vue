@@ -352,25 +352,6 @@ export default {
     return data
   },
   mounted() {
-    // // 初始化_this.globa|methods|launchFuns
-    // if (_this['globa' + this.PageId]) {
-    //   _this.globa = utils.deepClone(_this['globa' + this.PageId])
-    // }
-    // else {
-    //   _this['globa' + this.PageId] = utils.deepClone(_this.globa)
-    // }
-    // if (_this['methods' + this.PageId]) {
-    //   _this.methods = utils.deepClone(_this['methods' + this.PageId])
-    // }
-    // else {
-    //   _this['methods' + this.PageId] = utils.deepClone(_this.methods)
-    // }
-    // if (_this['launchFuns' + this.PageId]) {
-    //   _this.launchFuns = utils.deepClone(_this['launchFuns' + this.PageId])
-    // }
-    // else {
-    //   _this['launchFuns' + this.PageId] = utils.deepClone(_this.launchFuns)
-    // }
     // 初始化表格设置
     this.upDateTable()
     // 解决mounted获取不到dom
@@ -381,7 +362,6 @@ export default {
         target: target,
         name: "wave",
       });
-      // 将_this.methods暴露出去，_this.methods中的函数在任何一个文件中都能调用
       _this.methods.fetchData = this.fetchData
       _this.methods.initData = this.initData
       _this.methods.upDateTable = this.upDateTable
