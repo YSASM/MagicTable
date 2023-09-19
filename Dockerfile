@@ -1,4 +1,4 @@
-FROM registry.cn-shanghai.aliyuncs.com/devcon/webdev:v1.0.0
+FROM registry.cn-shanghai.aliyuncs.com/devcon/webdev:v1.2.0
 ADD . /app/src
 
 COPY nginx.conf /etc/nginx/conf.d/
