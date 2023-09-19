@@ -1,5 +1,6 @@
 FROM registry.cn-shanghai.aliyuncs.com/devcon/webdev:v1.2.0
 ADD . /app/src
+RUN yarn config set registry https://registry.npm.taobao.org/
 
 # COPY nginx.conf /etc/nginx/conf.d/
 # # RUN cd /app/src && yarn && yarn run build && cp -r dist/* /usr/share/nginx/html
