@@ -4,8 +4,8 @@ ADD . /app/src
 COPY nginx.conf /etc/nginx/conf.d/
 
 RUN mkdir /app/bin
-RUN cd /app/src && yarn && yarn run build
-RUN cp -r dist/* /usr/share/nginx/html
+# RUN cd /app/src && yarn && yarn run build
+# RUN cp -r dist/* /usr/share/nginx/html
 
 
 WORKDIR /app
