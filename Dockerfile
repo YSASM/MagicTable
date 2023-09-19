@@ -4,8 +4,9 @@ ADD . /app/src
 COPY nginx.conf /etc/nginx/conf.d/
 
 RUN mkdir /app/bin
-RUN cd /app/src 
 RUN npm install -g yarn 
+RUN cd /app/src 
+RUN ls
 RUN yarn 
 RUN ls
 RUN yarn run build
