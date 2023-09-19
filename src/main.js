@@ -51,4 +51,31 @@ vue.methods = {}
 vue.globa = {}
 vue.launchFuns = {}
 vue.tableData = {}
+vue.checkInfo = (PageId) => {
+  return vue['Info' + PageId]
+}
+vue.getPageInfo = (PageId) => {
+  vue.globa = vue['Info' + PageId].globa
+  vue.methods = vue['Info' + PageId].methods
+  vue.launchFuns = vue['Info' + PageId].launchFuns
+  vue.tableData = vue['Info' + PageId].tableData
+}
+vue.updatePageInfo = (PageId) => {
+  vue.globa = vue.setDefaultGloba()
+  vue.methods = vue.setDefaultMethods()
+  vue.launchFuns = vue.setDefaultLaunchFuns()
+  // 用后重置
+  vue.setDefaultGloba = () => { return {} }
+  vue.setDefaultMethods = () => { return {} }
+  vue.setDefaultLaunchFuns = () => { return {} }
+  vue['Info' + PageId] = {
+    globa: vue.globa,
+    methods: vue.methods,
+    launchFuns: vue.launchFuns,
+    tableData: vue.tableData
+  }
+}
+vue.setDefaultGloba = () => { return {} }
+vue.setDefaultMethods = () => { return {} }
+vue.setDefaultLaunchFuns = () => { return {} }
 export default vue

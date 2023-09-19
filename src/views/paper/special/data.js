@@ -1,7 +1,34 @@
 import _this from "@/main.js"
 import api from "@/api/paper/special/index"
 import questionApi from "@/api/paper/question/index"
-_this.globa.donotFetch = true
+_this.setDefaultGloba = () => {
+  return {
+    donotFetch: true,
+  }
+}
+_this.setDefaultLaunchFuns = () => {
+  return {
+    getSpecialTree: async () => {
+      let res = await api.getSpecialTree()
+      let items = [
+        {
+          name: '所有类型',
+          key: -1
+        }
+      ]
+      _this.globa.specialTree = formtTree(res.data)
+      _this.globa.specialTree.forEach(item => {
+        items.push(item)
+      })
+      _this.methods.upDateAppendFliterOption({
+        key: "special_id",
+        items: items,
+        value: -1
+      })
+      _this.methods.initData()
+    }
+  }
+}
 function formtTree(data) {
   data.forEach(item => {
     if (item.children && item.children.length > 0) {
@@ -13,25 +40,7 @@ function formtTree(data) {
   })
   return data
 }
-_this.launchFuns.getSpecialTree = async () => {
-  let res = await api.getSpecialTree()
-  let items = [
-    {
-      name: '所有类型',
-      key: -1
-    }
-  ]
-  _this.globa.specialTree = formtTree(res.data)
-  _this.globa.specialTree.forEach(item => {
-    items.push(item)
-  })
-  _this.methods.upDateAppendFliterOption({
-    key: "special_id",
-    items: items,
-    value: -1
-  })
-  _this.methods.initData()
-}
+
 let data = {
   tableData: {
     scrollWidth: 2000,

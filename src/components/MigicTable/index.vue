@@ -328,40 +328,49 @@ export default {
       tableEditorJsonContent: {},
       tableSwitch: []
     }
+    
+    let PageId = location.hash.replace(/\//g, '_').replace(/#/,'')
+    let checkInfoFlage = _this.checkInfo(PageId)
+    if(checkInfoFlage){
+      _this.getPageInfo(PageId)
+    }else{
+      _this.updatePageInfo(PageId)
+    }
     let _thisdata = _this.tableData
 
     // data更新
     for (let k in _thisdata) {
       data[k] = _thisdata[k]
     }
+
     reflashKey = Object.keys(data)
     data.columnsOpt = []
-    data.PageId = location.hash.replace(/\//g, '_')
+    data.PageId = PageId
     data.Error = Error
     data.console = console
     data.utils = utils
     return data
   },
   mounted() {
-    // 初始化_this.globa|methods|launchFuns
-    if (_this['globa' + this.PageId]) {
-      _this.globa = _this['globa' + this.PageId]
-    }
-    else {
-      _this['globa' + this.PageId] = _this.globa
-    }
-    if (_this['methods' + this.PageId]) {
-      _this.methods = _this['methods' + this.PageId]
-    }
-    else {
-      _this['methods' + this.PageId] = _this.methods
-    }
-    if (_this['launchFuns' + this.PageId]) {
-      _this.launchFuns = _this['launchFuns' + this.PageId]
-    }
-    else {
-      _this['launchFuns' + this.PageId] = _this.launchFuns
-    }
+    // // 初始化_this.globa|methods|launchFuns
+    // if (_this['globa' + this.PageId]) {
+    //   _this.globa = utils.deepClone(_this['globa' + this.PageId])
+    // }
+    // else {
+    //   _this['globa' + this.PageId] = utils.deepClone(_this.globa)
+    // }
+    // if (_this['methods' + this.PageId]) {
+    //   _this.methods = utils.deepClone(_this['methods' + this.PageId])
+    // }
+    // else {
+    //   _this['methods' + this.PageId] = utils.deepClone(_this.methods)
+    // }
+    // if (_this['launchFuns' + this.PageId]) {
+    //   _this.launchFuns = utils.deepClone(_this['launchFuns' + this.PageId])
+    // }
+    // else {
+    //   _this['launchFuns' + this.PageId] = utils.deepClone(_this.launchFuns)
+    // }
     // 初始化表格设置
     this.upDateTable()
     // 解决mounted获取不到dom

@@ -1,28 +1,37 @@
 import _this from "@/main.js"
 import api from "@/api/paper/paper/index"
 import gradeapi from "@/api/paper/grade/index"
-_this.launchFuns.getgradeList = async () => {
-  let gradeData = [
-    {
-      name: "所有类型",
-      key: ''
-    }
-  ]
-  let res = await gradeapi.getPaperGradeList()
-  res.data.items.forEach(item => {
-    gradeData.push({
-      name: item.name,
-      key: item.id
-    })
-  })
-  _this.methods.upDateAppendFliterOption({
-    key: "grade_id",
-    items: gradeData,
-    value: ''
-  })
-  _this.methods.initData()
+_this.setDefaultGloba = () => {
+  return {
+    donotFetch: true
+  }
 }
-_this.globa.donotFetch = true
+_this.setDefaultLaunchFuns = () => {
+  return {
+    getgradeList: async () => {
+      let gradeData = [
+        {
+          name: "所有类型",
+          key: ''
+        }
+      ]
+      let res = await gradeapi.getPaperGradeList()
+      res.data.items.forEach(item => {
+        gradeData.push({
+          name: item.name,
+          key: item.id
+        })
+      })
+      _this.methods.upDateAppendFliterOption({
+        key: "grade_id",
+        items: gradeData,
+        value: ''
+      })
+      _this.methods.initData()
+    }
+  }
+}
+
 let data = {
   tableData: {
     scrollWidth: 1000,

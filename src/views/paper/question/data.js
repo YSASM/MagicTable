@@ -2,74 +2,88 @@ import _this from "@/main.js"
 import api from "@/api/paper/paper/index"
 import gradeapi from "@/api/paper/grade/index"
 import questionApi from "@/api/paper/question/index"
-_this.globa.donotFetch = true
-_this.globa.getPaperListData = {
-  page: 1,
-  size: 1000,
-  type: '',
-  grade_id: ''
-}
-_this.launchFuns.getpaperList = async () => {
-  let paperData = [
-    {
-      name: "所有试卷",
-      key: -1
+_this.setDefaultGloba = () => {
+  return {
+    donotFetch: true,
+    getPaperListData: {
+      page: 1,
+      size: 1000,
+      type: '',
+      grade_id: ''
     }
-  ]
-  let res = await api.getPaperPaperList(_this.globa.getPaperListData)
-  res.data.items.forEach(item => {
-    paperData.push({
-      name: item.id + ":" + item.name,
-      key: item.id
-    })
-  })
-  _this.methods.upDateAppendFliterOption({
-    key: "paper_id",
-    items: paperData,
-    value: -1
-  })
+  }
 }
-_this.launchFuns.getgradeList = async () => {
-  let gradeData = [
-    {
-      name: "所有类型",
-      key: ''
+_this.setDefaultLaunchFuns = () => {
+  return {
+    getpaperList: async () => {
+      let paperData = [
+        {
+          name: "所有试卷",
+          key: -1
+        }
+      ]
+      let res = await api.getPaperPaperList(_this.globa.getPaperListData)
+      res.data.items.forEach(item => {
+        paperData.push({
+          name: item.id + ":" + item.name,
+          key: item.id
+        })
+      })
+      _this.methods.upDateAppendFliterOption({
+        key: "paper_id",
+        items: paperData,
+        value: -1
+      })
+    },
+    getgradeList: async () => {
+      let gradeData = [
+        {
+          name: "所有类型",
+          key: ''
+        }
+      ]
+      let res = await gradeapi.getPaperGradeList()
+      res.data.items.forEach(item => {
+        gradeData.push({
+          name: item.name,
+          key: item.id
+        })
+      })
+      _this.methods.upDateAppendFliterOption({
+        key: "categ2",
+        items: gradeData,
+        value: ''
+      })
+      _this.methods.initData()
     }
-  ]
-  let res = await gradeapi.getPaperGradeList()
-  res.data.items.forEach(item => {
-    gradeData.push({
-      name: item.name,
-      key: item.id
-    })
-  })
-  _this.methods.upDateAppendFliterOption({
-    key: "categ2",
-    items: gradeData,
-    value: ''
-  })
-  _this.methods.initData()
+  }
 }
-_this.methods.getpaperList = async () => {
-  let paperData = [
-    {
-      name: "所有试卷",
-      key: -1
+_this.setDefaultMethods = () => {
+  return {
+    getpaperList: async () => {
+      let paperData = [
+        {
+          name: "所有试卷",
+          key: -1
+        }
+      ]
+      let res = await api.getPaperPaperList(_this.globa.getPaperListData)
+      res.data.items.forEach(item => {
+        paperData.push({
+          name: item.id + ":" + item.name,
+          key: item.id
+        })
+      })
+      _this.methods.upDateAppendFliterOption({
+        key: "paper_id",
+        items: paperData,
+        value: -1
+      })
     }
-  ]
-  let res = await api.getPaperPaperList(_this.globa.getPaperListData)
-  res.data.items.forEach(item => {
-    paperData.push({
-      name: item.id + ":" + item.name,
-      key: item.id
-    })
-  })
-  _this.methods.upDateAppendFliterOption({
-    key: "paper_id",
-    items: paperData,
-    value: -1
-  })
+  }
 }
+
+
 let data = {
   tableData: {
     scrollWidth: 2000,

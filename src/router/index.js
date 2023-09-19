@@ -149,7 +149,7 @@ export const asyncRoutes = [
   {
     meta: {
       title: '试卷考试',
-      icon: 'cogs',
+      icon: 'th',
       affix: true,
     },
     contentPage: true,
@@ -162,7 +162,7 @@ export const asyncRoutes = [
         component: () => import('@/views/paper/special/index'),
         meta: {
           title: '章节管理',
-          icon: 'cogs',
+          icon: 'th-list',
           affix: false,
         },
       },
@@ -172,7 +172,7 @@ export const asyncRoutes = [
         component: () => import('@/views/paper/question/index'),
         meta: {
           title: '考题管理',
-          icon: 'cogs',
+          icon: 'th-list',
           affix: false,
         },
       },
@@ -182,7 +182,7 @@ export const asyncRoutes = [
         component: () => import('@/views/paper/grade/index'),
         meta: {
           title: '试卷栏目',
-          icon: 'cogs',
+          icon: 'bars',
           affix: false,
         },
       },
@@ -192,7 +192,7 @@ export const asyncRoutes = [
         component: () => import('@/views/paper/paper/index'),
         meta: {
           title: '试卷管理',
-          icon: 'cogs',
+          icon: 'align-center',
           affix: false,
         },
       }
@@ -207,16 +207,16 @@ export const asyncRoutes = [
   //   path: '/utils',
   //   component: Layout,
   //   children: [
-  //     {
-  //       path: 'newPage',
-  //       name: 'newPage',
-  //       component: () => import('@/views/utils/creatNewPage/index'),
-  //       meta: {
-  //         title: '创建页面',
-  //         icon: 'pager',
-  //         affix: false,
-  //       },
-  //     },
+  //     // {
+  //     //   path: 'newPage',
+  //     //   name: 'newPage',
+  //     //   component: () => import('@/views/utils/creatNewPage/index'),
+  //     //   meta: {
+  //     //     title: '创建页面',
+  //     //     icon: 'pager',
+  //     //     affix: false,
+  //     //   },
+  //     // },
   //     {
   //       path: 'ico',
   //       name: 'ico',
