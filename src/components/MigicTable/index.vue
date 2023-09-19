@@ -159,7 +159,7 @@
             </el-option>
           </el-select>
           <el-cascader v-if="item.type == 'cascader'" v-model="subfromData[item.key]" :options="item.items"
-            style="width: 100%;" :props="cascaderOptionProps" :show-all-levels="false">
+            style="width: 100%;" :props="cascaderOptionPropsFrom" :show-all-levels="false">
           </el-cascader>
           <JsonEditor v-if="item.type == 'jsonIinput'" copyable
             :style='"width:" + item.width + " !important;text-align:left;height:" + item.height'
@@ -198,6 +198,13 @@ export default {
   data() {
     let data = {
       cascaderOptionProps: {
+        value: "key",
+        label: "name",
+        children: "children",
+        checkStrictly: true,
+        emitPath:false
+      },
+      cascaderOptionPropsFrom:{
         value: "key",
         label: "name",
         children: "children",
@@ -365,11 +372,6 @@ export default {
         target: target,
         name: "wave",
       });
-      if (!_this.globa.donotFetch) {
-        _this.globa.donotFetch = undefined
-        // 初始化表格内容
-        this.initData()
-      }
       // 将_this.methods暴露出去，_this.methods中的函数在任何一个文件中都能调用
       _this.methods.fetchData = this.fetchData
       _this.methods.initData = this.initData
@@ -388,6 +390,11 @@ export default {
       }
       this.fliterOptionDefault = utils.deepClone(_this.globa.fliterOptionDefault)
       _this.launchFuns = {}
+      if (!_this.globa.donotFetch) {
+        _this.globa.donotFetch = undefined
+        // 初始化表格内容
+        this.initData()
+      }
     })
     this.$nextTick(() => {
       // 将更改的数据更新到_this中

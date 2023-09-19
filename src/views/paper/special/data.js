@@ -2,10 +2,6 @@ import _this from "@/main.js"
 import api from "@/api/paper/special/index"
 import questionApi from "@/api/paper/question/index"
 _this.globa.donotFetch = true
-_this.globa.getSpecialTreeData = {
-  page: 1,
-  size: 1000,
-}
 function formtTree(data) {
   data.forEach(item => {
     if (item.children && item.children.length > 0) {
@@ -18,27 +14,24 @@ function formtTree(data) {
   return data
 }
 _this.launchFuns.getSpecialTree = async () => {
-  let res = await api.getSpecialTree(_this.globa.getSpecialTreeData)
+  let res = await api.getSpecialTree()
   let items = [
     {
       name: '所有类型',
       key: -1
     }
   ]
-  formtTree(res.data).forEach(item => {
+  _this.globa.specialTree = formtTree(res.data)
+  _this.globa.specialTree.forEach(item => {
     items.push(item)
   })
   _this.methods.upDateAppendFliterOption({
-    name: "章节类型",
     key: "special_id",
-    type: "cascader",
     items: items,
-    filterable: true,
     value: -1
   })
   _this.methods.initData()
 }
-
 let data = {
   tableData: {
     scrollWidth: 2000,
@@ -48,8 +41,18 @@ let data = {
     subfromFunEditor: questionApi.editorPaperQuestionList,
     subfromFunAdd: questionApi.addPaperQuestionList,
     subfromFunDel: questionApi.delPaperQuestionList,
-
+    cascaderOptionPropsFrom: {
+      value: "key",
+      label: "name",
+      children: "children",
+      emitPath: false
+    },
     fliterOption: [
+      {
+        name: "考题ID",
+        key: "id",
+        type: "input"
+      },
       {
         name: "考题标题",
         key: "title",
@@ -104,7 +107,7 @@ let data = {
         beforeShow: async (self) => {
           return new Promise((resolve, reject) => {
             if (!_this.globa.specialTree) {
-              api.getSpecialTree(_this.globa.getSpecialTreeData).then(res => {
+              api.getSpecialTree().then(res => {
                 _this.globa.specialTree = formtTree(res.data)
                 self.fromData[1].items = _this.globa.specialTree
                 resolve(self)

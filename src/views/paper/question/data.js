@@ -1,5 +1,6 @@
 import _this from "@/main.js"
 import api from "@/api/paper/paper/index"
+import gradeapi from "@/api/paper/grade/index"
 import questionApi from "@/api/paper/question/index"
 _this.globa.donotFetch = true
 _this.globa.getPaperListData = {
@@ -23,12 +24,29 @@ _this.launchFuns.getpaperList = async () => {
     })
   })
   _this.methods.upDateAppendFliterOption({
-    name: "试卷名称",
     key: "paper_id",
-    type: "select",
     items: paperData,
-    filterable: true,
     value: -1
+  })
+}
+_this.launchFuns.getgradeList = async () => {
+  let gradeData = [
+    {
+      name: "所有类型",
+      key: ''
+    }
+  ]
+  let res = await gradeapi.getPaperGradeList()
+  res.data.items.forEach(item => {
+    gradeData.push({
+      name: item.name,
+      key: item.id
+    })
+  })
+  _this.methods.upDateAppendFliterOption({
+    key: "categ2",
+    items: gradeData,
+    value: ''
   })
   _this.methods.initData()
 }
@@ -47,11 +65,8 @@ _this.methods.getpaperList = async () => {
     })
   })
   _this.methods.upDateAppendFliterOption({
-    name: "试卷名称",
     key: "paper_id",
-    type: "select",
     items: paperData,
-    filterable: true,
     value: -1
   })
 }
@@ -66,6 +81,11 @@ let data = {
     subfromFunDel: questionApi.delPaperQuestionList,
 
     fliterOption: [
+      {
+        name: "考题ID",
+        key: "id",
+        type: "input"
+      },
       {
         name: "考题标题",
         key: "title",
@@ -102,32 +122,7 @@ let data = {
         name: "试卷年级",
         key: "categ2",
         type: "select",
-        items: [
-          {
-            name: '所有类型',
-            key: ''
-          },
-          {
-            name: '幼儿',
-            key: '1'
-          },
-          {
-            name: '小学',
-            key: '2'
-          },
-          {
-            name: '初中',
-            key: '3'
-          },
-          {
-            name: '高中',
-            key: '4'
-          },
-          {
-            name: '职中',
-            key: '5'
-          }
-        ],
+        items: [],
         value: '',
         unsub: true,
         beforFetch: async (data) => {

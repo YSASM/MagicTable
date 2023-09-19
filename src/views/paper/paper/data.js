@@ -1,5 +1,28 @@
 import _this from "@/main.js"
 import api from "@/api/paper/paper/index"
+import gradeapi from "@/api/paper/grade/index"
+_this.launchFuns.getgradeList = async () => {
+  let gradeData = [
+    {
+      name: "所有类型",
+      key: ''
+    }
+  ]
+  let res = await gradeapi.getPaperGradeList()
+  res.data.items.forEach(item => {
+    gradeData.push({
+      name: item.name,
+      key: item.id
+    })
+  })
+  _this.methods.upDateAppendFliterOption({
+    key: "grade_id",
+    items: gradeData,
+    value: ''
+  })
+  _this.methods.initData()
+}
+_this.globa.donotFetch = true
 let data = {
   tableData: {
     scrollWidth: 1000,
@@ -8,6 +31,11 @@ let data = {
     subfromFunAdd: api.addPaperPaperList,
     subfromFunDel: api.delPaperPaperList,
     fliterOption: [
+      {
+        name: "试卷ID",
+        key: "id",
+        type: "input"
+      },
       {
         name: "试卷名",
         key: "name",
