@@ -5,11 +5,7 @@ COPY nginx.conf /etc/nginx/conf.d/
 
 RUN mkdir /app/bin
 RUN npm install -g yarn 
-RUN cd /app/src 
-RUN ls
-RUN yarn 
-RUN ls
-RUN yarn run build
+RUN cd /app/src && yarn && ls && yarn run build
 RUN cp -r dist/* /usr/share/nginx/html
 
 
