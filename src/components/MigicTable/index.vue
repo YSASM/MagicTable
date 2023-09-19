@@ -622,6 +622,7 @@ export default {
     },
     deepClone: utils.deepClone,
     upDateAppendFliterOption(obj) {
+      let flage = false
       for (let i in this.fliterOption) {
         if (obj.key == this.fliterOption[i].key) {
           for (let j in obj) {
@@ -629,7 +630,12 @@ export default {
               this.fliterOption[i][j] = obj[j]
             }
           }
+          flage = true
+          break
         }
+      }
+      if(!flage){
+        this.fliterOption.push(obj)
       }
       this.$forceUpdate()
     },
