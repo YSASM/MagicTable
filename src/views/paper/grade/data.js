@@ -7,6 +7,7 @@ let data = {
     subfromFunEditor: api.editorPaperGradeList,
     subfromFunAdd: api.addPaperGradeList,
     subfromFunDel: api.delPaperGradeList,
+    fliterClearable: false,
     fliterOption: [
       {
         name: '新建',

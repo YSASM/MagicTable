@@ -51,7 +51,7 @@
         <el-form-item class="fliter-item">
           <el-button type="primary" @click="fetchData">查询</el-button>
         </el-form-item>
-        <el-form-item class="fliter-item">
+        <el-form-item v-if="fliterClearable" class="fliter-item">
           <el-button @click="fliterOption = deepClone(fliterOptionDefault); fetchData()">清空筛选</el-button>
         </el-form-item>
       </el-form>
@@ -197,6 +197,7 @@ export default {
   },
   data() {
     let data = {
+      fliterClearable:true,
       cascaderOptionProps: {
         value: "key",
         label: "name",
