@@ -278,14 +278,24 @@ let data = {
               onlyNum: true,
             },
           },
+          {
+            name: '序号',
+            key: 'paper_sort',
+            type: 'input',
+            must: true,
+            rule: {
+              onlyNum: true,
+            },
+          },
         ],
         subfromData: {
-          title: "新建考题",
+          title: "",
           question_type: 1,
           answer: "",
           solution: "",
           score: 0,
-          paper_id: 1
+          paper_id: '',
+          paper_sort: 0,
         },
         fromTitle: "新建",
         subfromFunIndex: "Add"
@@ -296,7 +306,8 @@ let data = {
       size: 20,
     },
     columns: [
-      { field: "id", key: "id", title: "ID", align: "center", width: 20, fixed: "left", sortBy: "desc" },
+      { field: "id", key: "id", title: "ID", align: "center", width: 20, fixed: "left", sortBy: "" },
+      { field: "paper_sort", key: "paper_sort", title: "序号", align: "center", width: 20, fixed: "left", sortBy: "asc" },
       { field: "title", key: "title", title: "考题标题", align: "center", width: 50, showOverflow: "title" },
       { field: "question_type_name", key: "question_type_name", title: "考题类型", align: "center", width: 20 },
       { field: "paper_id", key: "paper_id", title: "试卷ID", align: "center", width: 20, },
@@ -366,6 +377,15 @@ let data = {
                   onlyNum: true,
                 },
               },
+              {
+                name: '序号',
+                key: 'paper_sort',
+                type: 'input',
+                must: true,
+                rule: {
+                  onlyNum: true,
+                },
+              },
             ],
             subfromData: {
               id: "***",
@@ -373,7 +393,8 @@ let data = {
               question_type: "&&&|question_type_id",
               answer: "***",
               solution: "***",
-              score: "***"
+              score: "***",
+              paper_sort: "***"
             },
             fromTitle: "编辑",
             subfromFunIndex: "Editor",

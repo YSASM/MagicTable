@@ -187,14 +187,24 @@ let data = {
               onlyNum: true,
             },
           },
+          {
+            name: '序号',
+            key: 'paper_sort',
+            type: 'input',
+            must: true,
+            rule: {
+              onlyNum: true,
+            },
+          },
         ],
         subfromData: {
-          title: "新建考题",
+          title: "",
           question_type: 1,
           answer: "",
           solution: "",
           score: 0,
-          special_id: ''
+          special_id: '',
+          paper_sort: 0
         },
         fromTitle: "新建",
         subfromFunIndex: "Add"
@@ -206,6 +216,7 @@ let data = {
     },
     columns: [
       { field: "id", key: "id", title: "ID", align: "center", width: 20, fixed: "left", sortBy: "desc" },
+      { field: "paper_sort", key: "paper_sort", title: "序号", align: "center", width: 20, fixed: "left", sortBy: "asc" },
       { field: "title", key: "title", title: "考题标题", align: "center", width: 50, showOverflow: "title" },
       { field: "question_type_name", key: "question_type_name", title: "考题类型", align: "center", width: 20 },
       { field: "special_id", key: "special_id", title: "章节ID", align: "center", width: 20, },
@@ -275,6 +286,15 @@ let data = {
                   onlyNum: true,
                 },
               },
+              {
+                name: '序号',
+                key: 'paper_sort',
+                type: 'input',
+                must: true,
+                rule: {
+                  onlyNum: true,
+                },
+              },
             ],
             subfromData: {
               id: "***",
@@ -282,7 +302,8 @@ let data = {
               question_type: "&&&|question_type_id",
               answer: "***",
               solution: "***",
-              score: "***"
+              score: "***",
+              paper_sort: "***"
             },
             fromTitle: "编辑",
             subfromFunIndex: "Editor",

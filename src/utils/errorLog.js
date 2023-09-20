@@ -16,10 +16,17 @@ const checkNeed = () => {
 }
 if (checkNeed()) {
   Vue.config.errorHandler = (err, vm, info) => {
-    console.error('vue-admin-beautiful错误拦截:', err, vm, info)
+    console.error('Global Error Handler:', err, vm, info)
     const url = window.location.href
     Vue.nextTick(() => {
       store.dispatch('errorLog/addErrorLog', { err, vm, info, url })
     })
   }
+  Vue.config.warnHandler = function (err, vm, info) {
+    console.warn('Global Warn Handler:', err, vm, info)
+    const url = window.location.href
+    Vue.nextTick(() => {
+      store.dispatch('errorLog/addErrorLog', { err, vm, info, url })
+    })
+  };
 }

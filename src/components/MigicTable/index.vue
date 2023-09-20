@@ -469,7 +469,7 @@ export default {
       let that = this
       let flage = false
       that.fromData.forEach(item => {
-        if (item.must && that.subfromData[item.key] == '') {
+        if (item.must && that.subfromData[item.key] === "") {
           flage = true
         }
       })
@@ -507,6 +507,7 @@ export default {
         that.fetchData()
       })
     },
+    // 获取网络请求函数
     getter(s) {
       let fun = this[s]
       if (typeof (fun) == 'object') {

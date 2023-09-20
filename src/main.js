@@ -33,15 +33,6 @@ Vue.component(mtable.name, mtable);
 
 Vue.config.productionTip = false
 
-Vue.config.warnHandler = function (error, vm, info) {
-  if (error.includes('type check failed')) {
-    console.warn('Global Error Handler:', error, vm, info);
-  }
-  else {
-    console.error('Global Error Handler:', error, vm, info);
-  }
-};
-
 let vue = new Vue({
   el: '#vue-admin-beautiful',
   router,
