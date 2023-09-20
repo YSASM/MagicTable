@@ -198,9 +198,6 @@ import utils from "@/utils";
 var reflashKey = []
 export default {
   name: 'mtable',
-  watch: {
-
-  },
   components: {
     JsonEditor,
     JsonViewer
@@ -462,6 +459,7 @@ export default {
         this.fetchData()
       }
     },
+    // 关闭popover弹出框
     colsePopover() {
       this.$refs.container.click()
     },
@@ -475,6 +473,7 @@ export default {
       })
       return flage
     },
+    // 提交表单
     subForm() {
       let that = this
       that.showFrom = false
@@ -539,6 +538,7 @@ export default {
       this.fliter.size = s
       this.fetchData()
     },
+    // 获取搜索过滤信息
     getFliter() {
       for (let i in this.fliterOption) {
         let item = this.fliterOption[i]
@@ -563,10 +563,13 @@ export default {
       }
       this.fliter.sort = this.sort
     },
+    // 搜索
     async fetchData() {
       _this['loadingInstance' + this.PageId].show();
       let origin_fliter = utils.deepClone(this.fliter)
+      // 获取过滤参数
       this.getFliter()
+      // 运行搜索前函数
       for (let i in this.fliterOption) {
         let item = this.fliterOption[i]
         if (item.beforFetch) {
@@ -575,6 +578,7 @@ export default {
           await item.beforFetch(p)
         }
       }
+      // 刷新过滤参数
       this.getFliter()
       let fun = this.getter('fetchFun')
       if (!fun) {
@@ -603,11 +607,13 @@ export default {
         _this['loadingInstance' + this.PageId].close();
       })
     },
+    // 初始化页码等并搜索
     initData() {
       this.fliter.page = 1
       this.fliter.size = this.pageSizeOption[0]
       this.fetchData()
     },
+    // 初始化表单判断是否有必填项为空
     initForm() {
       this.fromData.forEach(item => {
         if (item.must && this.subfromData[item.key] === '') {
@@ -628,6 +634,7 @@ export default {
       return data
     },
     deepClone: utils.deepClone,
+    // 更新或者添加一个搜索过滤
     upDateAppendFliterOption(obj) {
       let flage = false
       for (let i in this.fliterOption) {
@@ -656,9 +663,11 @@ export default {
         if (!col.endStr) {
           col.endStr = ''
         }
+        // 判断是否需要排序
         if (col.sortBy || col.sortBy === "") {
           defaultSort[col.field] = col.sortBy
         }
+        // 单元格禁止换行可以在外面自行更改
         if (!col.ellipsis) {
           col.ellipsis = {
             showTitle: true,
@@ -666,24 +675,46 @@ export default {
           }
         }
         if (col.buttons) {
+          // 单元格中插入按钮
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
             var elements = []
             col.buttons.forEach(btn => {
               let subfromData = utils.deepClone(btn.subfromData)
               for (let key in subfromData) {
+                // "***"取表格这一行中的值
                 if (subfromData[key] == '***') {
                   subfromData[key] = row[key]
                 }
                 else if (subfromData[key].includes('***|')) {
-                  let temp = subfromData[key].split('|')[1]
-                  subfromData[key] = utils[temp](row[key])
+                  // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
+                  let temp = subfromData[key].split('|')
+                  if(temp.length==2){
+                    subfromData[key] = utils[temp[1]](row[key])
+                  }
+                  // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
+                  else if(temp.length>2){
+                    subfromData[key] = utils[temp[1]](row[key],temp[2])
+                  }
                 }
                 else if (subfromData[key].includes('&&&|')) {
-                  let temp = subfromData[key].split('|')[1]
-                  subfromData[key] = row[temp]
+                  let temp = subfromData[key].split('|')
+                  // "&&&|指定key"取表格这一行中指定的值
+                  if(temp.length==2){
+                    subfromData[key] = row[temp[1]]
+                  }
+                  // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
+                  else if(temp.length==3){
+                    subfromData[key] = utils[temp[2]](row[temp[1]])
+                  }
+                  // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
+                  else if(temp.length>3){
+                    subfromData[key] = utils[temp[2]](row[temp[1]],temp[3])
+                  }
                 }
               }
+              // 判断按钮是否禁用
               let disabled = btn.disablekey && subfromData[btn.disablekey] == btn.disableval ? !btn.able : btn.able
+              // 判断按钮颜色
               let btnType = ""
               if (!btn.buttonTypeOpt) {
                 btn.buttonTypeOpt = ""
@@ -708,6 +739,7 @@ export default {
                   }
                 }
               }
+              // 根据类型插入按钮
               if (btn.type == 'formButton') {
                 elements.push(<el-button disabled={disabled} type={btnType} v-on:click={async () => {
 
@@ -784,6 +816,7 @@ export default {
             return element
           }
         }
+        // 单元格查看json
         this.tableShowJson.forEach(item => {
           if (item.field == col.field) {
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
@@ -823,6 +856,7 @@ export default {
 
           }
         })
+        // 单元格编辑json
         this.tableEditorJson.forEach(item => {
           if (item.field == col.field) {
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
@@ -886,6 +920,7 @@ export default {
 
           }
         })
+        // 单元格开关
         this.tableSwitch.forEach(item => {
           if (item.field == col.field) {
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
@@ -904,6 +939,7 @@ export default {
             }
           }
         })
+        // 单元格tag标签
         if (col.showTag) {
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
             if (!col.showTag[row[col.field]]) {
@@ -916,6 +952,7 @@ export default {
             );
           }
         }
+        // 单元格开启长文本提示
         if (col.showOverflow) {
           let renderBodyCell = col.renderBodyCell
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
@@ -948,29 +985,15 @@ export default {
             return element
           }
         }
-        // if (!col.renderBodyCell) {
-        //   col.renderBodyCell = ({ row, column, rowIndex }, h) => {
-        //     if (!row[col.field]) {
-        //       row[col.field] = ''
-        //     }
-        //     let fieldContent = col.startStr + row[col.field] + col.endStr
-        //     if (col.showOverflow) {
-        //       return (
-
-        //       )
-        //     }
-        //     else {
-        //       return (<span>{fieldContent}</span>)
-        //     }
-        //   }
-        // }
       })
+      // 获取排序
       this.sort = this.sortChange(defaultSort, true)
       // 更新_this
       for (let i in reflashKey) {
         let key = reflashKey[i]
         _this.tableData[key] = this[key]
       }
+      // 刷新页面
       this.$forceUpdate()
     }
   }

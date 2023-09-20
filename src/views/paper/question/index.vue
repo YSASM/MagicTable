@@ -7,7 +7,7 @@ import data from "./data.js"
 import _this from "@/main.js"
 export default {
   data() {
-    _this.tableData = data.tableData
+    _this.tableData = data
     data.show = false
     return data
   },

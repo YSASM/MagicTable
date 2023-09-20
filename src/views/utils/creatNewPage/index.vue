@@ -48,11 +48,11 @@ import codeEditor from "@/components/codeEditor/index"
 
 export default {
   data() {
-    _this.tableData = data.tableData
+    _this.tableData = data
     return {
       show: false,
       load: false,
-      data: data.tableData,
+      data: data,
     }
   },
   mounted() {
