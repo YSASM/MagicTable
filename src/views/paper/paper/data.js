@@ -106,6 +106,28 @@ let data = {
         name: '新建',
         type: 'formButton',
         disableLabel: true,
+        beforeShow: (self) => {
+          return new Promise((resolve, reject) => {
+            if (!_this.globa.grades) {
+              let gradeData = []
+              gradeapi.getPaperGradeList().then(res => {
+                res.data.items.forEach(item => {
+                  gradeData.push({
+                    name: item.name,
+                    key: item.id
+                  })
+                })
+                _this.globa.grades = gradeData
+                self.fromData[2].items = _this.globa.grades
+                resolve(self)
+              })
+            }
+            else {
+              self.fromData[2].items = _this.globa.grades
+              resolve(self)
+            }
+          })
+        },
         fromData: [
           {
             name: '试卷名称',
@@ -127,11 +149,20 @@ let data = {
                 key: 2
               }
             ],
+            must: true
           },
+          {
+            name: '年级',
+            key: 'grade_id',
+            type: 'select',
+            items: [],
+            must: true
+          }
         ],
         subfromData: {
           name: "",
           type: 1,
+          grade_id: ""
         },
         fromTitle: "新建",
         subfromFunIndex: "Add"
@@ -173,6 +204,7 @@ let data = {
                     key: 2
                   }
                 ],
+                must: true
               },
             ],
             subfromData: {

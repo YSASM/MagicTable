@@ -192,22 +192,29 @@ let data = {
         type: 'formButton',
         fromHistoryId: "add",
         disableLabel: true,
-        beforeShow: async (self) => {
+        beforeShow: (self) => {
           return new Promise((resolve, reject) => {
-            let paperData = []
-            api.getPaperPaperList({
-              page: 1,
-              size: 1000,
-            }).then(res => {
-              res.data.items.forEach(item => {
-                paperData.push({
-                  name: item.id + ":" + item.name,
-                  key: item.id
+            if (!_this.globa.papers) {
+              let paperData = []
+              api.getPaperPaperList({
+                page: 1,
+                size: 1000,
+              }).then(res => {
+                res.data.items.forEach(item => {
+                  paperData.push({
+                    name: item.id + ":" + item.name,
+                    key: item.id
+                  })
                 })
+                _this.globa.papers = paperData
+                self.fromData[1].items = _this.globa.papers
+                resolve(self)
               })
-              self.fromData[1].items = paperData
+            }
+            else {
+              self.fromData[1].items = _this.globa.papers
               resolve(self)
-            })
+            }
           })
         },
         fromData: [

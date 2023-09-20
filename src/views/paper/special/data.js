@@ -113,7 +113,7 @@ let data = {
         type: 'formButton',
         fromHistoryId: "add",
         disableLabel: true,
-        beforeShow: async (self) => {
+        beforeShow: (self) => {
           return new Promise((resolve, reject) => {
             if (!_this.globa.specialTree) {
               api.getSpecialTree().then(res => {

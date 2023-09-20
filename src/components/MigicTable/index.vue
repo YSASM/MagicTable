@@ -469,7 +469,7 @@ export default {
       let that = this
       let flage = false
       that.fromData.forEach(item => {
-        if (item.must && that.subfromData[item.key] === '') {
+        if (item.must && that.subfromData[item.key] == '') {
           flage = true
         }
       })
