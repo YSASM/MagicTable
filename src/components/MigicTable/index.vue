@@ -78,7 +78,7 @@
     </el-card>
     <!-- {{ showFrom }} -->
 
-    <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%">
+    <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%" @close="disabledSubFrom = {}">
       <el-form v-model="subfromData" ref="form" label-width="100px">
         <el-form-item :prop="item.key" :label="item.name" v-for="item, index in  fromData " :key="index" :rules="item.must ? {
           required: true, trigger: item.trigger || ['blur', 'change'], validator: (rule, value, callback) => {
