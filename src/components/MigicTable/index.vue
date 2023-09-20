@@ -26,11 +26,18 @@
               item.beforeShow(item).then(res => {
                 item = res
                 if (item.fromHistoryId) {
-                  let history
+                  let history = getGloba('subfromData' + item.fromHistoryId)
+                  if (!history) {
+                    setGloba('subfromData' + item.fromHistoryId, deepClone(item.subfromData))
+                  }
+                  subfromData = getGloba('subfromData' + item.fromHistoryId)
+                }
+                else {
+                  subfromData = deepClone(item.subfromData)
                 }
                 showFrom = true
                 fromData = deepClone(item.fromData)
-                subfromData = deepClone(item.subfromData)
+
                 subfromFunIndex = item.subfromFunIndex
                 if (item.fromTitle) {
                   fromTitle = item.fromTitle

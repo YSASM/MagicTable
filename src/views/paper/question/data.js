@@ -190,6 +190,7 @@ let data = {
       {
         name: '新建',
         type: 'formButton',
+        fromHistoryId: "add",
         disableLabel: true,
         beforeShow: async (self) => {
           return new Promise((resolve, reject) => {

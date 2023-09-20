@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App'
 import store from './store'
 import router from './router'
+import utils from './utils/index.js'
 import './plugins'
 import '@/layouts/export'
 /**
@@ -68,10 +69,10 @@ vue.checkInfo = (PageId) => {
 }
 
 vue.getPageInfo = (PageId) => {
-  vue.globa = vue['Info' + PageId].globa
-  vue.methods = vue['Info' + PageId].methods
-  vue.launchFuns = vue['Info' + PageId].launchFuns
-  vue.tableData = vue['Info' + PageId].tableData
+  vue.globa = utils.deepClone(vue['Info' + PageId].globa)
+  vue.methods = utils.deepClone(vue['Info' + PageId].methods)
+  vue.launchFuns = utils.deepClone(vue['Info' + PageId].launchFuns)
+  vue.tableData = utils.deepClone(vue['Info' + PageId].tableData)
 }
 
 vue.updatePageInfo = (PageId) => {
@@ -83,10 +84,10 @@ vue.updatePageInfo = (PageId) => {
   vue.setDefaultMethods = () => { return {} }
   vue.setDefaultLaunchFuns = () => { return {} }
   vue['Info' + PageId] = {
-    globa: vue.globa,
-    methods: vue.methods,
-    launchFuns: vue.launchFuns,
-    tableData: vue.tableData
+    globa: utils.deepClone(vue.globa),
+    methods: utils.deepClone(vue.methods),
+    launchFuns: utils.deepClone(vue.launchFuns),
+    tableData: utils.deepClone(vue.tableData)
   }
 }
 
