@@ -173,8 +173,8 @@
           </el-cascader>
           <JsonEditor v-if="item.type == 'jsonIinput'" copyable
             :style='"width:" + item.width + " !important;text-align:left;height:" + item.height'
-            v-model="subfromData[item.key]" :showBtns="false" mode="code" @has-error="jsonEditorDisabledSubFrom = true"
-            @json-change="jsonEditorDisabledSubFrom = false"></JsonEditor>
+            v-model="subfromData[item.key]" :showBtns="false" mode="code" @has-error="disabledSubFrom[item.key] = true"
+            @json-change="delete disabledSubFrom[item.key]"></JsonEditor>
           <span v-if="item.type == 'text'" :style="'color:' + item.color || 'black'">{{
             item.startStr || "" + subfromData[item.key] + item.endStr || "" }}</span>
           <span style="font-size: 10px;color: red;position: absolute;bottom: -25px;right: 0;">{{ item.tips }}</span>
@@ -182,8 +182,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showFrom = false">取 消</el-button>
-        <el-button type="primary" @click="subForm"
-          :disabled="Object.keys(disabledSubFrom).length > 0 || jsonEditorDisabledSubFrom">确
+        <el-button type="primary" @click="subForm" :disabled="Object.keys(disabledSubFrom).length > 0">确
           定</el-button>
       </span>
     </el-dialog>
@@ -220,7 +219,6 @@ export default {
         emitPath:false
       },
       sort: '',
-      jsonEditorDisabledSubFrom: false,
       disabledSubFrom: {},
       columnWidthResizeOption: {
         // default false
@@ -359,40 +357,55 @@ export default {
     data.tableData = []
     return data
   },
+  beforeDestroy() {
+    // 销毁时清理_this
+    _this.tableData = {}
+    _this.methods = {}
+    _this.globa = {}
+    _this.launchFuns = {}
+    _this['loadingInstance' + this.PageId] = undefined
+    // 清空监听器和计时器
+    clearInterval(this.watchTableData)
+    this.watchTableData = null
+    reflashKey.forEach(key => {
+      this.$watch(key, null)
+    })
+    reflashKey = []
+  },
+  async updated(){
+    if(!_this['loadingInstance' + this.PageId]){
+      let target = document.querySelector("#table")
+      if(target){
+        _this['loadingInstance' + this.PageId] = this.$veLoading({
+          target: target,
+          name: "wave",
+        });
+        for (let key in _this.launchFuns) {
+          let value = _this.launchFuns[key]
+          if (typeof (value) == 'function') {
+            await value()
+          }
+        }
+        if (!_this.globa.fliterOptionDefault) {
+          _this.globa.fliterOptionDefault = utils.deepClone(this.fliterOption)
+        }
+        this.fliterOptionDefault = utils.deepClone(_this.globa.fliterOptionDefault)
+        if (!_this.globa.donotFetch) {
+          // 初始化表格内容
+          this.initData()
+        }
+      }
+    }
+  },
   mounted() {
     // 初始化表格设置
     this.upDateTable()
-    // 解决mounted获取不到dom
-    this.$once("hook:updated", async function () {
-      // 初始化表格加载
-      let target = document.querySelector("#table")
-      _this['loadingInstance' + this.PageId] = this.$veLoading({
-        target: target,
-        name: "wave",
-      });
-      _this.methods.fetchData = this.fetchData
-      _this.methods.initData = this.initData
-      _this.methods.upDateTable = this.upDateTable
-      _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
-      _this.globa.PageId = this.PageId
-      _this.globa.reflashKey = this.reflashKey
-      for (let key in _this.launchFuns) {
-        let value = _this.launchFuns[key]
-        if (typeof (value) == 'function') {
-          await value()
-        }
-      }
-      if (!_this.globa.fliterOptionDefault) {
-        _this.globa.fliterOptionDefault = utils.deepClone(this.fliterOption)
-      }
-      this.fliterOptionDefault = utils.deepClone(_this.globa.fliterOptionDefault)
-      _this.launchFuns = {}
-      if (!_this.globa.donotFetch) {
-        _this.globa.donotFetch = undefined
-        // 初始化表格内容
-        this.initData()
-      }
-    })
+    _this.methods.fetchData = this.fetchData
+    _this.methods.initData = this.initData
+    _this.methods.upDateTable = this.upDateTable
+    _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
+    _this.globa.PageId = this.PageId
+    // _this.globa.reflashKey = this.reflashKey
     this.$nextTick(() => {
       // 将更改的数据更新到_this中
       reflashKey.forEach(key => {
@@ -409,19 +422,6 @@ export default {
       }, 100)
       this.overLoad = true
     })
-  },
-  beforeDestroy() {
-    // 销毁时清理_this
-    _this.tableData = {}
-    _this.methods = {}
-    _this.globa = {}
-    // 清空监听器和计时器
-    clearInterval(this.watchTableData)
-    this.watchTableData = null
-    reflashKey.forEach(key => {
-      this.$watch(key, (v, ov) => { }, { immediate: true })
-    })
-    reflashKey = []
   },
   methods: {
     setGloba(key,value){
@@ -463,15 +463,14 @@ export default {
     colsePopover() {
       this.$refs.container.click()
     },
-    judgeFrom() {
+    // 初始化表单判断是否有必填项为空
+    initForm() {
       let that = this
-      let flage = false
       that.fromData.forEach(item => {
-        if (item.must && that.subfromData[item.key] === "") {
-          flage = true
+        if (item.must && ((!that.subfromData[item.key] && that.subfromData[item.key] !== 0) || that.subfromData[item.key] === "")) {
+          that.disabledSubFrom[item.key] = true
         }
       })
-      return flage
     },
     // 提交表单
     subForm() {
@@ -612,14 +611,6 @@ export default {
       this.fliter.page = 1
       this.fliter.size = this.pageSizeOption[0]
       this.fetchData()
-    },
-    // 初始化表单判断是否有必填项为空
-    initForm() {
-      this.fromData.forEach(item => {
-        if (item.must && this.subfromData[item.key] === '') {
-          this.disabledSubFrom[item.key] = true
-        }
-      })
     },
     // 格式化表格内容
     formtData(data) {
