@@ -5,7 +5,6 @@ let data = {
   tableData: {
     scrollWidth: 1800,
     pageSizeOption: [20, 50, 100, 200],
-    tableData: [],
     fetchFun: api.getUserList,
     subfromFun0: (subfromData) => {
       return new Promise((resolve, reject) => {

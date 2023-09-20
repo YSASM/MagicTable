@@ -45,7 +45,6 @@ let data = {
   tableData: {
     scrollWidth: 2000,
     pageSizeOption: [20, 50, 100, 200],
-    tableData: [],
     fetchFun: questionApi.getPaperQuestionList,
     subfromFunEditor: questionApi.editorPaperQuestionList,
     subfromFunAdd: questionApi.addPaperQuestionList,

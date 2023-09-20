@@ -5,7 +5,6 @@ let data = {
   tableData: {
     scrollWidth: 1500,
     pageSizeOption: [20, 50, 100, 200],
-    tableData: [],
     fetchFun: api.getUserEventList,
     subfromFun0: api.editorUserEventList,
     fliterOption: [

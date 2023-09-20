@@ -25,6 +25,9 @@
             if (item.beforeShow) {
               item.beforeShow(item).then(res => {
                 item = res
+                if (item.fromHistoryId) {
+                  let history
+                }
                 showFrom = true
                 fromData = deepClone(item.fromData)
                 subfromData = deepClone(item.subfromData)
@@ -302,7 +305,6 @@ export default {
       scrollWidth: 1500,
       pageSizeOption: [10, 50, 100, 200],
       totalCount: 0,
-      tableData: [],
       fetchFun: async (fliter) => { console.log(fliter) },
       tableEditorSubFun: async (data) => { console.log(data) },
       subfromFunIndex: 0,
@@ -350,6 +352,7 @@ export default {
     data.Error = Error
     data.console = console
     data.utils = utils
+    data.tableData = []
     return data
   },
   mounted() {
@@ -417,6 +420,12 @@ export default {
     reflashKey = []
   },
   methods: {
+    setGloba(key,value){
+      _this.globa[key] = value
+    },
+    getGloba(key){
+      return _this.globa[key]
+    },
     sortChange(params, defaultGet) {
       let keys = Object.keys(params)
       let sort = ""
