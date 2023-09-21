@@ -23,6 +23,11 @@ let data = {
       type: "input"
     },
     {
+      name: '商品来源',
+      key: 'goods_source',
+      type: "input"
+    },
+    {
       name: '用户版本',
       key: 'version',
       type: "input"
