@@ -4,7 +4,14 @@ let data = {
   scrollWidth: 1500,
   pageSizeOption: [20, 50, 100, 200],
   fetchFun: api.getConfigList,
-  subfromFunWhitList: api.editorConfigList,
+  subfromFunWhitList: (data) => {
+    return new Promise((resolve, reject) => {
+      data.white_list = data.white_list.length > 0 ? data.white_list.toLocaleString() : " "
+      api.editorConfigList(data).then(res => {
+        resolve(res)
+      })
+    })
+  },
   subfromFunEditor: api.editorConfigList,
   subfromFunAdd: api.addConfigList,
   subfromFunDel: api.delConfigList,
@@ -70,9 +77,9 @@ let data = {
   // update_time	""
   columns: [
     { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
-    { field: "name", key: "name", title: "名称", align: "center", width: 20, showOverflow: "name" },
+    { field: "name", key: "name", title: "名称", align: "center", width: 50, showOverflow: "name" },
     { field: "params", key: "params", title: "配置参数", align: "center", width: 20 },
-    { field: "desc", key: "desc", title: "描述", align: "center", width: 20, showOverflow: "desc" },
+    // { field: "desc", key: "desc", title: "描述", align: "center", width: 20 },
     { field: "layer", key: "layer", title: "层数", align: "center", width: 20 },
     { field: "platform", key: "platform", title: "平台", align: "center", width: 20 },
     { field: "channel", key: "channel", title: "渠道", align: "center", width: 20 },

@@ -79,7 +79,11 @@ let data = {
               name: '密码',
               key: 'password',
               type: 'inputPw',
-              must: true
+              must: true,
+              rule: {
+                minLength: 6,
+                maxLength: 10,
+              }
             },
             {
               name: '确认密码',
@@ -89,7 +93,9 @@ let data = {
               must: true,
               rule: {
                 equation: 'password',
-                equationStr: '二次确认需要与密码相同'
+                equationStr: '二次输入密码要相同',
+                minLength: 6,
+                maxLength: 10,
               }
             },
           ],

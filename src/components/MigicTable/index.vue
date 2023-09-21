@@ -120,6 +120,23 @@
                     subfromData[item.key] = parseInt(subfromData[item.key])
                   }
                 }
+                if (item.rule.minLength) {
+                  console.log(subfromData[item.key].length, item.rule.minLength)
+                  if (subfromData[item.key].length < item.rule.minLength) {
+                    disabledSubFrom[item.key] = true
+                    $forceUpdate();
+                    callback('最小' + item.rule.minLength + '位')
+                    return
+                  }
+                }
+                if (item.rule.maxLength) {
+                  if (subfromData[item.key].length > item.rule.maxLength) {
+                    disabledSubFrom[item.key] = true
+                    $forceUpdate();
+                    callback('最大' + item.rule.maxLength + '位')
+                    return
+                  }
+                }
                 if (item.rule.equation) {
                   if (subfromData[item.key] !== subfromData[item.rule.equation]) {
                     disabledSubFrom[item.key] = true
