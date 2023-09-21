@@ -165,8 +165,7 @@
             v-model="subfromData[item.key]" clearable
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
             @input="item.inputed"></el-input>
-          <el-input v-if="item.type == 'inputPw'" :type="item.rows != undefined ? 'textarea' : ''" :rows="item.rows"
-            v-model="subfromData[item.key]" clearable
+          <el-input v-if="item.type == 'inputPw'" v-model="subfromData[item.key]" clearable
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
             @input="item.inputed" show-password></el-input>
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
@@ -981,7 +980,7 @@ export default {
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
             if (!col.showTag[row[col.field]]) {
               return (
-                <el-tag>{row[col.field]}</el-tag>
+                <el-tag type="info">{row[col.field]}</el-tag>
               );
             }
             return (

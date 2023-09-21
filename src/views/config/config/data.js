@@ -51,6 +51,7 @@ let data = {
           name: '配置描述',
           key: 'desc',
           type: 'input',
+          rows: 3,
           must: true
         }
       ],
@@ -141,6 +142,7 @@ let data = {
               name: '配置描述',
               key: 'desc',
               type: 'input',
+              rows: 3,
               must: true
             },
             {

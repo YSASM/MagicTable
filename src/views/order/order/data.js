@@ -63,6 +63,38 @@ let data = {
       value: ''
     },
     {
+      name: '订单状态',
+      key: 'status',
+      type: "select",
+      items: [
+        {
+          name: '全部状态',
+          key: ''
+        },
+        {
+          name: '待支付',
+          key: '1'
+        },
+        {
+          name: '已支付',
+          key: '2'
+        },
+        {
+          name: '已退款',
+          key: '3'
+        },
+        {
+          name: '已取消',
+          key: '4'
+        },
+        {
+          name: '已超时',
+          key: '5'
+        }
+      ],
+      value: '2'
+    },
+    {
       name: '用户平台',
       key: 'platform',
       type: "select",
@@ -187,23 +219,23 @@ let data = {
     { field: "version", key: "version", title: "用户版本", align: "center", width: 25 },
     {
       field: "status", key: "status", title: "订单状态", align: "center", width: 25, showTag: {
-        "1": {
+        "待支付": {
           type: '',
           content: '待支付'
         },
-        "2": {
+        "已支付": {
           type: 'success',
           content: '已支付'
         },
-        "3": {
+        "已退款": {
           type: 'danger',
           content: '已退款'
         },
-        "4": {
+        "已取消": {
           type: 'warning',
           content: '已取消'
         },
-        "5": {
+        "已超时": {
           type: 'info',
           content: '已超时'
         },
