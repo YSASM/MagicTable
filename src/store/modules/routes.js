@@ -6,6 +6,8 @@ import { asyncRoutes, constantRoutes } from '@/router'
 // import { getRouterList } from '@/api/router'
 import { convertRouter, filterAsyncRoutes } from '@/utils/handleRoutes'
 
+import store from "@/store"
+
 const state = () => ({
   routes: [],
   partialRoutes: [],
@@ -29,8 +31,20 @@ const actions = {
   async setRoutes({ commit }, permissions) {
     //开源版只过滤动态路由permissions，admin不再默认拥有全部权限
     const finallyAsyncRoutes = await filterAsyncRoutes([...asyncRoutes], permissions)
-    commit('setRoutes', finallyAsyncRoutes)
-    return finallyAsyncRoutes
+    let routes = []
+    let baseUrl = localStorage.getItem('baseURL')
+    finallyAsyncRoutes.forEach(r => {
+      if (r.meta && r.meta.range) {
+        if (r.meta.range.includes(baseUrl)) {
+          routes.push(r)
+        }
+      }
+      else {
+        routes.push(r)
+      }
+    });
+    commit('setRoutes', routes)
+    return routes
   },
   async setAllRoutes({ commit }) {
     let { data } = await getRouterList()

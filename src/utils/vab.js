@@ -20,7 +20,7 @@ const install = (Vue) => {
   })()
   Vue.prototype.$getBaseTitle = () => {
     for (let i in baseUrlList) {
-      if (baseUrlList[i].url == store.getters['settings/baseURL']) {
+      if (baseUrlList[i].url == localStorage.getItem('baseURL')) {
         return baseUrlList[i].name
       }
     }

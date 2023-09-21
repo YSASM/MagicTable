@@ -151,6 +151,7 @@ export const asyncRoutes = [
       title: '试卷考试',
       icon: 'th',
       affix: true,
+      range: ['/jzapi']
     },
     contentPage: true,
     path: '/paper',
@@ -229,6 +230,27 @@ export const asyncRoutes = [
   //     }
   //   ],
   // },
+  {
+    meta: {
+      title: '系统配置',
+      icon: 'atom',
+      affix: true,
+    },
+    path: '/system',
+    component: Layout,
+    children: [
+      {
+        path: 'account',
+        name: 'account',
+        component: () => import('@/views/system/account/index'),
+        meta: {
+          title: '账号管理',
+          icon: 'icons',
+          affix: false,
+        },
+      }
+    ],
+  },
   {
     path: '*',
     redirect: '/404',

@@ -55,7 +55,7 @@
 
 <script>
 import { isPassword } from '@/utils/validate'
-import { baseUrlList } from '@/config'
+import { baseUrlList, baseURL } from '@/config'
 export default {
   name: 'Login',
   directives: {
@@ -79,6 +79,9 @@ export default {
       } else {
         callback()
       }
+    }
+    if (!localStorage.getItem('baseURL')) {
+      localStorage.setItem('baseURL', baseURL)
     }
     return {
       nodeEnv: process.env.NODE_ENV,
@@ -107,7 +110,7 @@ export default {
       passwordType: 'password',
       redirect: undefined,
       baseUrlList,
-      baseURL: this.$store.getters['settings/baseURL']
+      baseURL: localStorage.getItem('baseURL')
     }
   },
   watch: {
@@ -134,9 +137,8 @@ export default {
   methods: {
     changeBaseUrlCommand(command) {
       this.title = command.name
-      this.$store.dispatch('settings/changeBaseUrl', command.url)
-      this.baseURL = this.$store.getters['settings/baseURL']
-      this.title = this.$getBaseTitle()
+      localStorage.setItem('baseURL', command.url)
+      this.baseURL = command.url
       this.$message.success("切换成功|当前:" + this.title + "[" + this.baseURL + "]")
     },
     handlePassword() {

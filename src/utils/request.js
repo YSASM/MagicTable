@@ -26,10 +26,10 @@ const handleCode = (code, msg) => {
   switch (code) {
     case invalidCode:
       Vue.prototype.$baseMessage(msg || `后端接口${code}异常`, 'error')
-      store.dispatch('user/resetAccessToken').catch(() => { })
-      if (loginInterception) {
-        location.reload()
-      }
+      // store.dispatch('user/resetAccessToken').catch(() => { })
+      // if (loginInterception) {
+      //   location.reload()
+      // }
       break
     case noPermissionCode:
       router.push({ path: '/401' }).catch(() => { })
@@ -116,11 +116,10 @@ instance.interceptors.response.use(
 
 function Request(info) {
   try {
-    info.baseURL = store.getters['settings/baseURL']
+    info.baseURL = localStorage.getItem('baseURL')
   } catch (e) {
     Vue.prototype.$baseMessage(`获取baseURL失败:` + e, 'error')
   }
-
   return instance(info)
 }
 

@@ -120,6 +120,14 @@
                     subfromData[item.key] = parseInt(subfromData[item.key])
                   }
                 }
+                if (item.rule.equation) {
+                  if (subfromData[item.key] !== subfromData[item.rule.equation]) {
+                    disabledSubFrom[item.key] = true
+                    $forceUpdate();
+                    callback(item.rule.equationStr || '与' + item.rule.equation + '不相同')
+                    return
+                  }
+                }
               }
               else {
                 let cb = item.rule(subfromData[item.key])
@@ -140,6 +148,10 @@
             v-model="subfromData[item.key]" clearable
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
             @input="item.inputed"></el-input>
+          <el-input v-if="item.type == 'inputPw'" :type="item.rows != undefined ? 'textarea' : ''" :rows="item.rows"
+            v-model="subfromData[item.key]" clearable
+            :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
+            @input="item.inputed" show-password></el-input>
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
             placeholder="选择日期时间"
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"

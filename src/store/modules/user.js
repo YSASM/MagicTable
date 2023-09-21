@@ -7,8 +7,8 @@ import Vue from 'vue'
 import { login } from '@/api/login'
 import { getAccessToken, removeAccessToken, setAccessToken } from '@/utils/accessToken'
 import { resetRouter } from '@/router'
-import { title, tokenName } from '@/config'
-
+import { tokenName, baseUrlList } from '@/config'
+import store from '@/store'
 const state = () => ({
   accessToken: getAccessToken(),
   username: '',
@@ -51,6 +51,13 @@ const actions = {
       commit('setAccessToken', accessToken)
       const hour = new Date().getHours()
       const thisTime = hour < 8 ? '早上好' : hour <= 11 ? '上午好' : hour <= 13 ? '中午好' : hour < 18 ? '下午好' : '晚上好'
+      let title = '管理面板'
+      for (let i in baseUrlList) {
+        if (baseUrlList[i].url == localStorage.getItem('baseURL')) {
+          title = baseUrlList[i].name
+          break
+        }
+      }
       Vue.prototype.$baseNotify(`欢迎登录${title}`, `${thisTime}！`)
     } else {
       Vue.prototype.$baseMessage(`登录接口异常，未正确返回${tokenName}...`, 'error')
