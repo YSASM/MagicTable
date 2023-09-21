@@ -497,6 +497,11 @@ export default {
         this.$message.error("空链接")
         return
       }
+      for(let key in that.subfromData){
+        if(typeof(that.subfromData[key])==='number'){
+          that.subfromData[key] = String(that.subfromData[key])
+        }
+      }
       fun(that.subfromData).then(() => {
         that.fromData = []
         that.subfromData = {}
