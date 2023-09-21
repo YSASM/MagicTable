@@ -219,23 +219,23 @@ let data = {
     { field: "version", key: "version", title: "用户版本", align: "center", width: 25 },
     {
       field: "status", key: "status", title: "订单状态", align: "center", width: 25, showTag: {
-        "待支付": {
+        "1": {
           type: '',
           content: '待支付'
         },
-        "已支付": {
+        "2": {
           type: 'success',
           content: '已支付'
         },
-        "已退款": {
+        "3": {
           type: 'danger',
           content: '已退款'
         },
-        "已取消": {
+        "4": {
           type: 'warning',
           content: '已取消'
         },
-        "已超时": {
+        "5": {
           type: 'info',
           content: '已超时'
         },
@@ -267,13 +267,18 @@ let data = {
               key: 'password',
               type: 'input',
               must: true
+            },
+            {
+              key: 'status',
+              unsub: true
             }
           ],
           fromTitle: '退款',
           subfromData: {
             id: "***",
             total_fee: "***",
-            password: ''
+            password: '',
+            status: "***"
           },
           subfromFunIndex: "Refund"
         }

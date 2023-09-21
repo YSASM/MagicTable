@@ -750,6 +750,7 @@ export default {
               }
               // 判断按钮是否禁用
               let disabled = btn.disablekey && subfromData[btn.disablekey] == btn.disableval ? !btn.able : btn.able
+              console.log(subfromData[btn.disablekey],btn.disableval,disabled)
               // 判断按钮颜色
               let btnType = ""
               if (!btn.buttonTypeOpt) {
