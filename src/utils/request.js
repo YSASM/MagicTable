@@ -26,10 +26,10 @@ const handleCode = (code, msg) => {
   switch (code) {
     case invalidCode:
       Vue.prototype.$baseMessage(msg || `后端接口${code}异常`, 'error')
-      // store.dispatch('user/resetAccessToken').catch(() => { })
-      // if (loginInterception) {
-      //   location.reload()
-      // }
+      store.dispatch('user/resetAccessToken').catch(() => { })
+      if (loginInterception) {
+        location.reload()
+      }
       break
     case noPermissionCode:
       router.push({ path: '/401' }).catch(() => { })

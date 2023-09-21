@@ -155,7 +155,14 @@
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
             placeholder="选择日期时间"
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
-            @change="subfromData[item.key] = subfromData[item.key].getTime()" style="width: 100%;">
+            @change="() => {
+              try {
+                subfromData[item.key] = subfromData[item.key].getTime()
+              }
+              catch (e) {
+                subfromData[item.key] = ''
+              }
+            }" style="width: 100%;">
           </el-date-picker>
           <el-switch v-if="item.type == 'switch'" v-model="subfromData[item.key]" :active-value="item.openValue"
             :inactive-value="item.closeValue"
@@ -563,8 +570,13 @@ export default {
         }
         if (item.type === 'time') {
           if (item.value && item.value.length > 1) {
-            this.fliter[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
-            this.fliter[item.endKey] = item.subStr ? this.dateToString(item.value[1]) : Math.floor(item.value[1].getTime() / 1000)
+            try{
+              this.fliter[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
+              this.fliter[item.endKey] = item.subStr ? this.dateToString(item.value[1]) : Math.floor(item.value[1].getTime() / 1000)
+            }catch(e){
+              this.fliter[item.startKey] = ''
+              this.fliter[item.endKey] = ''
+            }
           } else {
             this.fliter[item.startKey] = ''
             this.fliter[item.endKey] = ''
