@@ -3,15 +3,18 @@
  **/
 const network = {
   // 默认的接口地址 如果是开发环境和生产环境走vab-mock-server，当然你也可以选择自己配置成需要的接口地址
-  baseURL: '/jzapi',
+  baseURL: '/test1',
   // 可切换的baseURL
   baseUrlList: [
     {
-      name: '桃李教资',
-      url: '/jzapi'
+      name: '测试1',
+      url: '/test1'
     }, {
-      name: '快存图',
-      url: '/kctapi'
+      name: '测试2',
+      url: '/test2'
+    }, {
+      name: '测试3',
+      url: '/test3'
     }
   ],
   //配后端数据的接收方式application/json;charset=UTF-8或者application/x-www-form-urlencoded;charset=UTF-8

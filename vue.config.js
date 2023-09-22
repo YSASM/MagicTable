@@ -57,39 +57,17 @@ module.exports = {
     },
     // after: mockServer(),
     proxy: {
-      // '/api': {
-      //   target: 'http://9254.gr73299e.i8tkcg64.786129.grapps.cn',
-      //   // target:"http://192.168.3.251:9250/",
-      //   // changeOrigin: true,
-      //   // ws: false,
-      // },
-      // '/unify': {
-      //   target: 'http://9281.gr4353a0.i8tkcg64.786129.grapps.cn',
-      //   // target:"http://192.168.3.251:9250/",
-      //   // changeOrigin: true,
-      //   // ws: false,
-      //   pathRewrite:{'^/unify':''},
-      // },
-      // '/ad': {
-      //   target: 'http://9280.gr965c87.i8tkcg64.786129.grapps.cn',
-      //   // target:"http://192.168.3.251:9250/",
-      //   // changeOrigin: true,
-      //   // ws: false,
-      //   pathRewrite:{'^/ad':''},
-      // }
-      '/jzapi': {
-        target: 'https://jz.batiao8.com',
-        // target: "http://192.168.2.73:9263",
-        // changeOrigin: true,
-        // ws: false,
-        pathRewrite: { '^/jzapi': '' },
+      '/test1': {
+        target: 'https://test1.com',
+        pathRewrite: { '^/test1': '' },
       },
-      '/kctapi': {
-        target: 'http://kct3.batiao8.com/',
-        // target:"http://192.168.3.251:9250/",
-        // changeOrigin: true,
-        // ws: false,
-        pathRewrite: { '^/kctapi': '' },
+      '/test2': {
+        target: 'http://test2.com/',
+        pathRewrite: { '^/test2': '' },
+      },
+      '/test3': {
+        target: 'http://test3.com/',
+        pathRewrite: { '^/test3': '' },
       },
     },
   },
