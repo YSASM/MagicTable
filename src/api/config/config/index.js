@@ -10,7 +10,6 @@ export default {
     })
   },
   async editorConfigList(data) {
-    console.log(data)
     if (data.white_list && typeof (data.white_list) != 'string') {
       data.white_list = utils.arrToStr(data.white_list)
     }

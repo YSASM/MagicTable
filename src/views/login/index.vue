@@ -80,9 +80,6 @@ export default {
         callback()
       }
     }
-    if (!localStorage.getItem('baseURL')) {
-      localStorage.setItem('baseURL', baseURL)
-    }
     return {
       nodeEnv: process.env.NODE_ENV,
       title: this.$getBaseTitle(),

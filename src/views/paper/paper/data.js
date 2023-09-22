@@ -1,11 +1,6 @@
 import _this from "@/main.js"
 import api from "@/api/paper/paper/index"
 import gradeapi from "@/api/paper/grade/index"
-_this.setDefaultGloba = () => {
-  return {
-    donotFetch: true
-  }
-}
 _this.setDefaultLaunchFuns = () => {
   return {
     getgradeList: async () => {
@@ -27,7 +22,6 @@ _this.setDefaultLaunchFuns = () => {
         items: gradeData,
         value: ''
       })
-      _this.methods.initData()
     }
   }
 }

@@ -4,7 +4,6 @@ import gradeapi from "@/api/paper/grade/index"
 import questionApi from "@/api/paper/question/index"
 _this.setDefaultGloba = () => {
   return {
-    donotFetch: true,
     getPaperListData: {
       page: 1,
       size: 1000,
@@ -54,7 +53,6 @@ _this.setDefaultLaunchFuns = () => {
         items: gradeData,
         value: ''
       })
-      _this.methods.initData()
     }
   }
 }

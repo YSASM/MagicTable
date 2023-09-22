@@ -8,8 +8,9 @@ import _this from "@/main.js"
 export default {
   data() {
     _this.tableData = data
-    data.show = false
-    return data
+    return {
+      show: false
+    }
   },
   mounted() {
     this.show = true

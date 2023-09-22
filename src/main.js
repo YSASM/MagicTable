@@ -5,6 +5,7 @@ import router from './router'
 import utils from './utils/index.js'
 import './plugins'
 import '@/layouts/export'
+import { baseURL } from '@/config'
 /**
  * @author https://vue-admin-beautiful.com （不想保留author可删除）
  * @description 生产环境默认都使用mock，如果正式用于生产环境时，记得去掉
@@ -39,6 +40,12 @@ let vue = new Vue({
   store,
   render: (h) => h(App),
 })
+
+// 设置默认baseURL
+if (!localStorage.getItem('baseURL')) {
+  localStorage.setItem('baseURL', baseURL)
+}
+
 // 存储一些全局函数
 vue.methods = {}
 // 存储一些全局变量

@@ -28,15 +28,15 @@
                 if (item.fromHistoryId) {
                   let history = getGloba('subfromData' + item.fromHistoryId)
                   if (!history) {
-                    setGloba('subfromData' + item.fromHistoryId, deepClone(item.subfromData))
+                    setGloba('subfromData' + item.fromHistoryId, utils.deepClone(item.subfromData))
                   }
                   subfromData = getGloba('subfromData' + item.fromHistoryId)
                 }
                 else {
-                  subfromData = deepClone(item.subfromData)
+                  subfromData = utils.deepClone(item.subfromData)
                 }
                 showFrom = true
-                fromData = deepClone(item.fromData)
+                fromData = utils.deepClone(item.fromData)
 
                 subfromFunIndex = item.subfromFunIndex
                 if (item.fromTitle) {
@@ -47,8 +47,8 @@
             }
             else {
               showFrom = true
-              fromData = deepClone(item.fromData)
-              subfromData = deepClone(item.subfromData)
+              fromData = utils.deepClone(item.fromData)
+              subfromData = utils.deepClone(item.subfromData)
               subfromFunIndex = item.subfromFunIndex
               if (item.fromTitle) {
                 fromTitle = item.fromTitle
@@ -62,7 +62,7 @@
           <el-button type="primary" @click="fetchData">查询</el-button>
         </el-form-item>
         <el-form-item v-if="fliterClearable" class="fliter-item">
-          <el-button @click="fliterOption = deepClone(fliterOptionDefault); fetchData()">清空筛选</el-button>
+          <el-button @click="fliterOption = utils.deepClone(globa.fliterOptionDefault); fetchData()">清空筛选</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -121,7 +121,6 @@
                   }
                 }
                 if (item.rule.minLength) {
-                  console.log(subfromData[item.key].length, item.rule.minLength)
                   if (subfromData[item.key].length < item.rule.minLength) {
                     disabledSubFrom[item.key] = true
                     $forceUpdate();
@@ -229,7 +228,6 @@ import { requests } from "../../api/default";
 import JsonEditor from 'vue-json-editor';
 import JsonViewer from 'vue-json-viewer'
 import utils from "@/utils";
-var reflashKey = []
 export default {
   name: 'mtable',
   components: {
@@ -268,22 +266,6 @@ export default {
         // },
       },
       editOption: {
-        // beforeStartCellEditing: ({ row, column, cellValue }) => {
-        //   return true
-        // },
-        // beforeCellValueChange: ({ row, column, changeValue }) => {
-        //   console.log("beforeCellValueChange");
-        //   console.log("row::", row);
-        //   console.log("column::", column);
-        //   console.log("changeValue::", changeValue);
-
-        //   console.log("---");
-
-        //   if (column.field === "number" && !/^\d+$/.test(changeValue)) {
-        //     alert("请输入数字");
-        //     return false;
-        //   }
-        // },
         afterCellValueChange: ({ row, column, changeValue }) => {
           let params = {}
           params[column.field] = changeValue
@@ -370,26 +352,27 @@ export default {
     }
     
     let PageId = location.hash.replace(/\//g, '_').replace(/#/,'')
+    // 获取_this中数据tableData,methods,globa......
     let checkInfoFlage = _this.checkInfo(PageId)
     if(checkInfoFlage){
       _this.getPageInfo(PageId)
     }else{
       _this.updatePageInfo(PageId)
     }
-    let _thisdata = _this.tableData
-
-    // data更新
-    for (let k in _thisdata) {
-      data[k] = _thisdata[k]
+    // 合并数据
+    for (let k in _this.tableData) {
+      data[k] = _this.tableData[k]
     }
-
-    reflashKey = Object.keys(data)
+    // 绑定外部数据和内部数据
+    _this.tableData = data
     data.columnsOpt = []
     data.PageId = PageId
     data.Error = Error
     data.console = console
     data.utils = utils
     data.tableData = []
+    data.globa = _this.globa
+    data.methods = _this.methods
     return data
   },
   beforeDestroy() {
@@ -398,67 +381,51 @@ export default {
     _this.methods = {}
     _this.globa = {}
     _this.launchFuns = {}
-    _this['loadingInstance' + this.PageId] = undefined
-    // 清空监听器和计时器
-    clearInterval(this.watchTableData)
-    this.watchTableData = null
-    reflashKey.forEach(key => {
-      this.$watch(key, null)
-    })
-    reflashKey = []
   },
-  async updated(){
-    if(!_this['loadingInstance' + this.PageId]){
-      let target = document.querySelector("#table")
-      if(target){
-        _this['loadingInstance' + this.PageId] = this.$veLoading({
-          target: target,
-          name: "wave",
-        });
-        for (let key in _this.launchFuns) {
-          let value = _this.launchFuns[key]
-          if (typeof (value) == 'function') {
-            await value()
-          }
-        }
-        if (!_this.globa.fliterOptionDefault) {
-          _this.globa.fliterOptionDefault = utils.deepClone(this.fliterOption)
-        }
-        this.fliterOptionDefault = utils.deepClone(_this.globa.fliterOptionDefault)
-        if (!_this.globa.donotFetch) {
-          // 初始化表格内容
-          this.initData()
-        }
-      }
-    }
+  updated(){
+    // 只有updated阶段能拿到document.querySelector("#table")
+    this.initPage()
   },
-  mounted() {
+  mounted(){
     // 初始化表格设置
     this.upDateTable()
+    // 更新_this
     _this.methods.fetchData = this.fetchData
     _this.methods.initData = this.initData
     _this.methods.upDateTable = this.upDateTable
     _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
     _this.globa.PageId = this.PageId
-    // _this.globa.reflashKey = this.reflashKey
-    this.$nextTick(() => {
-      // 将更改的数据更新到_this中
-      reflashKey.forEach(key => {
-        this.$watch(key, (v, ov) => {
-          _this.tableData[key] = this[key]
-        })
-      })
-      // 监听_this更新数据
-      this.watchTableData = setInterval(() => {
-        for (let i in reflashKey) {
-          let key = reflashKey[i]
-          this[key] = _this.tableData[key]
-        }
-      }, 100)
-      this.overLoad = true
-    })
+    this.overLoad = true
   },
   methods: {
+    async initPage(){
+      if(!_this.globa.loadingInstance){
+        // 表格加载动画
+        let target = document.querySelector("#table")
+        // target不为空时页面渲染完毕
+        if(target){
+          _this.globa.loadingInstance = this.$veLoading({
+            target: target,
+            name: "wave",
+          });
+          // 运行launchFuns
+          for (let key in _this.launchFuns) {
+            if (typeof (_this.launchFuns[key]) == 'function') {
+              await _this.launchFuns[key]()
+            }
+            _this.launchFuns[key] = null
+          }
+          // 初始化表格筛选重置
+          if (!_this.globa.fliterOptionDefault&&this.fliterClearable) {
+            _this.globa.fliterOptionDefault = utils.deepClone(this.fliterOption)
+          }
+          if (!_this.globa.donotFetch) {
+            // 初始化表格内容
+            this.initData()
+          }
+        }
+      }
+    },
     setGloba(key,value){
       _this.globa[key] = value
     },
@@ -609,7 +576,7 @@ export default {
     },
     // 搜索
     async fetchData() {
-      _this['loadingInstance' + this.PageId].show();
+      _this.globa.loadingInstance.show();
       let origin_fliter = utils.deepClone(this.fliter)
       // 获取过滤参数
       this.getFliter()
@@ -644,11 +611,11 @@ export default {
           }
         }, 1000)
         this.fliter = utils.deepClone(origin_fliter)
-        _this['loadingInstance' + this.PageId].close();
+        _this.globa.loadingInstance.close();
       }).catch(e => {
         console.log(e)
         this.fliter = utils.deepClone(origin_fliter)
-        _this['loadingInstance' + this.PageId].close();
+        _this.globa.loadingInstance.close();
       })
     },
     // 初始化页码等并搜索
@@ -669,7 +636,6 @@ export default {
       })
       return data
     },
-    deepClone: utils.deepClone,
     // 更新或者添加一个搜索过滤
     upDateAppendFliterOption(obj) {
       let flage = false
@@ -1024,11 +990,6 @@ export default {
       })
       // 获取排序
       this.sort = this.sortChange(defaultSort, true)
-      // 更新_this
-      for (let i in reflashKey) {
-        let key = reflashKey[i]
-        _this.tableData[key] = this[key]
-      }
       // 刷新页面
       this.$forceUpdate()
     }

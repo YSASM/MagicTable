@@ -1,11 +1,6 @@
 import _this from "@/main.js"
 import api from "@/api/paper/special/index"
 import questionApi from "@/api/paper/question/index"
-_this.setDefaultGloba = () => {
-  return {
-    donotFetch: true,
-  }
-}
 _this.setDefaultLaunchFuns = () => {
   return {
     getSpecialTree: async () => {
@@ -25,7 +20,6 @@ _this.setDefaultLaunchFuns = () => {
         items: items,
         value: -1
       })
-      _this.methods.initData()
     }
   }
 }
