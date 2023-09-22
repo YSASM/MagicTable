@@ -8,6 +8,7 @@ import VueRouter from 'vue-router'
 import Layout from '@/layouts'
 import EmptyLayout from '@/layouts/EmptyLayout'
 import { publicPath, routerMode } from '@/config'
+import TablePage from '@/views/tableIndex'
 
 Vue.use(VueRouter)
 export const constantRoutes = [
@@ -61,7 +62,7 @@ export const asyncRoutes = [
       {
         path: 'list',
         name: 'list',
-        component: () => import('@/views/user/list/index'),
+        component: TablePage,
         meta: {
           title: '用户列表',
           icon: 'user-friends',
@@ -71,7 +72,7 @@ export const asyncRoutes = [
       {
         path: 'event',
         name: 'event',
-        component: () => import('@/views/user/event/index'),
+        component: TablePage,
         meta: {
           title: '用户日志',
           icon: 'users',
@@ -93,7 +94,7 @@ export const asyncRoutes = [
       {
         path: 'goods',
         name: 'goods',
-        component: () => import('@/views/goods/goods/index'),
+        component: TablePage,
         meta: {
           title: '商品管理',
           icon: 'cube',
@@ -115,7 +116,7 @@ export const asyncRoutes = [
       {
         path: 'order',
         name: 'order',
-        component: () => import('@/views/order/order/index'),
+        component: TablePage,
         meta: {
           title: '订单管理',
           icon: 'donate',
@@ -137,7 +138,7 @@ export const asyncRoutes = [
       {
         path: 'config',
         name: 'config',
-        component: () => import('@/views/config/config/index'),
+        component: TablePage,
         meta: {
           title: '配置管理',
           icon: 'cogs',
@@ -160,7 +161,7 @@ export const asyncRoutes = [
       {
         path: 'special',
         name: 'special',
-        component: () => import('@/views/paper/special/index'),
+        component: TablePage,
         meta: {
           title: '章节管理',
           icon: 'th-list',
@@ -170,7 +171,7 @@ export const asyncRoutes = [
       {
         path: 'question',
         name: 'question',
-        component: () => import('@/views/paper/question/index'),
+        component: TablePage,
         meta: {
           title: '考题管理',
           icon: 'th-list',
@@ -180,7 +181,7 @@ export const asyncRoutes = [
       {
         path: 'grade',
         name: 'grade',
-        component: () => import('@/views/paper/grade/index'),
+        component: TablePage,
         meta: {
           title: '试卷栏目',
           icon: 'bars',
@@ -190,7 +191,7 @@ export const asyncRoutes = [
       {
         path: 'paper',
         name: 'paper',
-        component: () => import('@/views/paper/paper/index'),
+        component: TablePage,
         meta: {
           title: '试卷管理',
           icon: 'align-center',
@@ -242,7 +243,7 @@ export const asyncRoutes = [
       {
         path: 'account',
         name: 'account',
-        component: () => import('@/views/system/account/index'),
+        component: TablePage,
         meta: {
           title: '账号管理',
           icon: 'icons',
