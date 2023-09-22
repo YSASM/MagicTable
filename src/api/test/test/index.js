@@ -2,7 +2,7 @@ let items = [
   {
     id: 1,
     name: 'test1',
-    status: 1,
+    status: '1',
     config: {
       xxx: 1,
       xxxx: 2
@@ -11,7 +11,7 @@ let items = [
   {
     id: 2,
     name: 'test2',
-    status: 2,
+    status: '2',
     config: {
       yyy: 1,
       yyyy: 2
@@ -34,7 +34,7 @@ export default {
     console.log('editorList', data)
     if (data.name) { items[data.id - 1].name = data.name }
     if (data.status) { items[data.id - 1].status = data.status }
-    if (data.config) { items[data.id - 1].config = JSON.parse(JSON.stringify(data.config)) }
+    if (data.config) { items[data.id - 1].config = JSON.parse(data.config) }
     return {
       code: 0,
       message: 'OK'
