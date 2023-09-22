@@ -348,7 +348,9 @@ export default {
       disableJsonEditorSub: false,
       tableEditorJson: [],
       tableEditorJsonContent: {},
-      tableSwitch: []
+      tableSwitch : [],
+      columnsOpt : [],
+      tableData : []
     }
     
     let PageId = location.hash.replace(/\//g, '_').replace(/#/,'')
@@ -365,12 +367,10 @@ export default {
     }
     // 绑定外部数据和内部数据
     _this.tableData = data
-    data.columnsOpt = []
     data.PageId = PageId
     data.Error = Error
     data.console = console
     data.utils = utils
-    data.tableData = []
     data.globa = _this.globa
     data.methods = _this.methods
     return data
@@ -576,7 +576,7 @@ export default {
     },
     // 搜索
     async fetchData() {
-      _this.globa.loadingInstance.show();
+      if(_this.globa.loadingInstance){_this.globa.loadingInstance.show();}
       let origin_fliter = utils.deepClone(this.fliter)
       // 获取过滤参数
       this.getFliter()
@@ -611,11 +611,11 @@ export default {
           }
         }, 1000)
         this.fliter = utils.deepClone(origin_fliter)
-        _this.globa.loadingInstance.close();
+        if(_this.globa.loadingInstance){_this.globa.loadingInstance.close();}
       }).catch(e => {
         console.log(e)
         this.fliter = utils.deepClone(origin_fliter)
-        _this.globa.loadingInstance.close();
+        if(_this.globa.loadingInstance){_this.globa.loadingInstance.close();}
       })
     },
     // 初始化页码等并搜索
