@@ -41,8 +41,6 @@
 import path from 'path'
 import { mapGetters } from 'vuex'
 
-import _this from '@/main.js'
-
 export default {
   name: 'VabTabsBar',
   data() {
