@@ -1,5 +1,55 @@
 import api from "@/api/test/test/index"
 import _this from "@/main.js"
+// 设置globa初始值，在data.js中必须使用这个函数实现，否则只能拿到空信息{}
+_this.setDefaultGloba = () => { return {
+  hello:'Hello World!',
+  xxx:'1+1='
+} }
+// 设置全局函数默认有以下四个
+// _this.methods.fetchData = this.fetchData 刷新表格数据
+// _this.methods.initData = this.initData 重置页码和每页数量并刷新表格数据
+// _this.methods.upDateTable = this.upDateTable 读取最新的表格设置并刷新表格数据
+// _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption 添加或更新一个表格搜索过滤
+_this.setDefaultMethods = () => { return {
+  sayHello(){
+    console.log(_this.globa.hello)
+  },
+  sum(){
+    return 1+1
+  }
+} }
+// 设置启动时运行的函数
+_this.setDefaultLaunchFuns = () => { return {
+  async doSomeTing(){
+    _this.methods.sayHello()
+    _this.methods.upDateAppendFliterOption({
+      name: 'test',
+      key: 'test',
+      unsub:true,
+      type: "input"
+    })
+    _this.methods.upDateAppendFliterOption({
+      name: 'test2',
+      key: 'input2',
+      unsub:true,
+      type: "select",
+      items: [
+        {
+          name: '测试',
+          key: 1,
+        },
+        {
+          name: '测试2',
+          key: 2
+        },
+      ],
+      value: 1
+    })
+  },
+  async sum(){
+    console.log(_this.globa.xxx+_this.methods.sum())
+  },
+} }
 let data = {
   scrollWidth: 1500,
   pageSizeOption: [20, 50, 100, 200],
@@ -16,7 +66,13 @@ let data = {
     {
       name: 'input',
       key: 'input',
-      type: "input"
+      type: "input",
+      // 进行请求前运行的函数data为过滤参数
+      beforFetch: async (data) => {
+        // 可以这样设置某一项的值
+        _this.tableData.fliterOption[0].value = '12345'
+        console.log(data)
+      }
     },
     {
       name: 'input2',
@@ -90,7 +146,16 @@ let data = {
     {
       name: '新建',
       type: 'formButton',
+      // 展示表单弹窗前运行的函数
+      beforeShow:(self)=>{
+        return new Promise((resolve,reject)=>{
+          console.log(self)
+          resolve(self)
+        })
+      },
       disableLabel: true,
+      // 设置fromHistoryId后关闭弹窗会保存表单输入内容
+      fromHistoryId:'add',
       unsub:true,
       fromData: [
         {

@@ -10,7 +10,7 @@
         <el-form ref="form" class="login-form" label-position="left" :model="form" :rules="rules">
           <div class="title">hello !</div>
           <div class="title-tips">欢迎来到{{ title }}！</div>
-          <el-form-item prop="username" style="margin-top: 40px">
+          <el-form-item style="margin-top: 40px">
             <el-dropdown @command="changeBaseUrlCommand">
               <span style="cursor: pointer">
                 链接切换
@@ -44,6 +44,7 @@
             </span>
           </el-form-item>
           <el-button class="login-btn" :loading="loading" type="primary" @click="handleLogin">登录</el-button>
+          随便输入
           <!-- <router-link to="/register">
             <div style="margin-top: 20px">注册</div>
           </router-link> -->

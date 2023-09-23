@@ -47,8 +47,17 @@
             }
             else {
               showFrom = true
+              if (item.fromHistoryId) {
+                let history = getGloba('subfromData' + item.fromHistoryId)
+                if (!history) {
+                  setGloba('subfromData' + item.fromHistoryId, utils.deepClone(item.subfromData))
+                }
+                subfromData = getGloba('subfromData' + item.fromHistoryId)
+              }
+              else {
+                subfromData = utils.deepClone(item.subfromData)
+              }
               fromData = utils.deepClone(item.fromData)
-              subfromData = utils.deepClone(item.subfromData)
               subfromFunIndex = item.subfromFunIndex
               if (item.fromTitle) {
                 fromTitle = item.fromTitle
@@ -597,9 +606,7 @@ export default {
       for (let i in this.fliterOption) {
         let item = this.fliterOption[i]
         if (item.beforFetch) {
-          let p = {}
-          p[item.key] = item.value
-          await item.beforFetch(p)
+          await item.beforFetch(this.fliter)
         }
       }
       // 刷新过滤参数
