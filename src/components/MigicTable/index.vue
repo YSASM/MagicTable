@@ -170,14 +170,7 @@
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
             placeholder="选择日期时间"
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
-            @change="() => {
-              try {
-                subfromData[item.key] = subfromData[item.key].getTime()
-              }
-              catch (e) {
-                subfromData[item.key] = ''
-              }
-            }" style="width: 100%;">
+            style="width: 100%;">
           </el-date-picker>
           <el-switch v-if="item.type == 'switch'" v-model="subfromData[item.key]" :active-value="item.openValue"
             :inactive-value="item.closeValue"
@@ -481,6 +474,11 @@ export default {
       let flage = false
       let flageName = ''
       that.fromData.forEach(item => {
+        if(item.type=='timeOnly'){
+          try{
+            that.subfromData[item.key] = that.subfromData[item.key].getTime()
+          }catch(e){}
+        }
         if (item.must && that.subfromData[item.key] === '') {
           flage = true
           flageName = item.name
@@ -559,6 +557,9 @@ export default {
           continue
         }
         if (item.type === 'time') {
+          if(!item.startKey||!item.endKey){
+            continue
+          }
           if (item.value && item.value.length > 1) {
             try{
               this.fliter[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
@@ -572,11 +573,16 @@ export default {
             this.fliter[item.endKey] = ''
           }
         }
-        else if (item.type === 'switch' && item.value === 'null') {
-          this.fliter[item.key] = ""
-        }
-        else {
-          this.fliter[item.key] = item.value
+        else{
+          if(!item.key){
+            continue
+          }
+          if (item.type === 'switch' && item.value === 'null') {
+            this.fliter[item.key] = ""
+          }
+          else {
+            this.fliter[item.key] = item.value
+          }
         }
       }
       this.fliter.sort = this.sort
