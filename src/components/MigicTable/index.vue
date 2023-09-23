@@ -170,14 +170,7 @@
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
             placeholder="选择日期时间"
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
-            @change="() => {
-              try {
-                subfromData[item.key] = subfromData[item.key].getTime()
-              }
-              catch (e) {
-                subfromData[item.key] = ''
-              }
-            }" style="width: 100%;">
+            style="width: 100%;">
           </el-date-picker>
           <el-switch v-if="item.type == 'switch'" v-model="subfromData[item.key]" :active-value="item.openValue"
             :inactive-value="item.closeValue"
@@ -481,12 +474,22 @@ export default {
       let flage = false
       let flageName = ''
       that.fromData.forEach(item => {
+        if(item.type=='timeOnly'){
+          try{
+            that.subfromData[item.key] = that.subfromData[item.key].getTime()
+          }catch(e){
+
+          }
+          if(!that.subfromData[item.key]){
+            that.subfromData[item.key] = 0
+          }
+        }
         if (item.must && that.subfromData[item.key] === '') {
           flage = true
           flageName = item.name
         }
         if (item.unsub) {
-          that.subfromData[item.key] = undefined
+          that.subfromData[item.key] = ""
         }
       })
       if (flage) {
@@ -499,12 +502,19 @@ export default {
         this.$message.error("空链接")
         return
       }
+      let subfromData = {}
       for(let key in that.subfromData){
         if(typeof(that.subfromData[key])==='number'){
           that.subfromData[key] = String(that.subfromData[key])
         }
+        if(typeof(that.subfromData[key])==='object'){
+          that.subfromData[key] = JSON.stringify(that.subfromData[key])
+        }
+        if(that.subfromData[key]!==""){
+          subfromData[key] = that.subfromData[key]
+        }
       }
-      fun(that.subfromData).then(() => {
+      fun(subfromData).then(() => {
         that.fromData = []
         that.subfromData = {}
         that.subfromFunIndex = 0
@@ -552,6 +562,9 @@ export default {
           continue
         }
         if (item.type === 'time') {
+          if(!item.startKey||!item.endKey){
+            continue
+          }
           if (item.value && item.value.length > 1) {
             try{
               this.fliter[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
@@ -565,11 +578,16 @@ export default {
             this.fliter[item.endKey] = ''
           }
         }
-        else if (item.type === 'switch' && item.value === 'null') {
-          this.fliter[item.key] = ""
-        }
-        else {
-          this.fliter[item.key] = item.value
+        else{
+          if(!item.key){
+            continue
+          }
+          if (item.type === 'switch' && item.value === 'null') {
+            this.fliter[item.key] = ""
+          }
+          else {
+            this.fliter[item.key] = item.value
+          }
         }
       }
       this.fliter.sort = this.sort
@@ -684,33 +702,35 @@ export default {
               let subfromData = utils.deepClone(btn.subfromData)
               for (let key in subfromData) {
                 // "***"取表格这一行中的值
-                if (subfromData[key] == '***') {
-                  subfromData[key] = row[key]
-                }
-                else if (subfromData[key].includes('***|')) {
-                  // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
-                  let temp = subfromData[key].split('|')
-                  if(temp.length==2){
-                    subfromData[key] = utils[temp[1]](row[key])
+                if(typeof(subfromData[key])==='string'){
+                  if (subfromData[key] == '***') {
+                    subfromData[key] = row[key]
                   }
-                  // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
-                  else if(temp.length>2){
-                    subfromData[key] = utils[temp[1]](row[key],temp[2])
+                  else if (subfromData[key].includes('***|')) {
+                    // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
+                    let temp = subfromData[key].split('|')
+                    if(temp.length==2){
+                      subfromData[key] = utils[temp[1]](row[key])
+                    }
+                    // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
+                    else if(temp.length>2){
+                      subfromData[key] = utils[temp[1]](row[key],temp[2])
+                    }
                   }
-                }
-                else if (subfromData[key].includes('&&&|')) {
-                  let temp = subfromData[key].split('|')
-                  // "&&&|指定key"取表格这一行中指定的值
-                  if(temp.length==2){
-                    subfromData[key] = row[temp[1]]
-                  }
-                  // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
-                  else if(temp.length==3){
-                    subfromData[key] = utils[temp[2]](row[temp[1]])
-                  }
-                  // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
-                  else if(temp.length>3){
-                    subfromData[key] = utils[temp[2]](row[temp[1]],temp[3])
+                  else if (subfromData[key].includes('&&&|')) {
+                    let temp = subfromData[key].split('|')
+                    // "&&&|指定key"取表格这一行中指定的值
+                    if(temp.length==2){
+                      subfromData[key] = row[temp[1]]
+                    }
+                    // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
+                    else if(temp.length==3){
+                      subfromData[key] = utils[temp[2]](row[temp[1]])
+                    }
+                    // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
+                    else if(temp.length>3){
+                      subfromData[key] = utils[temp[2]](row[temp[1]],temp[3])
+                    }
                   }
                 }
               }
@@ -946,11 +966,11 @@ export default {
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
             if (!col.showTag[row[col.field]]) {
               return (
-                <el-tag type="info">{row[col.field]}</el-tag>
+                <el-tag type="info">{col.startStr+row[col.field]+col.endStr}</el-tag>
               );
             }
             return (
-              <el-tag type={col.showTag[row[col.field]].type}>{col.showTag[row[col.field]].content}</el-tag>
+              <el-tag type={col.showTag[row[col.field]].type}>{col.startStr+col.showTag[row[col.field]].content+col.endStr}</el-tag>
             );
           }
         }
@@ -962,7 +982,6 @@ export default {
             if (!row[col.field]) {
               fieldContent = ''
             }
-            fieldContent = col.startStr + fieldContent + col.endStr
             var element
             if (renderBodyCell) {
               if (row[col.showOverflow]) {

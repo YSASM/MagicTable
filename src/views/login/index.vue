@@ -11,15 +11,14 @@
           <div class="title">hello !</div>
           <div class="title-tips">欢迎来到{{ title }}！</div>
           <el-form-item prop="username" style="margin-top: 40px">
-            <el-dropdown @command="changeBaseUrlCommand">
-              <span style="cursor: pointer">
-                链接切换
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
+            <el-dropdown @command="changeBaseUrlCommand" trigger="click">
+              <el-button type="primary">
+                链接切换<i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
               <el-dropdown-menu slot="dropdown" class="tabs-more">
                 <el-dropdown-item :command="item" v-for="item, i in baseUrlList" :key="i">
-                  <vab-icon :icon="baseURL == item.url ? ['fas', 'check'] : ['fas', 'paperclip']" />
                   {{ item.name }}
+                  <vab-icon v-if="baseURL == item.url" :icon="['fas', 'check']" />
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
