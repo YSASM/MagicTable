@@ -181,11 +181,11 @@ let data = {
     { field: "name", key: "nametag", title: "名称2", align: "center", width: 50, showOverflow: "name",endStr:'[Tag]' ,showTag:{
       'test1':{
         type:'success',
-        content:'test1'
+        content:'test11'
       },
       'test2':{
         type:'warning',
-        content:'test2'
+        content:'test22'
       }
     }},
     { field: "status", key: "status", title: "状态", align: "center", width: 50, },
