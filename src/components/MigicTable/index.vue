@@ -605,6 +605,7 @@ export default {
     },
     // 搜索
     async fetchData() {
+      this.tableEditorJsonContent = {}
       if(_this.globa.loadingInstance){_this.globa.loadingInstance.show();}
       let origin_fliter = utils.deepClone(this.fliter)
       // 获取过滤参数
@@ -903,18 +904,21 @@ export default {
               if (!height) {
                 height = "100%"
               }
-              let contanttype = typeof (row[item.value])
-              if (contanttype == 'string') {
-                try {
-                  this.tableEditorJsonContent[item.value + rowIndex] = JSON.parse(row[item.value])
-                } catch (e) {
+              if (!this.tableEditorJsonContent[item.value + rowIndex]) {
+                let contanttype = typeof (row[item.value])
+                if (contanttype == 'string') {
+                  try {
+                    this.tableEditorJsonContent[item.value + rowIndex] = JSON.parse(row[item.value])
+                  } catch (e) {
+                    this.tableEditorJsonContent[item.value + rowIndex] = {}
+                  }
+                } else if (contanttype != 'object') {
                   this.tableEditorJsonContent[item.value + rowIndex] = {}
+                } else {
+                  this.tableEditorJsonContent[item.value + rowIndex] = row[item.value]
                 }
-              } else if (contanttype != 'object') {
-                this.tableEditorJsonContent[item.value + rowIndex] = {}
-              } else {
-                this.tableEditorJsonContent[item.value + rowIndex] = row[item.value]
               }
+
 
               return (
                 <el-popover popper-class="popper-class pop-max-content" placement="top">
