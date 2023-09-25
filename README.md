@@ -1,5 +1,10 @@
-# MagicTable
-基于vue-admin-beautiful,elementui,vue-easytable等实现的网页快速生成框架,只需要编写js文件就能实现管理面板的表格页面
+# 快速搭建一个公司管理系统
+
+## MagicTable
+基于vue-admin-beautiful,elementui,vue-easytable等实现的网页快速生成框架，无需编写html和css代码，只需要编写js文件就能实现管理面板的表格页面。
+
+## github链接
+[https://github.com/YSASM/MagicTable](https://github.com/YSASM/MagicTable)
 
 ## 特点
 
@@ -7,7 +12,11 @@
 * 简洁
 * 缩短开发时间
 
-## 开始
+## 示例
+![示例页面](https://img-blog.csdnimg.cn/0303d325711044129934b89d27acada1.png#pic_center)
+
+
+## 如何开始
 
 ```
 git clone https://github.com/YSASM/MagicTable.git
@@ -15,6 +24,8 @@ git clone https://github.com/YSASM/MagicTable.git
 cd MagicTable
 
 yarn
+
+yarn run dev
 ```
 
 ## 如何创建新页面
