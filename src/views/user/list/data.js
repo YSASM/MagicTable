@@ -19,7 +19,6 @@ let data = {
       } else {
         subfromData.status = "2"
       }
-      console.log(subfromData)
       api.editorUserList(subfromData).then(res => {
         resolve()
       })
