@@ -5,20 +5,21 @@ let data = {
   scrollWidth: 1800,
   pageSizeOption: [20, 50, 100, 200],
   fetchFun: api.getUserList,
-  subfromFun0: (subfromData) => {
+  subfromFunEditor: (subfromData) => {
     return new Promise((resolve, reject) => {
       if (subfromData.no_vip_expire_time) {
-        subfromData.no_vip_expire_time = undefined
         subfromData.vip_expire_time = "-1"
       }
       else {
         subfromData.vip_expire_time = String(Math.floor(subfromData.vip_expire_time / 1000))
       }
+      delete subfromData.no_vip_expire_time
       if (subfromData.status == "正常") {
         subfromData.status = "1"
       } else {
         subfromData.status = "2"
       }
+      console.log(subfromData)
       api.editorUserList(subfromData).then(res => {
         resolve()
       })
@@ -269,7 +270,6 @@ let data = {
                 name: '永久会员',
                 key: 'no_vip_expire_time',
                 type: 'switch',
-                unsub: true,
                 openValue: true,
                 closeValue: false,
               },
@@ -284,7 +284,7 @@ let data = {
             _this.tableData.fromTitle = "编辑"
             _this.tableData.showFrom = true
             _this.tableData.subfromData = { vip_expire_time: row.vip_expire_time == "永不过期" ? new Date().getTime() : row.vip_expire_time, user_id: row.id, avater: row.avater, status: row.status, no_vip_expire_time: row.vip_expire_time == "永不过期" }
-            _this.tableData.subfromFunIndex = 0
+            _this.tableData.subfromFunIndex = 'Editor'
           }}>编辑</el-button>
         );
       },
