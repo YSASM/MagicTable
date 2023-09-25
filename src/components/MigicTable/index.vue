@@ -485,7 +485,9 @@ export default {
       that.fromData.forEach(item => {
         if(item.type=='timeOnly'){
           try{
-            that.subfromData[item.key] = that.subfromData[item.key].getTime()
+            if(typeof(that.subfromData[item.key])==='object'){
+              that.subfromData[item.key] = that.subfromData[item.key].getTime()
+            }
           }catch(e){}
         }
         if(item.type=='tags'){
