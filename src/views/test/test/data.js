@@ -209,7 +209,10 @@ let data = {
               rule:{
                 maxLength:10,
                 minLength:3,
-              }
+              },
+              // status==1时禁用
+              disablekey:'status',
+              disableval:'1'
             },
             {
               name: '名称2',
@@ -224,7 +227,11 @@ let data = {
                 equationStr:'名称2要与名称1相同 ',
                 maxLength:10,
                 minLength:3,
-              }
+              },
+              // status!=1时禁用
+              disablekey:'status',
+              disableval:'1',
+              able:true
             },
             {
               name: '数字',
