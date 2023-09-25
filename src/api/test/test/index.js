@@ -6,7 +6,8 @@ let items = [
     config: {
       xxx: 1,
       xxxx: 2
-    }
+    },
+    tags: "test1,test2"
   },
   {
     id: 2,
@@ -15,7 +16,8 @@ let items = [
     config: {
       yyy: 1,
       yyyy: 2
-    }
+    },
+    tags: " ",
   }
 ]
 

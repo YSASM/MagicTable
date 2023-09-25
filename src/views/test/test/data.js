@@ -258,6 +258,23 @@ let data = {
               openValue: '1',
               closeValue: '2'
             },
+            {
+              name: '标签',
+              key: 'tags',
+              type: 'tags',
+              tag: '+新标签',
+              addTagText: '+新标签',
+            },
+            {
+              name: '时间',
+              key: 'time',
+              type: 'timeOnly',
+              unsub: true,
+              // status!=1时禁用
+              disablekey:'status',
+              disableval:'1',
+              able:true
+            }
           ],
           subfromData: {
             id: "***",
@@ -265,7 +282,9 @@ let data = {
             name2:"",
             status:"***",
             num: 50,
-            config:"***"
+            config:"***",
+            tags: "***|strToArr",
+            time:null
           },
           fromTitle: "编辑",
           subfromFunIndex: "Editor"
@@ -279,7 +298,7 @@ let data = {
             
           },
           subfromFunIndex: "Del"
-        }
+        },
       ],
     },
     {
