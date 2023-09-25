@@ -6,6 +6,7 @@ let data = {
   fetchFun: api.getConfigList,
   subfromFunWhitList: (data) => {
     return new Promise((resolve, reject) => {
+      data.white_list = JSON.parse(data.white_list)
       data.white_list = data.white_list.length > 0 ? data.white_list.toLocaleString() : " "
       api.editorConfigList(data).then(res => {
         resolve(res)
