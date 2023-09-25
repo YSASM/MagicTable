@@ -488,6 +488,11 @@ export default {
             that.subfromData[item.key] = that.subfromData[item.key].getTime()
           }catch(e){}
         }
+        if(item.type=='tags'){
+          try{
+            that.subfromData[item.key] = that.subfromData[item.key].length > 0 ? that.subfromData[item.key].toLocaleString() : " "
+          }catch(e){}
+        }
         if (item.must && that.subfromData[item.key] === '') {
           flage = true
           flageName = item.name
