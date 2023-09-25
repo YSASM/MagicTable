@@ -919,7 +919,7 @@ export default {
                     this.tableEditorJsonContent = row[item.value]
                   }
                   this.$forceUpdate()
-                  }} on-hide={()=>{this.tableEditorJsonContent = {};}}>
+                  }} on-hide={()=>{this.tableEditorJsonContent = {};this.disableJsonEditorSub = false;}}>
                   <div style="text-align:center">
                     <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left;height:" + height} v-model={this.tableEditorJsonContent}
                       show-btns={false}
