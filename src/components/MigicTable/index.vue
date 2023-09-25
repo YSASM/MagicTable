@@ -903,21 +903,18 @@ export default {
               if (!height) {
                 height = "100%"
               }
-              if (!this.tableEditorJsonContent[item.value + rowIndex]) {
-                let contanttype = typeof (row[item.value])
-                if (contanttype == 'string') {
-                  try {
-                    this.tableEditorJsonContent[item.value + rowIndex] = JSON.parse(row[item.value])
-                  } catch (e) {
-                    this.tableEditorJsonContent[item.value + rowIndex] = {}
-                  }
-                } else if (contanttype != 'object') {
+              let contanttype = typeof (row[item.value])
+              if (contanttype == 'string') {
+                try {
+                  this.tableEditorJsonContent[item.value + rowIndex] = JSON.parse(row[item.value])
+                } catch (e) {
                   this.tableEditorJsonContent[item.value + rowIndex] = {}
-                } else {
-                  this.tableEditorJsonContent[item.value + rowIndex] = row[item.value]
                 }
+              } else if (contanttype != 'object') {
+                this.tableEditorJsonContent[item.value + rowIndex] = {}
+              } else {
+                this.tableEditorJsonContent[item.value + rowIndex] = row[item.value]
               }
-
 
               return (
                 <el-popover popper-class="popper-class pop-max-content" placement="top">
