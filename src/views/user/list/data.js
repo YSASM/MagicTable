@@ -269,6 +269,7 @@ let data = {
                 name: '永久会员',
                 key: 'no_vip_expire_time',
                 type: 'switch',
+                unsub: true,
                 openValue: true,
                 closeValue: false,
               },
