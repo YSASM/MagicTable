@@ -605,6 +605,7 @@ export default {
     },
     // 搜索
     async fetchData() {
+      this.tableEditorJsonContent = {}
       if(_this.globa.loadingInstance){_this.globa.loadingInstance.show();}
       let origin_fliter = utils.deepClone(this.fliter)
       // 获取过滤参数
@@ -891,9 +892,6 @@ export default {
         this.tableEditorJson.forEach(item => {
           if (item.field == col.field) {
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
-              if (!row[col.field]) {
-                row[col.field] = ''
-              }
               let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
               let width = item.width
               if (!width) {
@@ -903,26 +901,27 @@ export default {
               if (!height) {
                 height = "100%"
               }
-              if (!this.tableEditorJsonContent[item.value + rowIndex]) {
-                let contanttype = typeof (row[item.value])
-                if (contanttype == 'string') {
-                  try {
-                    this.tableEditorJsonContent[item.value + rowIndex] = JSON.parse(row[item.value])
-                  } catch (e) {
-                    this.tableEditorJsonContent[item.value + rowIndex] = {}
-                  }
-                } else if (contanttype != 'object') {
-                  this.tableEditorJsonContent[item.value + rowIndex] = {}
-                } else {
-                  this.tableEditorJsonContent[item.value + rowIndex] = row[item.value]
-                }
-              }
-
-
               return (
-                <el-popover popper-class="popper-class pop-max-content" placement="top">
+                <el-popover popper-class="popper-class pop-max-content" placement="top" on-show={()=>{
+                  if (!row[col.field]) {
+                    row[col.field] = ''
+                  }
+                  let contanttype = typeof (row[item.value])
+                  if (contanttype == 'string') {
+                    try {
+                      this.tableEditorJsonContent = JSON.parse(row[item.value])
+                    } catch (e) {
+                      this.tableEditorJsonContent = {}
+                    }
+                  } else if (contanttype != 'object') {
+                    this.tableEditorJsonContent = {}
+                  } else {
+                    this.tableEditorJsonContent = row[item.value]
+                  }
+                  this.$forceUpdate()
+                  }} on-hide={()=>{this.tableEditorJsonContent = {};}}>
                   <div style="text-align:center">
-                    <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left;height:" + height} v-model={this.tableEditorJsonContent[item.value + rowIndex]}
+                    <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left;height:" + height} v-model={this.tableEditorJsonContent}
                       show-btns={false}
                       lang="zh"
                       mode="code"
@@ -937,7 +936,7 @@ export default {
                       let params = {
                         id: row.id,
                       }
-                      params[item.value] = JSON.stringify(this.tableEditorJsonContent[item.value + rowIndex])
+                      params[item.value] = JSON.stringify(this.tableEditorJsonContent)
                       item.subFun(params).then(() => {
                         this.$message.success("操作成功")
                         this.fetchData()
