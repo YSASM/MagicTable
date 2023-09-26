@@ -80,6 +80,7 @@ module.exports = {
       '/jzapi': {
         target: 'https://jz.batiao8.com',
         // target: "http://192.168.2.73:9263",
+        // target: "http://127.0.0.1:9263",
         // changeOrigin: true,
         // ws: false,
         pathRewrite: { '^/jzapi': '' },

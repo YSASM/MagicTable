@@ -81,9 +81,11 @@
         :contextmenu-body-option="contextmenuBodyOption" :sort-option="sortOption"
         :column-width-resize-option="columnWidthResizeOption" :editOption="editOption" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
-      <ve-pagination class="table-pagination" :total="totalCount" :page-index="fliter.page"
-        :page-size-option="pageSizeOption" :page-size="fliter.size" @on-page-number-change="pageNumberChange"
-        @on-page-size-change="pageSizeChange" />
+      <div class="table-pagination" style="display: flex;flex-direction: row;">
+        <ve-pagination :total="totalCount" :page-index="fliter.page" :page-size-option="pageSizeOption"
+          :page-size="fliter.size" @on-page-number-change="pageNumberChange" @on-page-size-change="pageSizeChange" />
+        <span style="margin: auto;margin-right: 0;" v-html="showText" />
+      </div>
     </el-card>
     <!-- {{ showFrom }} -->
 
@@ -238,6 +240,7 @@ export default {
   },
   data() {
     let data = {
+      showText:"",
       fliterClearable:true,
       cascaderOptionProps: {
         value: "key",
@@ -1026,6 +1029,7 @@ export default {
 <style lang="scss" scoped>
 .container {
   padding: 0 !important;
+  padding-bottom: 60px !important;
   margin: 0 !important;
   background: none;
 

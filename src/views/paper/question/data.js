@@ -2,6 +2,7 @@ import _this from "@/main.js"
 import api from "@/api/paper/paper/index"
 import gradeapi from "@/api/paper/grade/index"
 import questionApi from "@/api/paper/question/index"
+import utils from "@/utils"
 _this.setDefaultGloba = () => {
   return {
     getPaperListData: {
@@ -85,7 +86,20 @@ _this.setDefaultMethods = () => {
 let data = {
   scrollWidth: 2000,
   pageSizeOption: [20, 50, 100, 200],
-  fetchFun: questionApi.getPaperQuestionList,
+  fetchFun: (data) => {
+    return new Promise((resolve, reject) => {
+      questionApi.getPaperQuestionList(data).then(res => {
+        let temp = utils.deepClone(res)
+        let s = 0
+        temp = temp.data.items
+        temp.forEach(i => {
+          s += i.score
+        })
+        _this.tableData.showText = "<span style='color:red'>总分：" + s + "</span>"
+        resolve(res)
+      })
+    })
+  },
   subfromFunEditor: questionApi.editorPaperQuestionList,
   subfromFunAdd: questionApi.addPaperQuestionList,
   subfromFunDel: questionApi.delPaperQuestionList,
