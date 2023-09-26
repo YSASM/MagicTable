@@ -8,18 +8,18 @@ export default {
       params,
     })
   },
-  async editorAccountList(data) {
+  async editorAccountList(params) {
     return request({
       url: '/admin/account',
       method: 'put',
-      data,
+      params,
     })
   },
-  async addAccountList(data) {
+  async addAccountList(params) {
     return request({
       url: '/admin/account',
       method: 'post',
-      data,
+      params,
     })
   },
   async delAccountList(params) {

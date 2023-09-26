@@ -8,18 +8,18 @@ export default {
       params,
     })
   },
-  async editorPaperGradeList(data) {
+  async editorPaperGradeList(params) {
     return request({
       url: '/admin/paper/grade',
       method: 'put',
-      data,
+      params,
     })
   },
-  async addPaperGradeList(data) {
+  async addPaperGradeList(params) {
     return request({
       url: '/admin/paper/grade',
       method: 'post',
-      data,
+      params,
     })
   },
   async delPaperGradeList(params) {

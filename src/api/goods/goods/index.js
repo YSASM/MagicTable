@@ -8,18 +8,18 @@ export default {
       params,
     })
   },
-  async editorGoodsList(data) {
+  async editorGoodsList(params) {
     return request({
       url: '/admin/goods',
       method: 'put',
-      data,
+      params,
     })
   },
-  async addGoodsList(data) {
+  async addGoodsList(params) {
     return request({
       url: '/admin/goods',
       method: 'post',
-      data,
+      params,
     })
   },
   async delGoodsList(params) {

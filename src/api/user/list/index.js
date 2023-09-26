@@ -8,11 +8,11 @@ export default {
       params,
     })
   },
-  async editorUserList(data) {
+  async editorUserList(params) {
     return request({
       url: '/admin/user',
       method: 'put',
-      data,
+      params,
     })
   }
 }

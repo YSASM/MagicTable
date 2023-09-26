@@ -8,11 +8,11 @@ export default {
       params,
     })
   },
-  async editorUserEventList(data) {
+  async editorUserEventList(params) {
     return request({
       url: '/admin/user/event',
       method: 'put',
-      data,
+      params,
     })
   }
 }

@@ -8,18 +8,18 @@ export default {
       params,
     })
   },
-  async editorPaperQuestionList(data) {
+  async editorPaperQuestionList(params) {
     return request({
       url: '/admin/info',
       method: 'put',
-      data,
+      params,
     })
   },
-  async addPaperQuestionList(data) {
+  async addPaperQuestionList(params) {
     return request({
       url: '/admin/info',
       method: 'post',
-      data,
+      params,
     })
   },
   async delPaperQuestionList(params) {

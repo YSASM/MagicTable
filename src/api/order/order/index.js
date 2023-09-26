@@ -8,11 +8,11 @@ export default {
       params,
     })
   },
-  async billRefund(data) {
+  async billRefund(params) {
     return request({
       url: '/admin/order/refund',
       method: 'post',
-      data,
+      params,
     })
   },
 }

@@ -8,18 +8,18 @@ export default {
       params,
     })
   },
-  async editorPaperPaperList(data) {
+  async editorPaperPaperList(params) {
     return request({
       url: '/admin/paper',
       method: 'put',
-      data,
+      params,
     })
   },
-  async addPaperPaperList(data) {
+  async addPaperPaperList(params) {
     return request({
       url: '/admin/paper',
       method: 'post',
-      data,
+      params,
     })
   },
   async delPaperPaperList(params) {
