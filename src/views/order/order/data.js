@@ -2,7 +2,7 @@ import api from "@/api/order/order/index"
 import _this from "@/main.js"
 import utils from "@/utils"
 let data = {
-  scrollWidth: 2000,
+  scrollWidth: 2200,
   pageSizeOption: [20, 50, 100, 200],
   fetchFun: api.getBillList,
   subfromFunRefund: api.billRefund,
@@ -200,11 +200,10 @@ let data = {
     { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
     { field: "user_id", key: "user_id", title: "用户ID", align: "center", width: 25, sortBy: "" },
     { field: "user_name", key: "user_name", title: "用户名", align: "center", width: 25, showOverflow: "user_name" },
-    { field: "user_source", key: "user_source", title: "推广来源", align: "center", width: 25 },
     { field: "goods_id", key: "goods_id", title: "商品ID", align: "center", width: 25 },
     { field: "goods_name", key: "goods_name", title: "商品名", align: "center", width: 25 },
     { field: "goods_source", key: "goods_source", title: "商品来源", align: "center", width: 25 },
-    { field: "out_trade_no", key: "out_trade_no", title: "订单号", align: "center", width: 25, showOverflow: "out_trade_no" },
+    { field: "out_trade_no", key: "out_trade_no", title: "订单号", align: "center", width: 80, showOverflow: "out_trade_no" },
     { field: "total_fee", key: "total_fee", title: "付款金额", align: "center", width: 25, endStr: '元' },
     {
       field: "pay_type", key: "pay_type", title: "支付方式", align: "center", width: 30, showTag: {
@@ -219,6 +218,7 @@ let data = {
       }
     },
     { field: "pay_channel", key: "pay_channel", title: "支付渠道", align: "center", width: 25 },
+    { field: "user_source", key: "user_source", title: "推广来源", align: "center", width: 25 },
     { field: "platform", key: "platform", title: "平台", align: "center", width: 25 },
     { field: "channel", key: "channel", title: "用户渠道", align: "center", width: 25 },
     { field: "version", key: "version", title: "用户版本", align: "center", width: 25 },
