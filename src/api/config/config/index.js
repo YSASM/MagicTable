@@ -1,37 +1,29 @@
-import request from '@/utils/request'
-import utils from '@/utils'
+import { requests } from '@/api/default'
 
 export default {
   async getConfigList(params) {
-    return request({
+    return requests({
       url: '/admin/config',
       method: 'get',
-      params,
-    })
+    })(params)
   },
   async editorConfigList(params) {
-    if (params.white_list && typeof (params.white_list) != 'string') {
-      params.white_list = utils.arrToStr(params.white_list)
-    }
-    return request({
+    return requests({
       url: '/admin/config',
       method: 'put',
-      params,
-    })
+    })(params)
   },
   async addConfigList(params) {
-    return request({
+    return requests({
       url: '/admin/config',
       method: 'post',
-      params,
-    })
+    })(params)
   },
   async delConfigList(params) {
-    return request({
+    return requests({
       url: '/admin/config',
       method: 'delete',
-      params,
-    })
+    })(params)
   }
 }
 

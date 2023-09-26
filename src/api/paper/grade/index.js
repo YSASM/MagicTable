@@ -1,33 +1,29 @@
-import request from '@/utils/request'
+import { requests } from '@/api/default'
 
 export default {
   async getPaperGradeList(params) {
-    return request({
+    return requests({
       url: '/admin/paper/grade',
       method: 'get',
-      params,
-    })
+    })(params)
   },
   async editorPaperGradeList(params) {
-    return request({
+    return requests({
       url: '/admin/paper/grade',
       method: 'put',
-      params,
-    })
+    })(params)
   },
   async addPaperGradeList(params) {
-    return request({
+    return requests({
       url: '/admin/paper/grade',
       method: 'post',
-      params,
-    })
+    })(params)
   },
   async delPaperGradeList(params) {
-    return request({
+    return requests({
       url: '/admin/paper/grade',
       method: 'delete',
-      params,
-    })
+    })(params)
   }
 }
 

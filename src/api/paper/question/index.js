@@ -1,33 +1,28 @@
-import request from '@/utils/request'
-
+import { requests } from '@/api/default'
 export default {
   async getPaperQuestionList(params) {
-    return request({
+    return requests({
       url: '/admin/info',
       method: 'get',
-      params,
-    })
+    })(params)
   },
   async editorPaperQuestionList(params) {
-    return request({
+    return requests({
       url: '/admin/info',
       method: 'put',
-      params,
-    })
+    })(params)
   },
   async addPaperQuestionList(params) {
-    return request({
+    return requests({
       url: '/admin/info',
       method: 'post',
-      params,
-    })
+    })(params)
   },
   async delPaperQuestionList(params) {
-    return request({
+    return requests({
       url: '/admin/info',
       method: 'delete',
-      params,
-    })
+    })(params)
   }
 }
 

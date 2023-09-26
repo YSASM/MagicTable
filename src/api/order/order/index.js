@@ -1,19 +1,17 @@
-import request from '@/utils/request'
+import { requests } from '@/api/default'
 
 export default {
   async getBillList(params) {
-    return request({
+    return requests({
       url: '/admin/order',
       method: 'get',
-      params,
-    })
+    })(params)
   },
   async billRefund(params) {
-    return request({
+    return requests({
       url: '/admin/order/refund',
       method: 'post',
-      params,
-    })
+    })(params)
   },
 }
 

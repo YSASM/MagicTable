@@ -1,10 +1,14 @@
 import api from "@/api/config/config/index"
 import _this from "@/main.js"
+import utils from "@/utils"
 let data = {
   scrollWidth: 1500,
   pageSizeOption: [20, 50, 100, 200],
   fetchFun: api.getConfigList,
   subfromFunWhitList: (data) => {
+    if (data.white_list && typeof (data.white_list) != 'string') {
+      data.white_list = utils.arrToStr(data.white_list)
+    }
     return new Promise((resolve, reject) => {
       api.editorConfigList(data).then(res => {
         resolve(res)

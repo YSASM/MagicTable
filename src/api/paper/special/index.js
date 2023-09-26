@@ -1,12 +1,11 @@
-import request from '@/utils/request'
+import { requests } from '@/api/default'
 
 export default {
   async getSpecialTree(params) {
-    return request({
+    return requests({
       url: '/admin/special/tree',
       method: 'get',
-      params,
-    })
+    })(params)
   },
 }
 

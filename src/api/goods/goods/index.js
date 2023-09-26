@@ -1,33 +1,29 @@
-import request from '@/utils/request'
+import { requests } from '@/api/default'
 
 export default {
   async getGoodsList(params) {
-    return request({
+    return requests({
       url: '/admin/goods',
       method: 'get',
-      params,
-    })
+    })(params)
   },
   async editorGoodsList(params) {
-    return request({
+    return requests({
       url: '/admin/goods',
       method: 'put',
-      params,
-    })
+    })(params)
   },
   async addGoodsList(params) {
-    return request({
+    return requests({
       url: '/admin/goods',
       method: 'post',
-      params,
-    })
+    })(params)
   },
   async delGoodsList(params) {
-    return request({
+    return requests({
       url: '/admin/goods',
       method: 'delete',
-      params,
-    })
+    })(params)
   }
 }
 

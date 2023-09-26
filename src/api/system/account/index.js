@@ -1,32 +1,27 @@
-import request from '@/utils/request'
-
+import { requests } from '@/api/default'
 export default {
   async getAccountList(params) {
-    return request({
+    return requests({
       url: '/admin/account',
       method: 'get',
-      params,
-    })
+    })(params)
   },
   async editorAccountList(params) {
-    return request({
+    return requests({
       url: '/admin/account',
       method: 'put',
-      params,
-    })
+    })(params)
   },
   async addAccountList(params) {
-    return request({
+    return requests({
       url: '/admin/account',
       method: 'post',
-      params,
-    })
+    })(params)
   },
   async delAccountList(params) {
-    return request({
+    return requests({
       url: '/admin/account',
       method: 'delete',
-      params,
-    })
+    })(params)
   }
 }

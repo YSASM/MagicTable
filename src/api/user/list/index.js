@@ -1,19 +1,17 @@
-import request from '@/utils/request'
+import { requests } from '@/api/default'
 
 export default {
   async getUserList(params) {
-    return request({
+    return requests({
       url: '/admin/user',
       method: 'get',
-      params,
-    })
+    })(params)
   },
   async editorUserList(params) {
-    return request({
+    return requests({
       url: '/admin/user',
       method: 'put',
-      params,
-    })
+    })(params)
   }
 }
 
