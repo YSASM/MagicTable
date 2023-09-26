@@ -188,9 +188,9 @@ let data = {
       field: "name", key: "name", title: "用户名", align: "center", width: 25,
       renderBodyCell: ({ row, column, rowIndex }, h) => {
         return (
-          <div style="display:flex;flex-direction:row;justify-content:space-between;">
+          <div style="display:flex;flex-direction:row;justify-content:space-between;" overflow={row.name}>
             <el-avatar style="align-self:center;margin-right:5px" size={18} src={row.avater}></el-avatar>
-            <span style="align-self:center;">{row.name}</span>
+            <div style="align-self:center;height:18px;width:50%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{row.name}</div>
           </div>
         )
       }
@@ -199,8 +199,8 @@ let data = {
     { field: "version", key: "version", title: "版本", align: "center", width: 25, },
     { field: "channel", key: "channel", title: "渠道", align: "center", width: 25, },
     { field: "ad_source", key: "ad_source", title: "广告来源", align: "center", width: 25, },
-    { field: "brand", key: "brand", title: "手机品牌", align: "center", width: 25, },
-    { field: "model", key: "model", title: "手机型号", align: "center", width: 25, },
+    { field: "brand", key: "brand", title: "手机品牌", align: "center", width: 25,  showOverflow:"brand"},
+    { field: "model", key: "model", title: "手机型号", align: "center", width: 25,  showOverflow:"model"},
     {
       field: "role", key: "role", title: "用户类型", align: "center", width: 25, showTag: {
         "临时用户": {
@@ -242,7 +242,7 @@ let data = {
       }, showOverflow: "vip_expire_time"
     },
     { field: "phone", key: "phone", title: "手机号", align: "center", width: 30, },
-    { field: "ad_identify", key: "ad_identify", title: "广告Id", align: "center", width: 25, },
+    { field: "ad_identify", key: "ad_identify", title: "广告Id", align: "center", width: 25, showOverflow:"ad_identify"},
     { field: "client_ip", key: "client_ip", title: "用户IP", align: "center", width: 35, },
     { field: "active_time", key: "active_time", title: "活跃时间", align: "center", width: 50, sortBy: "" },
     { field: "create_time", key: "create_time", title: "激活时间", align: "center", width: 50, sortBy: "desc" },

@@ -124,7 +124,7 @@ let data = {
     {
       field: 'id',
       value: '',
-      width: '200px'
+      width: '500px'
     },
   ],
   tableEditorJson: [

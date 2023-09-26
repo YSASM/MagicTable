@@ -676,6 +676,9 @@ export default {
       })
       return data
     },
+    getFieldContent(row,col){
+      return <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height;18px;">{typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr}</div>
+    },
     // 更新或者添加一个搜索过滤
     upDateAppendFliterOption(obj) {
       let flage = false
@@ -709,13 +712,13 @@ export default {
         if (col.sortBy || col.sortBy === "") {
           defaultSort[col.field] = col.sortBy
         }
-        // 单元格禁止换行可以在外面自行更改
-        if (!col.ellipsis) {
-          col.ellipsis = {
-            showTitle: true,
-            lineClamp: 1,
-          }
-        }
+        // // 单元格禁止换行可以在外面自行更改
+        // if (!col.ellipsis) {
+        //   col.ellipsis = {
+        //     showTitle: true,
+        //     lineClamp: 1,
+        //   }
+        // }
         if (col.buttons) {
           // 单元格中插入按钮
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
@@ -867,7 +870,7 @@ export default {
               if (!row[col.field]) {
                 row[col.field] = ''
               }
-              let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
+              let fieldContent = this.getFieldContent(row,col)
               let contant = item.value ? row[item.value] : row
               let contanttype = typeof (contant)
               let width = item.width
@@ -904,7 +907,7 @@ export default {
         this.tableEditorJson.forEach(item => {
           if (item.field == col.field) {
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
-              let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
+              let fieldContent = this.getFieldContent(row,col)
               let width = item.width
               if (!width) {
                 width = "100%"
@@ -1000,7 +1003,7 @@ export default {
         if (col.showOverflow) {
           let renderBodyCell = col.renderBodyCell
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
-            let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
+            let fieldContent = this.getFieldContent(row,col)
             if (!row[col.field]) {
               fieldContent = ''
             }
@@ -1024,6 +1027,11 @@ export default {
               element = temp
             }
             return element
+          }
+        }
+        if(!col.renderBodyCell){
+          col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+            return this.getFieldContent(row,col)
           }
         }
       })
