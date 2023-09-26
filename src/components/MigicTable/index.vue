@@ -934,7 +934,7 @@ export default {
                     <el-button disabled={this.disableJsonEditorSub} style={"width:" + width + " !important;margin-top:10px;"} type="primary" on-click={() => {
                       this.colsePopover();
                       let params = {
-                        id: row.id,
+                        id: String(row.id),
                       }
                       params[item.value] = JSON.stringify(this.tableEditorJsonContent)
                       item.subFun(params).then(() => {
@@ -957,7 +957,7 @@ export default {
               return (
                 <el-switch on-change={() => {
                   let params = {
-                    id: row.id,
+                    id: String(row.id),
                   }
                   params[item.value] = row[item.value]
                   item.subFun(params).then(() => {
