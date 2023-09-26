@@ -89,7 +89,8 @@
     </el-card>
     <!-- {{ showFrom }} -->
 
-    <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%" @close="disabledSubFrom = {}">
+    <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%" @close="disabledSubFrom = {}"
+      :close-on-click-modal="false">
       <el-form v-model="subfromData" ref="form" label-width="100px">
         <el-form-item :prop="item.key" :label="item.name" v-for="item, index in  fromData " :key="index" :rules="item.must ? {
           required: true, trigger: item.trigger || ['blur', 'change'], validator: (rule, value, callback) => {
@@ -402,6 +403,11 @@ export default {
     _this.methods.upDateTable = this.upDateTable
     _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
     _this.globa.PageId = this.PageId
+    window.addEventListener('keydown',(event)=>{
+      if(event.key==='Escape'){
+        this.colsePopover()
+      }
+    })
     this.overLoad = true
   },
   methods: {
@@ -518,7 +524,6 @@ export default {
         this.$message.error("空链接")
         return
       }
-      let subfromData = {}
       for(let key in that.subfromData){
         if(typeof(that.subfromData[key])==='number'){
           that.subfromData[key] = String(that.subfromData[key])
@@ -526,11 +531,8 @@ export default {
         if(typeof(that.subfromData[key])==='object'){
           that.subfromData[key] = JSON.stringify(that.subfromData[key])
         }
-        if(that.subfromData[key]!==""){
-          subfromData[key] = that.subfromData[key]
-        }
       }
-      fun(subfromData).then(() => {
+      fun(that.subfromData).then(() => {
         that.fromData = []
         that.subfromData = {}
         that.subfromFunIndex = 0
