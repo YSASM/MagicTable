@@ -81,9 +81,11 @@
         :contextmenu-body-option="contextmenuBodyOption" :sort-option="sortOption"
         :column-width-resize-option="columnWidthResizeOption" :editOption="editOption" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
-      <ve-pagination class="table-pagination" :total="totalCount" :page-index="fliter.page"
-        :page-size-option="pageSizeOption" :page-size="fliter.size" @on-page-number-change="pageNumberChange"
-        @on-page-size-change="pageSizeChange" />
+      <div class="table-pagination" style="display: flex;flex-direction: row;">
+        <ve-pagination :total="totalCount" :page-index="fliter.page" :page-size-option="pageSizeOption"
+          :page-size="fliter.size" @on-page-number-change="pageNumberChange" @on-page-size-change="pageSizeChange" />
+        <span style="margin: auto;margin-right: 0;" v-html="showText" />
+      </div>
     </el-card>
     <!-- {{ showFrom }} -->
 
@@ -172,10 +174,12 @@
           <el-input v-if="item.type == 'input'" :type="item.rows != undefined ? 'textarea' : ''" :rows="item.rows"
             v-model="subfromData[item.key]" clearable
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
-            @input="item.inputed"></el-input>
+            @input="item.inputed"
+            @keyup.enter.native="!item.rows && Object.keys(disabledSubFrom).length === 0 ? subForm() : ''"></el-input>
           <el-input v-if="item.type == 'inputPw'" v-model="subfromData[item.key]" clearable
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
-            @input="item.inputed" show-password></el-input>
+            @input="item.inputed" show-password
+            @keyup.enter.native="Object.keys(disabledSubFrom).length === 0 ? subForm() : ''"></el-input>
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
             placeholder="选择日期时间"
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
@@ -238,6 +242,7 @@ export default {
   },
   data() {
     let data = {
+      showText:"",
       fliterClearable:true,
       cascaderOptionProps: {
         value: "key",
@@ -903,6 +908,8 @@ export default {
               }
               return (
                 <el-popover popper-class="popper-class pop-max-content" placement="top" on-show={()=>{
+                  this.tableEditorJsonContent = {};
+                  this.disableJsonEditorSub = false;
                   if (!row[col.field]) {
                     row[col.field] = ''
                   }
@@ -919,7 +926,7 @@ export default {
                     this.tableEditorJsonContent = row[item.value]
                   }
                   this.$forceUpdate()
-                  }} on-hide={()=>{this.tableEditorJsonContent = {};this.disableJsonEditorSub = false;}}>
+                  }}>
                   <div style="text-align:center">
                     <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left;height:" + height} v-model={this.tableEditorJsonContent}
                       show-btns={false}
@@ -1026,6 +1033,7 @@ export default {
 <style lang="scss" scoped>
 .container {
   padding: 0 !important;
+  padding-bottom: 60px !important;
   margin: 0 !important;
   background: none;
 
