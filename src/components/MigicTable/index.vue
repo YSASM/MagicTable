@@ -638,9 +638,14 @@ export default {
         this.totalCount = res.data.total
         // 删除所有自带title属性防止冲突
         setTimeout(() => {
-          const elements = document.querySelectorAll('*[title]');
+          let elements = document.querySelectorAll('*[title]');
           for (let i = 0; i < elements.length; i++) {
             elements[i].removeAttribute('title');
+          }
+          elements = document.querySelectorAll('*[overflow]');
+          for (let i = 0; i < elements.length; i++) {
+            elements[i].setAttribute('title',elements[i].getAttribute('overflow'));
+            elements[i].removeAttribute('overflow');
           }
         }, 1000)
         this.fliter = utils.deepClone(origin_fliter)
@@ -997,26 +1002,24 @@ export default {
             if (!row[col.field]) {
               fieldContent = ''
             }
-            var element
+            let element
+            let temp
             if (renderBodyCell) {
-              if (row[col.showOverflow]) {
-                element = <el-tooltip style="width: 100%;display: block;" class="item" effect="dark" content={row[col.showOverflow]} placement="top">
-                  {renderBodyCell({ row, column, rowIndex }, h)}
-                </el-tooltip>
-              }
-              else {
-                element = renderBodyCell({ row, column, rowIndex }, h)
-              }
+              temp = renderBodyCell({ row, column, rowIndex }, h)
             }
             else {
-              if (row[col.showOverflow]) {
-                element = <el-tooltip style="width: 100%;display: block;" class="item" effect="dark" content={row[col.showOverflow] || fieldContent} placement="top">
-                  <div>{fieldContent}</div>
-                </el-tooltip>
-              }
-              else {
-                element = <div>{fieldContent}</div>
-              }
+              temp = <div>{fieldContent}</div>
+            }
+            if (row[col.showOverflow]) {
+              // element = <el-tooltip style="width: 100%;display: block;" class="item" effect="dark" content={row[col.showOverflow] || fieldContent} placement="top">
+              //   {temp}
+              // </el-tooltip>
+              element = <div overflow={row[col.showOverflow] || fieldContent} >
+                {temp}
+              </div>
+            }
+            else {
+              element = temp
             }
             return element
           }
