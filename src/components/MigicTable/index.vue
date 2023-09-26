@@ -908,6 +908,8 @@ export default {
               }
               return (
                 <el-popover popper-class="popper-class pop-max-content" placement="top" on-show={()=>{
+                  this.tableEditorJsonContent = {};
+                  this.disableJsonEditorSub = false;
                   if (!row[col.field]) {
                     row[col.field] = ''
                   }
@@ -924,7 +926,7 @@ export default {
                     this.tableEditorJsonContent = row[item.value]
                   }
                   this.$forceUpdate()
-                  }} on-hide={()=>{this.tableEditorJsonContent = {};this.disableJsonEditorSub = false;}}>
+                  }}>
                   <div style="text-align:center">
                     <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left;height:" + height} v-model={this.tableEditorJsonContent}
                       show-btns={false}
