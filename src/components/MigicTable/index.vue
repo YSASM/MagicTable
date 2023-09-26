@@ -174,10 +174,12 @@
           <el-input v-if="item.type == 'input'" :type="item.rows != undefined ? 'textarea' : ''" :rows="item.rows"
             v-model="subfromData[item.key]" clearable
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
-            @input="item.inputed"></el-input>
+            @input="item.inputed"
+            @keyup.enter.native="!item.rows && Object.keys(disabledSubFrom).length === 0 ? subForm() : ''"></el-input>
           <el-input v-if="item.type == 'inputPw'" v-model="subfromData[item.key]" clearable
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
-            @input="item.inputed" show-password></el-input>
+            @input="item.inputed" show-password
+            @keyup.enter.native="Object.keys(disabledSubFrom).length === 0 ? subForm() : ''"></el-input>
           <el-date-picker v-if="item.type == 'timeOnly'" v-model="subfromData[item.key]" type="datetime"
             placeholder="选择日期时间"
             :disabled="item.disablekey && subfromData[item.disablekey] == item.disableval ? !item.able : item.able"
