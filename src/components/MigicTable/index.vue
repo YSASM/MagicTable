@@ -573,10 +573,11 @@ export default {
       this.fetchData()
     },
     // 获取搜索过滤信息
-    getFliter() {
+    getFliter(t) {
+      let temp = utils.deepClone(this.fliter)
       for (let i in this.fliterOption) {
         let item = this.fliterOption[i]
-        if (item.unsub) {
+        if (item.unsub&&t) {
           continue
         }
         if (item.type === 'time') {
@@ -585,15 +586,15 @@ export default {
           }
           if (item.value && item.value.length > 1) {
             try{
-              this.fliter[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
-              this.fliter[item.endKey] = item.subStr ? this.dateToString(item.value[1]) : Math.floor(item.value[1].getTime() / 1000)
+              temp[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
+              temp[item.endKey] = item.subStr ? this.dateToString(item.value[1]) : Math.floor(item.value[1].getTime() / 1000)
             }catch(e){
-              this.fliter[item.startKey] = ''
-              this.fliter[item.endKey] = ''
+              temp[item.startKey] = ''
+              temp[item.endKey] = ''
             }
           } else {
-            this.fliter[item.startKey] = ''
-            this.fliter[item.endKey] = ''
+            temp[item.startKey] = ''
+            temp[item.endKey] = ''
           }
         }
         else{
@@ -601,14 +602,15 @@ export default {
             continue
           }
           if (item.type === 'switch' && item.value === 'null') {
-            this.fliter[item.key] = ""
+            temp[item.key] = ""
           }
           else {
-            this.fliter[item.key] = item.value
+            temp[item.key] = item.value
           }
         }
       }
-      this.fliter.sort = this.sort
+      temp.sort = this.sort
+      return temp
     },
     // 搜索
     async fetchData() {
@@ -616,22 +618,22 @@ export default {
       if(_this.globa.loadingInstance){_this.globa.loadingInstance.show();}
       let origin_fliter = utils.deepClone(this.fliter)
       // 获取过滤参数
-      this.getFliter()
+      let fliter = this.getFliter()
       // 运行搜索前函数
       for (let i in this.fliterOption) {
         let item = this.fliterOption[i]
         if (item.beforFetch) {
-          await item.beforFetch(this.fliter)
+          await item.beforFetch(fliter)
         }
       }
       // 刷新过滤参数
-      this.getFliter()
+      fliter = this.getFliter(true)
       let fun = this.getter('fetchFun')
       if (!fun) {
         this.$message.error("空链接")
         return
       }
-      fun(this.fliter).then(res => {
+      fun(fliter).then(res => {
         if (!res.data.items) {
           res.data.items = []
         }
@@ -1098,3 +1100,24 @@ export default {
 
 }
 </style>
+<!-- " ......................阿弥陀佛......................\n" +
+  "                         _oo0oo_                      \n" +
+  "                       o8888888o                     \n" +
+  "                      88\" . \"88                     \n" +
+  "                       (| -_- |)                     \n" +
+  "                      0\\  =  /0                     \n" +
+  "                   ___/‘---’\\___                   \n" +
+  "                  .' \\|       |/ '.                 \n" +
+  "                 / \\\\|||  :  |||// \\                \n" +
+  "                / _||||| -卍-|||||_ \\               \n" +
+  "               |   | \\\\\\  -  /// |   |              \n" +
+  "               | \\_|  ''\\---/''  |_/ |              \n" +
+  "               \\  .-\\__  '-'  ___/-. /              \n" +
+  "             ___'. .'  /--.--\\  '. .'___            \n" +
+  "         .\"\" ‘<  ‘.___\\_<|>_/___.’>’ \"\".          \n" +
+  "       | | :  ‘- \\‘.;‘\\ _ /’;.’/ - ’ : | |        \n" +
+  "         \\  \\ ‘_.   \\_ __\\ /__ _/   .-’ /  /        \n" +
+  "    =====‘-.____‘.___ \\_____/___.-’___.-’=====     \n" +
+  "                       ‘=---=’                      \n" +
+  "                                                    \n" +
+  "....................佛祖保佑 ,永无BUG..................." -->
