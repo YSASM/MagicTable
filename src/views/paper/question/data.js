@@ -133,7 +133,7 @@ let data = {
         }
       ],
       value: '',
-      unsub: true,
+      // unsub: true,
       beforFetch: async (data) => {
         if (_this.globa.getPaperListData.type != data.type) {
           _this.globa.getPaperListData.type = data.type
@@ -147,7 +147,7 @@ let data = {
       type: "select",
       items: [],
       value: '',
-      unsub: true,
+      // unsub: true,
       beforFetch: async (data) => {
         if (_this.globa.getPaperListData.grade_id != data.categ2) {
           _this.globa.getPaperListData.grade_id = data.categ2
