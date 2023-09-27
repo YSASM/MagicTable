@@ -89,7 +89,8 @@
     </el-card>
     <!-- {{ showFrom }} -->
 
-    <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%" @close="disabledSubFrom = {}">
+    <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%" @close="disabledSubFrom = {}"
+      :close-on-click-modal="false">
       <el-form v-model="subfromData" ref="form" label-width="100px">
         <el-form-item :prop="item.key" :label="item.name" v-for="item, index in  fromData " :key="index" :rules="item.must ? {
           required: true, trigger: item.trigger || ['blur', 'change'], validator: (rule, value, callback) => {
@@ -402,6 +403,11 @@ export default {
     _this.methods.upDateTable = this.upDateTable
     _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
     _this.globa.PageId = this.PageId
+    window.addEventListener('keydown',(event)=>{
+      if(event.key==='Escape'){
+        this.colsePopover()
+      }
+    })
     this.overLoad = true
   },
   methods: {
@@ -518,7 +524,6 @@ export default {
         this.$message.error("空链接")
         return
       }
-      let subfromData = {}
       for(let key in that.subfromData){
         if(typeof(that.subfromData[key])==='number'){
           that.subfromData[key] = String(that.subfromData[key])
@@ -526,11 +531,8 @@ export default {
         if(typeof(that.subfromData[key])==='object'){
           that.subfromData[key] = JSON.stringify(that.subfromData[key])
         }
-        if(that.subfromData[key]!==""){
-          subfromData[key] = that.subfromData[key]
-        }
       }
-      fun(subfromData).then(() => {
+      fun(that.subfromData).then(() => {
         that.fromData = []
         that.subfromData = {}
         that.subfromFunIndex = 0
@@ -571,10 +573,11 @@ export default {
       this.fetchData()
     },
     // 获取搜索过滤信息
-    getFliter() {
+    getFliter(t) {
+      let temp = utils.deepClone(this.fliter)
       for (let i in this.fliterOption) {
         let item = this.fliterOption[i]
-        if (item.unsub) {
+        if (item.unsub&&t) {
           continue
         }
         if (item.type === 'time') {
@@ -583,15 +586,15 @@ export default {
           }
           if (item.value && item.value.length > 1) {
             try{
-              this.fliter[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
-              this.fliter[item.endKey] = item.subStr ? this.dateToString(item.value[1]) : Math.floor(item.value[1].getTime() / 1000)
+              temp[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
+              temp[item.endKey] = item.subStr ? this.dateToString(item.value[1]) : Math.floor(item.value[1].getTime() / 1000)
             }catch(e){
-              this.fliter[item.startKey] = ''
-              this.fliter[item.endKey] = ''
+              temp[item.startKey] = ''
+              temp[item.endKey] = ''
             }
           } else {
-            this.fliter[item.startKey] = ''
-            this.fliter[item.endKey] = ''
+            temp[item.startKey] = ''
+            temp[item.endKey] = ''
           }
         }
         else{
@@ -599,14 +602,15 @@ export default {
             continue
           }
           if (item.type === 'switch' && item.value === 'null') {
-            this.fliter[item.key] = ""
+            temp[item.key] = ""
           }
           else {
-            this.fliter[item.key] = item.value
+            temp[item.key] = item.value
           }
         }
       }
-      this.fliter.sort = this.sort
+      temp.sort = this.sort
+      return temp
     },
     // 搜索
     async fetchData() {
@@ -614,22 +618,22 @@ export default {
       if(_this.globa.loadingInstance){_this.globa.loadingInstance.show();}
       let origin_fliter = utils.deepClone(this.fliter)
       // 获取过滤参数
-      this.getFliter()
+      let fliter = this.getFliter()
       // 运行搜索前函数
       for (let i in this.fliterOption) {
         let item = this.fliterOption[i]
         if (item.beforFetch) {
-          await item.beforFetch(this.fliter)
+          await item.beforFetch(fliter)
         }
       }
       // 刷新过滤参数
-      this.getFliter()
+      fliter = this.getFliter(true)
       let fun = this.getter('fetchFun')
       if (!fun) {
         this.$message.error("空链接")
         return
       }
-      fun(this.fliter).then(res => {
+      fun(fliter).then(res => {
         if (!res.data.items) {
           res.data.items = []
         }
@@ -638,9 +642,14 @@ export default {
         this.totalCount = res.data.total
         // 删除所有自带title属性防止冲突
         setTimeout(() => {
-          const elements = document.querySelectorAll('*[title]');
+          let elements = document.querySelectorAll('*[title]');
           for (let i = 0; i < elements.length; i++) {
             elements[i].removeAttribute('title');
+          }
+          elements = document.querySelectorAll('*[overflow]');
+          for (let i = 0; i < elements.length; i++) {
+            elements[i].setAttribute('title',elements[i].getAttribute('overflow'));
+            elements[i].removeAttribute('overflow');
           }
         }, 1000)
         this.fliter = utils.deepClone(origin_fliter)
@@ -668,6 +677,9 @@ export default {
         fieldIndex++
       })
       return data
+    },
+    getFieldContent(row,col){
+      return <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height;18px;">{typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr}</div>
     },
     // 更新或者添加一个搜索过滤
     upDateAppendFliterOption(obj) {
@@ -702,13 +714,13 @@ export default {
         if (col.sortBy || col.sortBy === "") {
           defaultSort[col.field] = col.sortBy
         }
-        // 单元格禁止换行可以在外面自行更改
-        if (!col.ellipsis) {
-          col.ellipsis = {
-            showTitle: true,
-            lineClamp: 1,
-          }
-        }
+        // // 单元格禁止换行可以在外面自行更改
+        // if (!col.ellipsis) {
+        //   col.ellipsis = {
+        //     showTitle: true,
+        //     lineClamp: 1,
+        //   }
+        // }
         if (col.buttons) {
           // 单元格中插入按钮
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
@@ -860,7 +872,7 @@ export default {
               if (!row[col.field]) {
                 row[col.field] = ''
               }
-              let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
+              let fieldContent = this.getFieldContent(row,col)
               let contant = item.value ? row[item.value] : row
               let contanttype = typeof (contant)
               let width = item.width
@@ -897,7 +909,7 @@ export default {
         this.tableEditorJson.forEach(item => {
           if (item.field == col.field) {
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
-              let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
+              let fieldContent = this.getFieldContent(row,col)
               let width = item.width
               if (!width) {
                 width = "100%"
@@ -993,32 +1005,35 @@ export default {
         if (col.showOverflow) {
           let renderBodyCell = col.renderBodyCell
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
-            let fieldContent = typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
+            let fieldContent = this.getFieldContent(row,col)
             if (!row[col.field]) {
               fieldContent = ''
             }
-            var element
+            let element
+            let temp
             if (renderBodyCell) {
-              if (row[col.showOverflow]) {
-                element = <el-tooltip style="width: 100%;display: block;" class="item" effect="dark" content={row[col.showOverflow]} placement="top">
-                  {renderBodyCell({ row, column, rowIndex }, h)}
-                </el-tooltip>
-              }
-              else {
-                element = renderBodyCell({ row, column, rowIndex }, h)
-              }
+              temp = renderBodyCell({ row, column, rowIndex }, h)
             }
             else {
-              if (row[col.showOverflow]) {
-                element = <el-tooltip style="width: 100%;display: block;" class="item" effect="dark" content={row[col.showOverflow] || fieldContent} placement="top">
-                  <div>{fieldContent}</div>
-                </el-tooltip>
-              }
-              else {
-                element = <div>{fieldContent}</div>
-              }
+              temp = <div>{fieldContent}</div>
+            }
+            if (row[col.showOverflow]) {
+              // element = <el-tooltip style="width: 100%;display: block;" class="item" effect="dark" content={row[col.showOverflow] || fieldContent} placement="top">
+              //   {temp}
+              // </el-tooltip>
+              element = <div overflow={row[col.showOverflow] || fieldContent} >
+                {temp}
+              </div>
+            }
+            else {
+              element = temp
             }
             return element
+          }
+        }
+        if(!col.renderBodyCell){
+          col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+            return this.getFieldContent(row,col)
           }
         }
       })
@@ -1085,3 +1100,24 @@ export default {
 
 }
 </style>
+<!-- " ......................阿弥陀佛......................\n" +
+  "                         _oo0oo_                      \n" +
+  "                       o8888888o                     \n" +
+  "                      88\" . \"88                     \n" +
+  "                       (| -_- |)                     \n" +
+  "                      0\\  =  /0                     \n" +
+  "                   ___/‘---’\\___                   \n" +
+  "                  .' \\|       |/ '.                 \n" +
+  "                 / \\\\|||  :  |||// \\                \n" +
+  "                / _||||| -卍-|||||_ \\               \n" +
+  "               |   | \\\\\\  -  /// |   |              \n" +
+  "               | \\_|  ''\\---/''  |_/ |              \n" +
+  "               \\  .-\\__  '-'  ___/-. /              \n" +
+  "             ___'. .'  /--.--\\  '. .'___            \n" +
+  "         .\"\" ‘<  ‘.___\\_<|>_/___.’>’ \"\".          \n" +
+  "       | | :  ‘- \\‘.;‘\\ _ /’;.’/ - ’ : | |        \n" +
+  "         \\  \\ ‘_.   \\_ __\\ /__ _/   .-’ /  /        \n" +
+  "    =====‘-.____‘.___ \\_____/___.-’___.-’=====     \n" +
+  "                       ‘=---=’                      \n" +
+  "                                                    \n" +
+  "....................佛祖保佑 ,永无BUG..................." -->
