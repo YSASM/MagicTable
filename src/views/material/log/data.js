@@ -66,11 +66,11 @@ let data = {
   columns: [
     { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
     { field: "user_id", key: "user_id", title: "用户ID", align: "center", width: 25, },
-    { field: "domain", key: "domain", title: "域名", align: "center", width: 30, showOverflow: "domain" },
+    { field: "domain", key: "domain", title: "域名", align: "center", width: 30, },
     { field: "extractor", key: "extractor", title: "抽取器", align: "center", width: 30 },
-    { field: "request", key: "request", title: "请求内容", align: "center", width: 50, showOverflow: "request" },
-    { field: "request_md5", key: "request_md5", title: "请求内容md5", align: "center", width: 60, showOverflow: "request_md5" },
-    { field: "response", key: "response", title: "返回结构", align: "center", width: 20, showOverflow: "response" },
+    { field: "request", key: "request", title: "请求内容", align: "center", width: 50, },
+    { field: "request_md5", key: "request_md5", title: "请求内容md5", align: "center", width: 60, },
+    { field: "response", key: "response", title: "返回结构", align: "center", width: 20, },
     { field: "count", key: "count", title: "请求次数", align: "center", width: 20, endStr: '次' },
     { field: "cost", key: "cost", title: "耗时", align: "center", width: 20 },
     {

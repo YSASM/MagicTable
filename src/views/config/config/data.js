@@ -81,7 +81,7 @@ let data = {
   // update_time	""
   columns: [
     { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
-    { field: "name", key: "name", title: "名称", align: "center", width: 50, showOverflow: "name" },
+    { field: "name", key: "name", title: "名称", align: "center", width: 50, },
     { field: "params", key: "params", title: "配置参数", align: "center", width: 20 },
     // { field: "desc", key: "desc", title: "描述", align: "center", width: 20 },
     { field: "layer", key: "layer", title: "层数", align: "center", width: 20 },

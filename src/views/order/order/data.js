@@ -199,11 +199,11 @@ let data = {
   columns: [
     { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
     { field: "user_id", key: "user_id", title: "用户ID", align: "center", width: 25, sortBy: "" },
-    { field: "user_name", key: "user_name", title: "用户名", align: "center", width: 25, showOverflow: "user_name" },
+    { field: "user_name", key: "user_name", title: "用户名", align: "center", width: 25, },
     { field: "goods_id", key: "goods_id", title: "商品ID", align: "center", width: 25 },
     { field: "goods_name", key: "goods_name", title: "商品名", align: "center", width: 25 },
     { field: "goods_source", key: "goods_source", title: "商品来源", align: "center", width: 25 },
-    { field: "out_trade_no", key: "out_trade_no", title: "订单号", align: "center", width: 80, showOverflow: "out_trade_no" },
+    { field: "out_trade_no", key: "out_trade_no", title: "订单号", align: "center", width: 80, },
     { field: "total_fee", key: "total_fee", title: "付款金额", align: "center", width: 25, endStr: '元' },
     {
       field: "pay_type", key: "pay_type", title: "支付方式", align: "center", width: 30, showTag: {
