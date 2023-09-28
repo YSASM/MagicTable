@@ -149,6 +149,39 @@ export const asyncRoutes = [
   },
   {
     meta: {
+      title: '抽取管理',
+      icon: 'cogs',
+      affix: true,
+      range: ['/kctapi']
+    },
+    contentPage: true,
+    path: '/material',
+    component: Layout,
+    children: [
+      {
+        path: 'config',
+        name: 'config',
+        component: TablePage,
+        meta: {
+          title: '抽取配置',
+          icon: 'cogs',
+          affix: false,
+        },
+      },
+      {
+        path: 'log',
+        name: 'log',
+        component: TablePage,
+        meta: {
+          title: '抽取日志',
+          icon: 'cogs',
+          affix: false,
+        },
+      }
+    ],
+  },
+  {
+    meta: {
       title: '试卷考试',
       icon: 'th',
       affix: true,
@@ -200,37 +233,37 @@ export const asyncRoutes = [
       }
     ],
   },
-  // {
-  //   meta: {
-  //     title: '其他工具',
-  //     icon: 'atom',
-  //     affix: true,
-  //   },
-  //   path: '/utils',
-  //   component: Layout,
-  //   children: [
-  //     // {
-  //     //   path: 'newPage',
-  //     //   name: 'newPage',
-  //     //   component: () => import('@/views/utils/creatNewPage/index'),
-  //     //   meta: {
-  //     //     title: '创建页面',
-  //     //     icon: 'pager',
-  //     //     affix: false,
-  //     //   },
-  //     // },
-  //     {
-  //       path: 'ico',
-  //       name: 'ico',
-  //       component: () => import('@/views/utils/ico/index'),
-  //       meta: {
-  //         title: '图标',
-  //         icon: 'icons',
-  //         affix: false,
-  //       },
-  //     }
-  //   ],
-  // },
+  {
+    meta: {
+      title: '其他工具',
+      icon: 'atom',
+      affix: true,
+    },
+    path: '/utils',
+    component: Layout,
+    children: [
+      // {
+      //   path: 'newPage',
+      //   name: 'newPage',
+      //   component: () => import('@/views/utils/creatNewPage/index'),
+      //   meta: {
+      //     title: '创建页面',
+      //     icon: 'pager',
+      //     affix: false,
+      //   },
+      // },
+      {
+        path: 'ico',
+        name: 'ico',
+        component: () => import('@/views/utils/ico/index'),
+        meta: {
+          title: '图标',
+          icon: 'icons',
+          affix: false,
+        },
+      }
+    ],
+  },
   {
     meta: {
       title: '系统配置',
