@@ -586,8 +586,14 @@ export default {
           }
           if (item.value && item.value.length > 1) {
             try{
-              temp[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
-              temp[item.endKey] = item.subStr ? this.dateToString(item.value[1]) : Math.floor(item.value[1].getTime() / 1000)
+              if(typeof(item.value[0])=='object'&&typeof(item.value[1])=='object'){
+                temp[item.startKey] = item.subStr ? this.dateToString(item.value[0]) : Math.floor(item.value[0].getTime() / 1000)
+                temp[item.endKey] = item.subStr ? this.dateToString(item.value[1]) : Math.floor(item.value[1].getTime() / 1000)
+              }
+              else if(typeof(item.value[0])=='number'&&typeof(item.value[1])=='number'){
+                temp[item.startKey] = item.subStr ? this.dateToString(new Date(item.value[0])) : Math.floor(item.value[0] / 1000)
+                temp[item.endKey] = item.subStr ? this.dateToString(new Date(item.value[1])) : Math.floor(item.value[1] / 1000)
+              }
             }catch(e){
               temp[item.startKey] = ''
               temp[item.endKey] = ''
@@ -671,9 +677,11 @@ export default {
       let fieldIndex = 0
       data.forEach(res => {
         res.fieldIndex = fieldIndex
-        // for (let k in res) {
-        //   res[k] = res[k].toLocaleString()
-        // }
+        for (let k in res) {
+          if(typeof(res[k]) == 'number'){
+            res[k] = String(res[k])
+          }
+        }
         fieldIndex++
       })
       return data
@@ -992,12 +1000,48 @@ export default {
         if (col.showTag) {
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
             if (!col.showTag[row[col.field]]) {
-              return (
-                <el-tag type="info">{col.startStr+row[col.field]+col.endStr}</el-tag>
-              );
+              if(!col.showTag['default']){
+                return (
+                  <el-tag type="info">{col.startStr+row[col.field]+col.endStr}</el-tag>
+                );
+              }
+            }
+            let temp = col.showTag[row[col.field]]
+            if(!temp){temp = col.showTag['default']}
+            let content = temp.content
+            if(typeof(content)==='string'){
+              if (content == '***') {
+                content = row[key]
+              }
+              else if (content.includes('***|')) {
+                // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
+                let temp = content.split('|')
+                if(temp.length==2){
+                  content = utils[temp[1]](row[key])
+                }
+                // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
+                else if(temp.length>2){
+                  content = utils[temp[1]](row[key],temp[2])
+                }
+              }
+              else if (content.includes('&&&|')) {
+                let temp = content.split('|')
+                // "&&&|指定key"取表格这一行中指定的值
+                if(temp.length==2){
+                  content = row[temp[1]]
+                }
+                // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
+                else if(temp.length==3){
+                  content = utils[temp[2]](row[temp[1]])
+                }
+                // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
+                else if(temp.length>3){
+                  content = utils[temp[2]](row[temp[1]],temp[3])
+                }
+              }
             }
             return (
-              <el-tag type={col.showTag[row[col.field]].type}>{col.startStr+col.showTag[row[col.field]].content+col.endStr}</el-tag>
+              <el-tag type={temp.type}>{col.startStr+content+col.endStr}</el-tag>
             );
           }
         }

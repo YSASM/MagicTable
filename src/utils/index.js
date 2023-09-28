@@ -286,6 +286,7 @@ export default {
   },
   defaultDate() {
     let da = new Date()
-    return [new Date(da.getFullYear(), da.getMonth(), da.getDate(), 0, 0, 0), new Date(da.getFullYear(), da.getMonth(), da.getDate(), 23, 59, 59)]
+    let date = [new Date(da.getFullYear(), da.getMonth(), da.getDate(), 0, 0, 0).getTime(), new Date(da.getFullYear(), da.getMonth(), da.getDate(), 23, 59, 59).getTime()]
+    return date
   }
 }
