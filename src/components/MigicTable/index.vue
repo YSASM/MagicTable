@@ -491,8 +491,6 @@ export default {
     subForm() {
       let that = this
       that.showFrom = false
-      let flage = false
-      let flageName = ''
       that.fromData.forEach(item => {
         if(item.type=='timeOnly'){
           try{
@@ -506,24 +504,17 @@ export default {
             that.subfromData[item.key] = that.subfromData[item.key].length > 0 ? that.subfromData[item.key].toLocaleString() : " "
           }catch(e){}
         }
-        if (item.must && that.subfromData[item.key] === '') {
-          flage = true
-          flageName = item.name
-        }
         if (item.unsub) {
-          that.subfromData[item.key] = ""
+          that.subfromData[item.key] = "*/unsub/*"
         }
       })
-      if (flage) {
-        that.$message.error(flageName + "不能为空")
-        return
-      }
 
       let fun = that.getter('subfromFun' + that.subfromFunIndex)
-      if (!fun) {
+      if (!fun) {``
         this.$message.error("空链接")
         return
       }
+      let subfromData = {}
       for(let key in that.subfromData){
         if(typeof(that.subfromData[key])==='number'){
           that.subfromData[key] = String(that.subfromData[key])
@@ -531,8 +522,14 @@ export default {
         if(typeof(that.subfromData[key])==='object'){
           that.subfromData[key] = JSON.stringify(that.subfromData[key])
         }
+        if(that.subfromData[key]===''){
+          that.subfromData[key] = " "
+        }
+        if(that.subfromData[key]!=='*/unsub/*'){
+          subfromData[key] = that.subfromData[key]
+        }
       }
-      fun(that.subfromData).then(() => {
+      fun(subfromData).then(() => {
         that.fromData = []
         that.subfromData = {}
         that.subfromFunIndex = 0
