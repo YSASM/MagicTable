@@ -150,7 +150,7 @@ export const asyncRoutes = [
   {
     meta: {
       title: '抽取管理',
-      icon: 'cogs',
+      icon: 'link',
       affix: true,
       range: ['/kctapi']
     },
@@ -164,7 +164,7 @@ export const asyncRoutes = [
         component: TablePage,
         meta: {
           title: '抽取配置',
-          icon: 'cogs',
+          icon: 'dharmachakra',
           affix: false,
         },
       },
@@ -174,7 +174,7 @@ export const asyncRoutes = [
         component: TablePage,
         meta: {
           title: '抽取日志',
-          icon: 'cogs',
+          icon: 'list-ul',
           affix: false,
         },
       }
@@ -233,41 +233,41 @@ export const asyncRoutes = [
       }
     ],
   },
-  {
-    meta: {
-      title: '其他工具',
-      icon: 'atom',
-      affix: true,
-    },
-    path: '/utils',
-    component: Layout,
-    children: [
-      // {
-      //   path: 'newPage',
-      //   name: 'newPage',
-      //   component: () => import('@/views/utils/creatNewPage/index'),
-      //   meta: {
-      //     title: '创建页面',
-      //     icon: 'pager',
-      //     affix: false,
-      //   },
-      // },
-      {
-        path: 'ico',
-        name: 'ico',
-        component: () => import('@/views/utils/ico/index'),
-        meta: {
-          title: '图标',
-          icon: 'icons',
-          affix: false,
-        },
-      }
-    ],
-  },
+  // {
+  //   meta: {
+  //     title: '其他工具',
+  //     icon: 'atom',
+  //     affix: true,
+  //   },
+  //   path: '/utils',
+  //   component: Layout,
+  //   children: [
+  //     // {
+  //     //   path: 'newPage',
+  //     //   name: 'newPage',
+  //     //   component: () => import('@/views/utils/creatNewPage/index'),
+  //     //   meta: {
+  //     //     title: '创建页面',
+  //     //     icon: 'pager',
+  //     //     affix: false,
+  //     //   },
+  //     // },
+  //     {
+  //       path: 'ico',
+  //       name: 'ico',
+  //       component: () => import('@/views/utils/ico/index'),
+  //       meta: {
+  //         title: '图标',
+  //         icon: 'icons',
+  //         affix: false,
+  //       },
+  //     }
+  //   ],
+  // },
   {
     meta: {
       title: '系统配置',
-      icon: 'atom',
+      icon: 'asterisk',
       affix: true,
     },
     path: '/system',
@@ -279,7 +279,7 @@ export const asyncRoutes = [
         component: TablePage,
         meta: {
           title: '账号管理',
-          icon: 'icons',
+          icon: 'id-card',
           affix: false,
         },
       }
