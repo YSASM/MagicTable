@@ -242,16 +242,16 @@ export const asyncRoutes = [
   //   path: '/utils',
   //   component: Layout,
   //   children: [
-  //     // {
-  //     //   path: 'newPage',
-  //     //   name: 'newPage',
-  //     //   component: () => import('@/views/utils/creatNewPage/index'),
-  //     //   meta: {
-  //     //     title: '创建页面',
-  //     //     icon: 'pager',
-  //     //     affix: false,
-  //     //   },
-  //     // },
+  //     {
+  //       path: 'newPage',
+  //       name: 'newPage',
+  //       component: () => import('@/views/utils/creatNewPage/index'),
+  //       meta: {
+  //         title: '创建页面',
+  //         icon: 'pager',
+  //         affix: false,
+  //       },
+  //     },
   //     {
   //       path: 'ico',
   //       name: 'ico',
