@@ -79,7 +79,8 @@
       <ve-table :scroll-width="scrollWidth" :columns="columnsOpt" :table-data="tableData" :border-around="true"
         :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex" :contextmenu-header-option="contextmenuBodyOption"
         :contextmenu-body-option="contextmenuBodyOption" :sort-option="sortOption"
-        :column-width-resize-option="columnWidthResizeOption" :editOption="editOption" />
+        :column-width-resize-option="columnWidthResizeOption" :editOption="editOption"
+        :cell-style-option="cellStyleOption" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
       <div class="table-pagination" style="display: flex;flex-direction: row;">
         <ve-pagination :total="totalCount" :page-index="fliter.page" :page-size-option="pageSizeOption"
@@ -229,6 +230,19 @@
     </el-dialog>
   </div>
 </template>
+<style>
+.table-red-bg {
+  background: #ffb0b0 !important;
+}
+
+.table-yellow-bg {
+  background: #f9ff9e !important;
+}
+
+.table-green-bg {
+  background: #b9ff9e !important;
+}
+</style>
 <script>
 import _this from "@/main.js"
 import { requests } from "../../api/default";
@@ -245,6 +259,23 @@ export default {
     let data = {
       showText:"",
       fliterClearable:true,
+      cellStyleOption: {
+        bodyCellClass: ({ row, column, rowIndex }) => {
+          let cs = ''
+          switch (row.color) {
+              case 'red':
+                  cs = 'table-red-bg'
+                  break
+              case 'yellow':
+                  cs = 'table-yellow-bg'
+                  break
+              case 'green':
+                  cs = 'table-green-bg'
+                  break
+          }
+          return cs
+        },
+      },
       cascaderOptionProps: {
         value: "key",
         label: "name",
@@ -360,27 +391,6 @@ export default {
       columnsOpt : [],
       tableData : []
     }
-    
-    let PageId = location.hash.replace(/\//g, '_').replace(/#/,'')
-    // 获取_this中数据tableData,methods,globa......
-    let checkInfoFlage = _this.checkInfo(PageId)
-    if(checkInfoFlage){
-      _this.getPageInfo(PageId)
-    }else{
-      _this.updatePageInfo(PageId)
-    }
-    // 合并数据
-    for (let k in _this.tableData) {
-      data[k] = _this.tableData[k]
-    }
-    // 绑定外部数据和内部数据
-    _this.tableData = data
-    data.PageId = PageId
-    data.Error = Error
-    data.console = console
-    data.utils = utils
-    data.globa = _this.globa
-    data.methods = _this.methods
     return data
   },
   beforeDestroy() {
@@ -395,24 +405,61 @@ export default {
     this.initPage()
   },
   mounted(){
-    // 初始化表格设置
-    this.upDateTable()
-    // 更新_this
-    _this.methods.fetchData = this.fetchData
-    _this.methods.initData = this.initData
-    _this.methods.upDateTable = this.upDateTable
-    _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
-    _this.globa.PageId = this.PageId
-    window.addEventListener('keydown',(event)=>{
-      if(event.key==='Escape'){
-        this.colsePopover()
+    let path = `@/views${location.hash.replace(/#/, '')}/data.js`
+    let that = this
+    import(`@/views${location.hash.replace(/#/, '')}/data.js`).then(data => {
+      if (!data) {
+        that.$message.error(path + "失踪了！！！")
+        return
       }
+      that.initTableData(data.default)
+      that.initTable()
+      that.overLoad = true
+    }).catch(e => {
+      that.$message.error(path + "失踪了！！！")
     })
-    this.overLoad = true
   },
   methods: {
+    initTable(){
+      // 初始化表格设置
+      this.upDateTable()
+      // 更新_this
+      _this.methods.fetchData = this.fetchData
+      _this.methods.initData = this.initData
+      _this.methods.upDateTable = this.upDateTable
+      _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
+      _this.globa.PageId = this.PageId
+      window.addEventListener('keydown',(event)=>{
+        if(event.key==='Escape'){
+          this.colsePopover()
+        }
+      })
+    },
+    initTableData(data){
+      _this.tableData = utils.deepClone(data)
+      let PageId = location.hash.replace(/\//g, '_').replace(/#/,'')
+      // 获取_this中数据tableData,methods,globa......
+      let checkInfoFlage = _this.checkInfo(PageId)
+      if(checkInfoFlage){
+        _this.getPageInfo(PageId)
+      }else{
+        _this.updatePageInfo(PageId)
+      }
+      // 合并数据
+      for (let k in _this.tableData) {
+        this[k] = _this.tableData[k]
+      }
+      // 绑定外部数据和内部数据
+      _this.tableData = this
+      this.PageId = PageId
+      this.Error = Error
+      this.console = console
+      this.utils = utils
+      this.globa = _this.globa
+      this.methods = _this.methods
+    },
     async initPage(){
-      if(!_this.globa.loadingInstance){
+      if(!_this.globa.loadingInstance&&this.overLoad){
         // 表格加载动画
         let target = document.querySelector("#table")
         // target不为空时页面渲染完毕
@@ -695,11 +742,16 @@ export default {
       })
       return data
     },
+    // 获取单元格
     getFieldContent(row,col,onlyStr){
-      if(onlyStr){
-        return typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr
+      let contentText = row[col.field]
+      if(contentText===undefined){
+        contentText = ""
       }
-      return <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height;18px;">{typeof (row[col.field]) == 'object' ? col.startStr + JSON.stringify(row[col.field]) + col.endStr : col.startStr + row[col.field] + col.endStr}</div>
+      if(onlyStr){
+        return typeof (contentText) == 'object' ? col.startStr + JSON.stringify(contentText) + col.endStr : col.startStr + contentText + col.endStr
+      }
+      return <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height;18px;">{typeof (contentText) == 'object' ? col.startStr + JSON.stringify(contentText) + col.endStr : col.startStr + contentText + col.endStr}</div>
     },
     // 更新或者添加一个搜索过滤
     upDateAppendFliterOption(obj) {
@@ -1157,7 +1209,6 @@ export default {
     margin-left: 10px;
     vertical-align: bottom;
   }
-
 }
 </style>
 <!-- " ......................阿弥陀佛......................\n" +
