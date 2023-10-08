@@ -315,6 +315,7 @@ let data = {
           <div>
             <el-button v-on:click={async () => {
               location.href = '/#/test/test?fliterOption__input3=xxx'
+              location.reload()
             }}>
               跳转
             </el-button>
