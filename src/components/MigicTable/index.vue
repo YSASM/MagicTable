@@ -438,6 +438,26 @@ export default {
       })
     },
     initTableData(data){
+      let params = getParams()
+      if(Object.keys(params).length>0){
+        for (let key in params){
+          let value = params[key]
+          key = key.split('__')
+          if(key.length>=2){
+            switch(key[0]){
+              case 'fliterOption':{
+                for(let fkey in data.fliterOption){
+                  if(data.fliterOption[fkey].key===key[1]){
+                    data.fliterOption[fkey].value = value
+                    break
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
       _this.tableData = utils.deepClone(data)
       let PageId = location.hash.replace(/\//g, '_').replace(/#/,'')
       // 获取_this中数据tableData,methods,globa......
@@ -460,26 +480,7 @@ export default {
       this.globa = _this.globa
       this.methods = _this.methods
 
-      let params = getParams()
-      if(Object.keys(params).length>0){
-        for (let key in params){
-          let value = params[key]
-          key = key.split('__')
-          if(key.length>=2){
-            switch(key[0]){
-              case 'fliterOption':{
-                for(let fkey in this.fliterOption){
-                  let f = this.fliterOption[fkey]
-                  if(f.key===key[1]){
-                    f.value = value
-                    break
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+      
     },
     async initPage(){
       if(!_this.globa.loadingInstance&&this.overLoad){

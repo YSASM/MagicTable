@@ -81,6 +81,12 @@ let data = {
       rows: 2,
     },
     {
+      name: 'input3',
+      key: 'input3',
+      type: "input",
+      rows: 2,
+    },
+    {
       name: 'switch',
       key: 'switch',
       type: "switch",
@@ -305,7 +311,14 @@ let data = {
       field: "utils2", key: "utils2", title: "操作2", align: "center", width: 60, fixed: "right",
       renderBodyCell:({ row, column, rowIndex }, h) => {
         return(
-          <el-button v-on:click={async () => {
+          //通过url参数设置过滤器初始值
+          <div>
+            <el-button v-on:click={async () => {
+              location.href = '/#/test/test?fliterOption__input3=xxx'
+            }}>
+              跳转
+            </el-button>
+            <el-button v-on:click={async () => {
             _this.tableData.fromData = [
               {
                 name: '名称',
@@ -331,6 +344,7 @@ let data = {
             _this.tableData.subfromFunIndex= "Editor"
           }
           }>编辑2</el-button>
+          </div>
         )
       }
     },
