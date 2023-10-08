@@ -362,7 +362,7 @@ export default {
       },
       overLoad: false,
       scrollWidth: 1500,
-      pageSizeOption: [10, 50, 100, 200],
+      pageSizeOption: [20, 50, 100, 200],
       totalCount: 0,
       fetchFun: async (fliter) => { console.log(fliter) },
       tableEditorSubFun: async (data) => { console.log(data) },
