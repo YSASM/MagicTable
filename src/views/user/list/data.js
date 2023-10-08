@@ -91,6 +91,30 @@ let data = {
       value: ''
     },
     {
+      name: '会员类型',
+      key: 'vip_type',
+      type: "select",
+      items: [
+        {
+          name: '所有会员',
+          key: ''
+        },
+        {
+          name: '非会员',
+          key: '1'
+        },
+        {
+          name: '普通会员',
+          key: '2'
+        },
+        {
+          name: '终身会员',
+          key: '3'
+        }
+      ],
+      value: ''
+    },
+    {
       name: '用户平台',
       key: 'platform',
       type: "select",
@@ -247,44 +271,51 @@ let data = {
     { field: "active_time", key: "active_time", title: "活跃时间", align: "center", width: 50, sortBy: "" },
     { field: "create_time", key: "create_time", title: "激活时间", align: "center", width: 50, sortBy: "desc" },
     {
-      field: "utils", key: "utils", title: "操作", align: "center", width: 25, fixed: "right",
+      field: "utils", key: "utils", title: "操作", align: "center", width: 50, fixed: "right",
       renderBodyCell: ({ row, column, rowIndex }, h) => {
         return (
-          <el-button type="warning" v-on:click={() => {
-            _this.tableData.fromData = [
-              {
-                name: '头像',
-                key: 'avater',
-                type: 'input',
-                must: true
-              },
-              {
-                name: '会员过期时间',
-                key: 'vip_expire_time',
-                type: 'timeOnly',
-                disablekey: "no_vip_expire_time",
-                disableval: true
-              },
-              {
-                name: '永久会员',
-                key: 'no_vip_expire_time',
-                type: 'switch',
-                openValue: true,
-                closeValue: false,
-              },
-              {
-                name: '状态',
-                key: 'status',
-                type: 'switch',
-                openValue: "正常",
-                closeValue: "禁用",
-              }
-            ]
-            _this.tableData.fromTitle = "编辑"
-            _this.tableData.showFrom = true
-            _this.tableData.subfromData = { vip_expire_time: row.vip_expire_time == "永不过期" ? new Date().getTime() : row.vip_expire_time, user_id: row.id, avater: row.avater, status: row.status, no_vip_expire_time: row.vip_expire_time == "永不过期" }
-            _this.tableData.subfromFunIndex = 'Editor'
-          }}>编辑</el-button>
+          <div>
+            <el-button type="info" v-on:click={() => {
+              location.href='/#/user/event?fliterOption__user_id='+row.id
+            }}>
+              日志
+            </el-button>
+            <el-button type="warning" v-on:click={() => {
+              _this.tableData.fromData = [
+                {
+                  name: '头像',
+                  key: 'avater',
+                  type: 'input',
+                  must: true
+                },
+                {
+                  name: '会员过期时间',
+                  key: 'vip_expire_time',
+                  type: 'timeOnly',
+                  disablekey: "no_vip_expire_time",
+                  disableval: true
+                },
+                {
+                  name: '永久会员',
+                  key: 'no_vip_expire_time',
+                  type: 'switch',
+                  openValue: true,
+                  closeValue: false,
+                },
+                {
+                  name: '状态',
+                  key: 'status',
+                  type: 'switch',
+                  openValue: "正常",
+                  closeValue: "禁用",
+                }
+              ]
+              _this.tableData.fromTitle = "编辑"
+              _this.tableData.showFrom = true
+              _this.tableData.subfromData = { vip_expire_time: row.vip_expire_time == "永不过期" ? new Date().getTime() : row.vip_expire_time, user_id: row.id, avater: row.avater, status: row.status, no_vip_expire_time: row.vip_expire_time == "永不过期" }
+              _this.tableData.subfromFunIndex = 'Editor'
+            }}>编辑</el-button>
+          </div>
         );
       },
     },

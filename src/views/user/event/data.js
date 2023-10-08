@@ -149,6 +149,7 @@ let data = {
     size: 20,
   },
   columns: [
+    { field: "create_time", key: "create_time", title: "创建时间", align: "center", width: 50, sortBy: "desc" },
     { field: "id", key: "id", title: "ID", align: "center", width: 20, sortBy: "", fixed: "left", },
     { field: "user_id", key: "user_id", title: "用户ID", align: "center", width: 20, },
     { field: "channel", key: "channel", title: "渠道", align: "center", width: 25, },
@@ -191,7 +192,6 @@ let data = {
     { field: "ekey", key: "ekey", title: "关键字", align: "center", width: 50, },
     { field: "value", key: "value", title: "内容", align: "center", width: 25, },
     { field: "extra", key: "extra", title: "拓展内容", align: "center", width: 25, },
-    { field: "create_time", key: "create_time", title: "创建时间", align: "center", width: 50, sortBy: "desc" },
   ],
   tableShowJson: [
     {

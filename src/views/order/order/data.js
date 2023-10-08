@@ -248,7 +248,6 @@ let data = {
     },
     { field: "create_time", key: "create_time", title: "创建时间", align: "center", width: 50, sortBy: "desc" },
     { field: "pay_time", key: "pay_time", title: "支付时间", align: "center", width: 50, sortBy: "" },
-    { field: "update_time", key: "update_time", title: "更新时间", align: "center", width: 50, sortBy: "" },
     {
       field: "utils", key: "utils", title: "操作", align: "center", width: 50, fixed: "right",
       buttons: [
