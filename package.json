@@ -6,11 +6,18 @@
   "homepage": "https://chu1204505056.gitee.io/vue-admin-better",
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "serve:node18": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "build:node18": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
+    "lint": "vue-cli-service lint --fix",
+    "lint:prettier": "prettier {src,mock,library}/**/*.{html,vue,css,sass,scss,js,ts,md} --write",
+    "clear": "rimraf node_modules&&npm install  --registry=--registry=https://registry.npmmirror.com",
+    "image-webpack-loader": "cnpm i image-webpack-loader -D",
+    "push": "start ./push.sh"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YSASM/MagicTable.git"
+    "url": "git+https://github.com/chuzhixin/vue-admin-better.git"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
@@ -26,6 +33,7 @@
     "caniuse-lite": "^1.0.30001527",
     "clipboard": "^2.0.11",
     "core-js": "^3.32.1",
+    "crypto-js": "^4.1.1",
     "dayjs": "^1.11.9",
     "element-ui": "^2.15.14",
     "jsencrypt": "^3.3.2",

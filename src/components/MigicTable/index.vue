@@ -80,7 +80,7 @@
         :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex" :contextmenu-header-option="contextmenuBodyOption"
         :contextmenu-body-option="contextmenuBodyOption" :sort-option="sortOption"
         :column-width-resize-option="columnWidthResizeOption" :editOption="editOption"
-        :cell-style-option="cellStyleOption" />
+        :cell-style-option="cellStyleOption" :footer-data="footerData" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
       <div class="table-pagination" style="display: flex;flex-direction: row;">
         <ve-pagination :total="totalCount" :page-index="fliter.page" :page-size-option="pageSizeOption"
@@ -249,6 +249,7 @@ import { requests } from "../../api/default";
 import JsonEditor from 'vue-json-editor';
 import JsonViewer from 'vue-json-viewer'
 import utils from "@/utils";
+import {getParams} from '@/utils/editorParams'
 export default {
   name: 'mtable',
   components: {
@@ -361,7 +362,7 @@ export default {
       },
       overLoad: false,
       scrollWidth: 1500,
-      pageSizeOption: [10, 50, 100, 200],
+      pageSizeOption: [20, 50, 100, 200],
       totalCount: 0,
       fetchFun: async (fliter) => { console.log(fliter) },
       tableEditorSubFun: async (data) => { console.log(data) },
@@ -389,7 +390,8 @@ export default {
       tableEditorJsonContent: {},
       tableSwitch : [],
       columnsOpt : [],
-      tableData : []
+      tableData : [],
+      footerData : []
     }
     return data
   },
@@ -405,9 +407,9 @@ export default {
     this.initPage()
   },
   mounted(){
-    let path = `@/views${location.hash.replace(/#/, '')}/data.js`
+    let path = `@/views${location.hash.replace(/#/, '').split('?')[0]}/data.js`
     let that = this
-    import(`@/views${location.hash.replace(/#/, '')}/data.js`).then(data => {
+    import(`@/views${location.hash.replace(/#/, '').split('?')[0]}/data.js`).then(data => {
       if (!data) {
         that.$message.error(path + "失踪了！！！")
         return
@@ -457,6 +459,27 @@ export default {
       this.utils = utils
       this.globa = _this.globa
       this.methods = _this.methods
+
+      let params = getParams()
+      if(Object.keys(params).length>0){
+        for (let key in params){
+          let value = params[key]
+          key = key.split('__')
+          if(key.length>=2){
+            switch(key[0]){
+              case 'fliterOption':{
+                for(let fkey in this.fliterOption){
+                  let f = this.fliterOption[fkey]
+                  if(f.key===key[1]){
+                    f.value = value
+                    break
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     async initPage(){
       if(!_this.globa.loadingInstance&&this.overLoad){
@@ -689,6 +712,8 @@ export default {
         }
         this.tableData = res.data.items
         this.formtData(this.tableData)
+        this.footerData = res.data.summarys
+        this.formtData(this.footerData)
         this.totalCount = res.data.total
         // 删除所有自带title属性防止冲突
         setTimeout(() => {
@@ -730,6 +755,9 @@ export default {
     },
     // 格式化表格内容
     formtData(data) {
+      if(!data){
+        return []
+      }
       let fieldIndex = 0
       data.forEach(res => {
         res.fieldIndex = fieldIndex
