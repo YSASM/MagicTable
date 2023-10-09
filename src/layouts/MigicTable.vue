@@ -245,7 +245,7 @@
 </style>
 <script>
 import _this from "@/main.js"
-import { requests } from "../../api/default";
+import { requests } from "@/api/default";
 import JsonEditor from 'vue-json-editor';
 import JsonViewer from 'vue-json-viewer'
 import utils from "@/utils";

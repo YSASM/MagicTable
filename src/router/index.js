@@ -8,7 +8,7 @@ import VueRouter from 'vue-router'
 import Layout from '@/layouts'
 import EmptyLayout from '@/layouts/EmptyLayout'
 import { publicPath, routerMode } from '@/config'
-import TablePage from '@/views/tableIndex'
+import MigicTable from '@/layouts/MigicTable'
 
 Vue.use(VueRouter)
 export const constantRoutes = [
@@ -62,7 +62,7 @@ export const asyncRoutes = [
       {
         path: 'test',
         name: 'test',
-        component: TablePage,
+        component: MigicTable,
         meta: {
           title: '测试页面',
           icon: 'home',
