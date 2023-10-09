@@ -1,5 +1,4 @@
-/**
- * @author https://vue-admin-beautiful.com （不想保留author可删除）
+/** 
  * @description all模式渲染后端返回路由
  * @param constantRoutes
  * @returns {*}
@@ -23,8 +22,7 @@ export function convertRouter(asyncRoutes) {
   })
 }
 
-/**
- * @author https://vue-admin-beautiful.com （不想保留author可删除）
+/** 
  * @description 判断当前路由是否包含权限
  * @param permissions
  * @param route
@@ -38,8 +36,7 @@ function hasPermission(permissions, route) {
   }
 }
 
-/**
- * @author https://vue-admin-beautiful.com （不想保留author可删除）
+/** 
  * @description intelligence模式根据permissions数组拦截路由
  * @param routes
  * @param permissions

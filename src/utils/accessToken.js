@@ -1,7 +1,6 @@
 import { storage, tokenTableName } from '@/config'
 
-/**
- * @author https://vue-admin-beautiful.com （不想保留author可删除）
+/** 
  * @description 获取accessToken
  * @returns {string|ActiveX.IXMLDOMNode|Promise<any>|any|IDBRequest<any>|MediaKeyStatus|FormDataEntryValue|Function|Promise<Credential | null>}
  */
@@ -19,8 +18,7 @@ export function getAccessToken() {
   }
 }
 
-/**
- * @author https://vue-admin-beautiful.com （不想保留author可删除）
+/** 
  * @description 存储accessToken
  * @param accessToken
  * @returns {void|*}
@@ -39,8 +37,7 @@ export function setAccessToken(accessToken) {
   }
 }
 
-/**
- * @author https://vue-admin-beautiful.com （不想保留author可删除）
+/** 
  * @description 移除accessToken
  * @returns {void|Promise<void>}
  */
