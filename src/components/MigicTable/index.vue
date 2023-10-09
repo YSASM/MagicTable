@@ -395,49 +395,73 @@ export default {
     }
     return data
   },
-  beforeDestroy() {
-    // 销毁时清理_this
-    _this.tableData = {}
-    _this.methods = {}
-    _this.globa = {}
-    _this.launchFuns = {}
-  },
-  updated(){
-    // 只有updated阶段能拿到document.querySelector("#table")
-    this.initPage()
-  },
-  mounted(){
-    let path = `@/views${location.hash.replace(/#/, '').split('?')[0]}/data.js`
+  async mounted(){
     let that = this
-    import(`@/views${location.hash.replace(/#/, '').split('?')[0]}/data.js`).then(data => {
-      if (!data) {
+    let PageId = location.hash.replace(/#\//,'').replace(/\//g, '_')
+    console.log(PageId)
+    // 检查是否有数据缓存，缓存刷新页面就会失效，切换页面不会
+    let checkInfoFlage = _this.checkInfo(PageId)
+    if(checkInfoFlage){
+      // 存在缓存数据读取缓存
+      _this.getPageInfo(PageId)
+    }else{
+      // 没有缓存通过链接路径查找data.js读取数据挂载到_this.tableData
+      let path = `@/views${location.hash.replace(/#/, '').split('?')[0]}/data.js`
+      try{
+        let data = await import(`@/views${location.hash.replace(/#/, '').split('?')[0]}/data.js`)
+        if (!data||!data.default) {
+          // 获取到data是空的
+          that.$message.error(path + "是空的！！！")
+          return
+        }
+        _this.tableData = utils.deepClone(data.default)
+        // 写入缓存
+        _this.updatePageInfo(PageId)
+      }
+      catch(e){
+        // 路径错误找不到data.js
         that.$message.error(path + "失踪了！！！")
         return
       }
-      that.initTableData(data.default)
-      that.initTable()
-      that.overLoad = true
-    }).catch(e => {
-      that.$message.error(path + "失踪了！！！")
+    }
+    // 处理浏览器参数
+    _this.tableData = this.formatParams(_this.tableData)    
+    // 合并数据
+    for (let k in _this.tableData) {
+      this[k] = _this.tableData[k]
+    }
+    // 绑定外部数据和内部数据
+    _this.tableData = this
+
+    this.PageId = PageId
+    this.Error = Error
+    this.console = console
+    this.utils = utils
+    
+    // 更新_this.methods，写进_this.methods的函数可在data.js中调用
+    _this.methods.fetchData = this.fetchData
+    _this.methods.initData = this.initData
+    _this.methods.upDateTable = this.upDateTable
+    _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
+    // 实现返回键关闭Popover弹窗
+    window.addEventListener('keydown',(event)=>{
+      if(event.key==='Escape'){
+        this.colsePopover()
+      }
+    })
+    // 结束数据加载，开始渲染表格
+    this.overLoad = true
+    // 初始化表格设置
+    this.upDateTable()
+    // 加载表格和表格数据
+    this.$nextTick(()=>{
+      this.initPage(0)
     })
   },
   methods: {
-    initTable(){
-      // 初始化表格设置
-      this.upDateTable()
-      // 更新_this
-      _this.methods.fetchData = this.fetchData
-      _this.methods.initData = this.initData
-      _this.methods.upDateTable = this.upDateTable
-      _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
-      _this.globa.PageId = this.PageId
-      window.addEventListener('keydown',(event)=>{
-        if(event.key==='Escape'){
-          this.colsePopover()
-        }
-      })
-    },
-    initTableData(data){
+    formatParams(d){
+      let data = utils.deepClone(d)
+      // 处理url参数
       let params = getParams()
       if(Object.keys(params).length>0){
         for (let key in params){
@@ -445,6 +469,8 @@ export default {
           key = key.split('__')
           if(key.length>=2){
             switch(key[0]){
+              // 根据url参数设置fliterOption初始值如"url?fliterOption__id=12"就会将key为id的过滤项初始值设置成12必须要在data.js声明，upDateAppendFliterOption在这之后运行
+              // 所以通过upDateAppendFliterOption添加的新项目不生效，更改项目不更改value值就会生效
               case 'fliterOption':{
                 for(let fkey in data.fliterOption){
                   if(data.fliterOption[fkey].key===key[1]){
@@ -457,37 +483,20 @@ export default {
           }
         }
       }
-
-      _this.tableData = utils.deepClone(data)
-      let PageId = location.hash.replace(/\//g, '_').replace(/#/,'')
-      // 获取_this中数据tableData,methods,globa......
-      let checkInfoFlage = _this.checkInfo(PageId)
-      if(checkInfoFlage){
-        _this.getPageInfo(PageId)
-      }else{
-        _this.updatePageInfo(PageId)
-      }
-      // 合并数据
-      for (let k in _this.tableData) {
-        this[k] = _this.tableData[k]
-      }
-      // 绑定外部数据和内部数据
-      _this.tableData = this
-      this.PageId = PageId
-      this.Error = Error
-      this.console = console
-      this.utils = utils
-      this.globa = _this.globa
-      this.methods = _this.methods
-
-      
+      return data
     },
-    async initPage(){
+    async initPage(n){
+      if(n>10){
+        this.$message.error("页面渲染失败！！！")
+        return null
+      }
       if(!_this.globa.loadingInstance&&this.overLoad){
         // 表格加载动画
         let target = document.querySelector("#table")
         // target不为空时页面渲染完毕
         if(target){
+          // clearInterval(this.waitPage)
+          // this.waitPage = null
           _this.globa.loadingInstance = this.$veLoading({
             target: target,
             name: "wave",
@@ -508,6 +517,10 @@ export default {
             this.initData()
           }
         }
+        else{
+          n++
+          this.initPage(n)
+        }
       }
     },
     setGloba(key,value){
@@ -516,7 +529,7 @@ export default {
     getGloba(key){
       return _this.globa[key]
     },
-    sortChange(params, defaultGet) {
+    sortChange(params, onlyGet) {
       let keys = Object.keys(params)
       let sort = ""
       keys.forEach(key => {
@@ -538,16 +551,16 @@ export default {
         }
 
       })
-      if (defaultGet) {
-        return sort
-      } else {
-        this.sort = sort
+      this.sort = sort
+      // 只获取sort不刷新
+      if (!onlyGet) {
         this.fetchData()
       }
     },
     // 关闭popover弹出框
     colsePopover() {
-      this.$refs.container.click()
+      // _this.$el为最顶层div不存在找不到的情况
+      _this.$el.click()
     },
     // 初始化表单判断是否有必填项为空
     initForm() {
@@ -1179,7 +1192,7 @@ export default {
         }
       })  
       // 获取排序
-      this.sort = this.sortChange(defaultSort, true)
+      this.sortChange(defaultSort, true)
       // 刷新页面
       this.$forceUpdate()
     },

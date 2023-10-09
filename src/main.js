@@ -35,7 +35,6 @@ Vue.component(mtable.name, mtable);
 Vue.config.productionTip = false
 
 let vue = new Vue({
-  el: '#vue-admin-beautiful',
   router,
   store,
   render: (h) => h(App),
@@ -62,6 +61,7 @@ vue.setDefaultMethods = () => { return {} }
 vue.setDefaultLaunchFuns = () => { return {} }
 // tableData会直接引入组件，所以不需要这样设置
 
+// 获取当页数据缓存
 vue.checkInfo = (PageId) => {
   return vue['Info' + PageId]
 }
@@ -73,6 +73,15 @@ vue.getPageInfo = (PageId) => {
   vue.tableData = utils.deepClone(vue['Info' + PageId].tableData)
 }
 
+vue.savePageInfo = (PageId) => {
+  vue['Info' + PageId] = {
+    globa: utils.deepClone(vue.globa),
+    methods: utils.deepClone(vue.methods),
+    launchFuns: utils.deepClone(vue.launchFuns),
+    tableData: utils.deepClone(vue.tableData)
+  }
+}
+
 vue.updatePageInfo = (PageId) => {
   vue.globa = vue.setDefaultGloba()
   vue.methods = vue.setDefaultMethods()
@@ -81,12 +90,9 @@ vue.updatePageInfo = (PageId) => {
   vue.setDefaultGloba = () => { return {} }
   vue.setDefaultMethods = () => { return {} }
   vue.setDefaultLaunchFuns = () => { return {} }
-  vue['Info' + PageId] = {
-    globa: utils.deepClone(vue.globa),
-    methods: utils.deepClone(vue.methods),
-    launchFuns: utils.deepClone(vue.launchFuns),
-    tableData: utils.deepClone(vue.tableData)
-  }
+  vue.savePageInfo(PageId)
 }
+// 挂载dom
+vue.$mount('#app')
 
 export default vue
