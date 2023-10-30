@@ -9,21 +9,11 @@
       <el-col :lg="8" :md="12" :sm="24" :xl="8" :xs="24">
         <el-form ref="form" class="login-form" label-position="left" :model="form" :rules="rules">
           <div class="title">hello !</div>
-          <div class="title-tips">欢迎来到{{ title }}！</div>
-<<<<<<< HEAD
-          <el-form-item prop="username" style="margin-top: 40px">
+          <div class="title-tips">欢迎来到{{ title }}！</div><el-form-item prop="username" style="margin-top: 40px">
             <el-dropdown @command="changeBaseUrlCommand" trigger="click">
               <el-button type="primary">
                 链接切换<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
-=======
-          <el-form-item style="margin-top: 40px">
-            <el-dropdown @command="changeBaseUrlCommand">
-              <span style="cursor: pointer">
-                链接切换
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
->>>>>>> 02984145fb96d47ff62259cefc3322fb53742e2d
               <el-dropdown-menu slot="dropdown" class="tabs-more">
                 <el-dropdown-item :command="item" v-for="item, i in baseUrlList" :key="i">
                   {{ item.name }}

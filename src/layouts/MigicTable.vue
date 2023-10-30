@@ -76,10 +76,10 @@
       </el-form>
     </el-card>
     <el-card class="table" id="table">
-      <ve-table :scroll-width="scrollWidth" :columns="columnsOpt" :table-data="tableData" :border-around="true"
-        :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex" :contextmenu-header-option="contextmenuBodyOption"
-        :contextmenu-body-option="contextmenuBodyOption" :sort-option="sortOption"
-        :column-width-resize-option="columnWidthResizeOption" :editOption="editOption"
+      <ve-table v-if="showTable" :scroll-width="scrollWidth" :columns="columnsOpt" :table-data="tableData"
+        :border-around="true" :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex"
+        :contextmenu-header-option="contextmenuBodyOption" :contextmenu-body-option="contextmenuBodyOption"
+        :sort-option="sortOption" :column-width-resize-option="columnWidthResizeOption" :editOption="editOption"
         :cell-style-option="cellStyleOption" :footer-data="footerData" />
       <div v-show="!tableData || tableData.length == 0" class="empty-data">暂无数据</div>
       <div class="table-pagination" style="display: flex;flex-direction: row;">
@@ -228,6 +228,10 @@
           定</el-button>
       </span>
     </el-dialog>
+    <el-dialog :title="myDialog.title" :visible.sync="myDialog.show" :width="myDialog.width"
+      :close-on-click-modal="false">
+      <jsxElement :content="myDialog.content" :beforeFun="myDialog.beforeFun"></jsxElement>
+    </el-dialog>
   </div>
 </template>
 <style>
@@ -242,6 +246,18 @@
 .table-green-bg {
   background: #b9ff9e !important;
 }
+
+.empty-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  width: 100%;
+  color: #666;
+  font-size: 16px;
+  border: 1px solid #eee;
+  border-top: 0;
+}
 </style>
 <script>
 import _this from "@/main.js"
@@ -250,14 +266,25 @@ import JsonEditor from 'vue-json-editor';
 import JsonViewer from 'vue-json-viewer'
 import utils from "@/utils";
 import {getParams} from '@/utils/editorParams'
+import jsxElement from './element.jsx' 
 export default {
   name: 'mtable',
   components: {
     JsonEditor,
-    JsonViewer
+    JsonViewer,
+    jsxElement
   },
   data() {
     let data = {
+      // 自定义dialog
+      myDialog:{
+        title:'自定义弹窗',
+        show:false,
+        width:'80%',
+        // 内容jsx格式
+        content:<div>弹窗内容</div>
+      },
+      tableDialogLoading:true,
       showText:"",
       fliterClearable:true,
       cellStyleOption: {
@@ -391,81 +418,14 @@ export default {
       tableSwitch : [],
       columnsOpt : [],
       tableData : [],
-      footerData : []
+      footerData : [],
+      showTable:false
     }
     return data
   },
-<<<<<<< HEAD:src/components/MigicTable/index.vue
-  beforeDestroy() {
-    // 销毁时清理_this
-    _this.tableData = {}
-    _this.methods = {}
-    _this.globa = {}
-    _this.launchFuns = {}
-  },
-  updated(){
-    // 只有updated阶段能拿到document.querySelector("#table")
-    this.initPage()
-  },
-  mounted(){
-    let path = `@/views${location.hash.replace(/#/, '').split('?')[0]}/data.js`
-    let that = this
-    import(`@/views${location.hash.replace(/#/, '').split('?')[0]}/data.js`).then(data => {
-      if (!data) {
-        that.$message.error(path + "失踪了！！！")
-        return
-      }
-      that.initTableData(data.default)
-      that.initTable()
-      that.overLoad = true
-    }).catch(e => {
-      that.$message.error(path + "失踪了！！！")
-    })
-  },
-  methods: {
-    initTable(){
-      // 初始化表格设置
-      this.upDateTable()
-      // 更新_this
-      _this.methods.fetchData = this.fetchData
-      _this.methods.initData = this.initData
-      _this.methods.upDateTable = this.upDateTable
-      _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
-      _this.globa.PageId = this.PageId
-      window.addEventListener('keydown',(event)=>{
-        if(event.key==='Escape'){
-          this.colsePopover()
-        }
-      })
-    },
-    initTableData(data){
-      _this.tableData = utils.deepClone(data)
-      let PageId = location.hash.replace(/\//g, '_').replace(/#/,'')
-      // 获取_this中数据tableData,methods,globa......
-      let checkInfoFlage = _this.checkInfo(PageId)
-      if(checkInfoFlage){
-        _this.getPageInfo(PageId)
-      }else{
-        _this.updatePageInfo(PageId)
-      }
-      // 合并数据
-      for (let k in _this.tableData) {
-        this[k] = _this.tableData[k]
-      }
-      // 绑定外部数据和内部数据
-      _this.tableData = this
-      this.PageId = PageId
-      this.Error = Error
-      this.console = console
-      this.utils = utils
-      this.globa = _this.globa
-      this.methods = _this.methods
-
-=======
   async mounted(){
     let that = this
     let PageId = location.hash.replace(/#\//,'').replace(/\//g, '_')
-    console.log(PageId)
     // 检查是否有数据缓存，缓存刷新页面就会失效，切换页面不会
     let checkInfoFlage = _this.checkInfo(PageId)
     if(checkInfoFlage){
@@ -510,6 +470,10 @@ export default {
     _this.methods.initData = this.initData
     _this.methods.upDateTable = this.upDateTable
     _this.methods.upDateAppendFliterOption = this.upDateAppendFliterOption
+    _this.methods.sortChange = this.sortChange
+    _this.methods.formtData = this.formtData
+    _this.methods.$forceUpdate = this.$forceUpdate
+    _this.methods.setTitle = this.setTitle
     // 实现返回键关闭Popover弹窗
     window.addEventListener('keydown',(event)=>{
       if(event.key==='Escape'){
@@ -529,7 +493,6 @@ export default {
     formatParams(d){
       let data = utils.deepClone(d)
       // 处理url参数
->>>>>>> 02984145fb96d47ff62259cefc3322fb53742e2d:src/layouts/MigicTable.vue
       let params = getParams()
       if(Object.keys(params).length>0){
         for (let key in params){
@@ -537,20 +500,12 @@ export default {
           key = key.split('__')
           if(key.length>=2){
             switch(key[0]){
-<<<<<<< HEAD:src/components/MigicTable/index.vue
-              case 'fliterOption':{
-                for(let fkey in this.fliterOption){
-                  let f = this.fliterOption[fkey]
-                  if(f.key===key[1]){
-                    f.value = value
-=======
               // 根据url参数设置fliterOption初始值如"url?fliterOption__id=12"就会将key为id的过滤项初始值设置成12必须要在data.js声明，upDateAppendFliterOption在这之后运行
               // 所以通过upDateAppendFliterOption添加的新项目不生效，更改项目不更改value值就会生效
               case 'fliterOption':{
                 for(let fkey in data.fliterOption){
                   if(data.fliterOption[fkey].key===key[1]){
                     data.fliterOption[fkey].value = value
->>>>>>> 02984145fb96d47ff62259cefc3322fb53742e2d:src/layouts/MigicTable.vue
                     break
                   }
                 }
@@ -559,10 +514,6 @@ export default {
           }
         }
       }
-<<<<<<< HEAD:src/components/MigicTable/index.vue
-    },
-    async initPage(){
-=======
       return data
     },
     async initPage(n){
@@ -570,7 +521,6 @@ export default {
         this.$message.error("页面渲染失败！！！")
         return null
       }
->>>>>>> 02984145fb96d47ff62259cefc3322fb53742e2d:src/layouts/MigicTable.vue
       if(!_this.globa.loadingInstance&&this.overLoad){
         // 表格加载动画
         let target = document.querySelector("#table")
@@ -632,11 +582,12 @@ export default {
         }
 
       })
-      this.sort = sort
       // 只获取sort不刷新
       if (!onlyGet) {
+        this.sort = sort
         this.fetchData()
       }
+      return sort
     },
     // 关闭popover弹出框
     colsePopover() {
@@ -681,8 +632,8 @@ export default {
       }
       let subfromData = {}
       for(let key in that.subfromData){
-        if(typeof(that.subfromData[key])==='number'){
-          that.subfromData[key] = String(that.subfromData[key])
+        if(that.subfromData[key]==="0"){
+          that.subfromData[key] = "-1"
         }
         if(typeof(that.subfromData[key])==='object'){
           that.subfromData[key] = JSON.stringify(that.subfromData[key])
@@ -801,38 +752,27 @@ export default {
         this.$message.error("空链接")
         return
       }
+      this.tableData = []
+      this.footerData = []
+      this.totalCount = 0
+      // this.showTable = false
       fun(fliter).then(res => {
         if (!res.data.items) {
           res.data.items = []
         }
         this.tableData = res.data.items
-        this.formtData(this.tableData)
+        this.tableData = this.formtData(this.tableData)
         this.footerData = res.data.summarys
-        this.formtData(this.footerData)
+        this.footerData = this.formtData(this.footerData)
         this.totalCount = res.data.total
+        this.showTable = true
         // 删除所有自带title属性防止冲突
         setTimeout(() => {
           let elements = document.querySelectorAll('*[title]');
           for (let i = 0; i < elements.length; i++) {
             elements[i].removeAttribute('title');
           }
-          elements = document.querySelectorAll('*[tableBox]');
-          for (let i = 0; i < elements.length; i++) {
-            let str = elements[i].getAttribute('tableBox')
-            let canvas = this.canvas || (this.canvas = document.createElement("canvas"));
-            let context = canvas.getContext("2d"); 
-            context.font = '14px Arial';
-            let metrics = context.measureText(str);
-            // return metrics.width;
-            if(metrics.width>elements[i].scrollWidth){
-              elements[i].setAttribute('title',str);
-            }
-          }
-          elements = document.querySelectorAll('*[overflow]');
-          for (let i = 0; i < elements.length; i++) {
-            elements[i].setAttribute('title',elements[i].getAttribute('overflow'));
-            elements[i].removeAttribute('overflow');
-          }
+          this.setTitle()
         }, 500)
         this.fliter = utils.deepClone(origin_fliter)
         if(_this.globa.loadingInstance){_this.globa.loadingInstance.close();}
@@ -848,6 +788,26 @@ export default {
       this.fliter.size = this.pageSizeOption[0]
       this.fetchData()
     },
+    setTitle(){
+      let elements = document.querySelectorAll('*[tableBox]');
+      for (let i = 0; i < elements.length; i++) {
+        let str = elements[i].getAttribute('tableBox')
+        let canvas = this.canvas || (this.canvas = document.createElement("canvas"));
+        let context = canvas.getContext("2d"); 
+        context.font = '14px Arial';
+        let metrics = context.measureText(str);
+        // return metrics.width;
+        if(metrics.width>elements[i].scrollWidth){
+          elements[i].setAttribute('title',str);
+        }
+        elements[i].removeAttribute('tableBox');
+      }
+      elements = document.querySelectorAll('*[overflow]');
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].setAttribute('title',elements[i].getAttribute('overflow'));
+        elements[i].removeAttribute('overflow');
+      }
+    },
     // 格式化表格内容
     formtData(data) {
       if(!data){
@@ -862,6 +822,7 @@ export default {
           }
         }
         fieldIndex++
+        res.utils = 'utils'
       })
       return data
     },
@@ -895,10 +856,17 @@ export default {
       }
       this.$forceUpdate()
     },
-    upDateTable() {
+    upDateTable(columns) {
       let defaultSort = {}
-      this.columnsOpt = utils.deepClone(this.columns)
-      this.columnsOpt.forEach(col => {
+      let columnsOpt = []
+      if(columns){
+        columnsOpt = utils.deepClone(columns)
+      }
+      else{
+        columnsOpt = utils.deepClone(this.columns)
+      }
+      
+      columnsOpt.forEach(col => {
         if (!col.startStr) {
           col.startStr = ''
         }
@@ -1087,6 +1055,7 @@ export default {
           }
         }
         if (col.buttons) {
+          let renderBodyCell  =  col.renderBodyCell
           // 单元格中插入按钮
           col.renderBodyCell = ({ row, column, rowIndex }, h) => {
             var elements = []
@@ -1226,6 +1195,18 @@ export default {
                 </el-popconfirm>)
               }
             })
+            if(renderBodyCell){
+              if(col.btnsAfterRender){
+                let temp = [renderBodyCell({ row, column, rowIndex }, h)]
+                elements.forEach(el=>{
+                  temp.push(el)
+                })
+                elements  = temp
+              }
+              else{
+                elements.push(renderBodyCell({ row, column, rowIndex }, h))
+              }
+            }
             var element = <div>{elements}</div>
             return element
           }
@@ -1272,10 +1253,15 @@ export default {
           }
         }
       })  
-      // 获取排序
-      this.sortChange(defaultSort, true)
-      // 刷新页面
+      if(!columns){
+        this.columnsOpt = columnsOpt
+          // 获取排序
+        this.sort = this.sortChange(defaultSort, true)
+        // 刷新页面
+        
+      }
       this.$forceUpdate()
+      return columnsOpt
     },
   }
 }
@@ -1301,18 +1287,6 @@ export default {
       margin-right: 20px;
       margin-bottom: 10px;
     }
-  }
-
-  .empty-data {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-    width: 100%;
-    color: #666;
-    font-size: 16px;
-    border: 1px solid #eee;
-    border-top: 0;
   }
 
   .el-tag .el-tag {
