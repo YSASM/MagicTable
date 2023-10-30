@@ -1,5 +1,4 @@
-/**
- * @author https://vue-admin-beautiful.com （不想保留author可删除）
+/** 
  * @description cli配置
  */
 
@@ -57,6 +56,7 @@ module.exports = {
     },
     // after: mockServer(),
     proxy: {
+<<<<<<< HEAD
       // '/api': {
       //   target: 'http://9254.gr73299e.i8tkcg64.786129.grapps.cn',
       //   // target:"http://192.168.3.251:9250/",
@@ -84,13 +84,19 @@ module.exports = {
         // changeOrigin: true,
         // ws: false,
         pathRewrite: { '^/jzapi': '' },
+=======
+      '/test1': {
+        target: 'https://test1.com',
+        pathRewrite: { '^/test1': '' },
+>>>>>>> 02984145fb96d47ff62259cefc3322fb53742e2d
       },
-      '/kctapi': {
-        target: 'http://kct3.batiao8.com/',
-        // target:"http://192.168.3.251:9250/",
-        // changeOrigin: true,
-        // ws: false,
-        pathRewrite: { '^/kctapi': '' },
+      '/test2': {
+        target: 'http://test2.com/',
+        pathRewrite: { '^/test2': '' },
+      },
+      '/test3': {
+        target: 'http://test3.com/',
+        pathRewrite: { '^/test3': '' },
       },
     },
   },

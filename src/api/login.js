@@ -1,9 +1,12 @@
 import request from '@/utils/request'
 
 export async function login(data) {
-  return request({
-    url: '/admin/login',
-    method: 'post',
-    data,
-  })
+  return {
+    code: 0,
+    message: "OK",
+    data: {
+      token: "12345",
+      username: "ysasm"
+    }
+  }
 }

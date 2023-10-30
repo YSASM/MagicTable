@@ -1,5 +1,4 @@
-/**
- * @author https://vue-admin-beautiful.com （不想保留author可删除）
+/** 
  * @description router全局配置，如有必要可分文件抽离，其中asyncRoutes只有在intelligence模式下才会用到，vip文档中已提供路由的基础图标与小清新图标的配置方案，请仔细阅读
  */
 
@@ -8,7 +7,7 @@ import VueRouter from 'vue-router'
 import Layout from '@/layouts'
 import EmptyLayout from '@/layouts/EmptyLayout'
 import { publicPath, routerMode } from '@/config'
-import TablePage from '@/views/tableIndex'
+import MigicTable from '@/layouts/MigicTable'
 
 Vue.use(VueRouter)
 export const constantRoutes = [
@@ -51,24 +50,25 @@ export const asyncRoutes = [
   },
   {
     meta: {
-      title: '用户管理',
-      icon: 'user',
+      title: '测试页面',
+      icon: 'test',
       affix: true,
     },
     contentPage: true,
-    path: '/user',
+    path: '/test',
     component: Layout,
     children: [
       {
-        path: 'list',
-        name: 'list',
-        component: TablePage,
+        path: 'test',
+        name: 'test',
+        component: MigicTable,
         meta: {
-          title: '用户列表',
-          icon: 'user-friends',
+          title: '测试页面',
+          icon: 'home',
           affix: false,
         },
       },
+<<<<<<< HEAD
       {
         path: 'event',
         name: 'event',
@@ -283,6 +283,8 @@ export const asyncRoutes = [
           affix: false,
         },
       }
+=======
+>>>>>>> 02984145fb96d47ff62259cefc3322fb53742e2d
     ],
   },
   {

@@ -6,8 +6,7 @@ import utils from './utils/index.js'
 import './plugins'
 import '@/layouts/export'
 import { baseURL } from '@/config'
-/**
- * @author https://vue-admin-beautiful.com （不想保留author可删除）
+/** 
  * @description 生产环境默认都使用mock，如果正式用于生产环境时，记得去掉
  */
 // 引入样式
@@ -23,10 +22,6 @@ Vue.use(VueClipBoard)
 VueEasytable.VeLocale.use(zhCN);
 Vue.use(VueEasytable);
 
-import mtable from "@/components/MigicTable/index"
-
-Vue.component(mtable.name, mtable);
-
 // if (process.env.NODE_ENV === 'production') {
 //   const { mockXHR } = require('@/utils/static')
 //   mockXHR()
@@ -35,7 +30,6 @@ Vue.component(mtable.name, mtable);
 Vue.config.productionTip = false
 
 let vue = new Vue({
-  el: '#vue-admin-beautiful',
   router,
   store,
   render: (h) => h(App),
@@ -62,6 +56,7 @@ vue.setDefaultMethods = () => { return {} }
 vue.setDefaultLaunchFuns = () => { return {} }
 // tableData会直接引入组件，所以不需要这样设置
 
+// 获取当页数据缓存
 vue.checkInfo = (PageId) => {
   return vue['Info' + PageId]
 }
@@ -73,6 +68,15 @@ vue.getPageInfo = (PageId) => {
   vue.tableData = utils.deepClone(vue['Info' + PageId].tableData)
 }
 
+vue.savePageInfo = (PageId) => {
+  vue['Info' + PageId] = {
+    globa: utils.deepClone(vue.globa),
+    methods: utils.deepClone(vue.methods),
+    launchFuns: utils.deepClone(vue.launchFuns),
+    tableData: utils.deepClone(vue.tableData)
+  }
+}
+
 vue.updatePageInfo = (PageId) => {
   vue.globa = vue.setDefaultGloba()
   vue.methods = vue.setDefaultMethods()
@@ -81,12 +85,9 @@ vue.updatePageInfo = (PageId) => {
   vue.setDefaultGloba = () => { return {} }
   vue.setDefaultMethods = () => { return {} }
   vue.setDefaultLaunchFuns = () => { return {} }
-  vue['Info' + PageId] = {
-    globa: utils.deepClone(vue.globa),
-    methods: utils.deepClone(vue.methods),
-    launchFuns: utils.deepClone(vue.launchFuns),
-    tableData: utils.deepClone(vue.tableData)
-  }
+  vue.savePageInfo(PageId)
 }
+// 挂载dom
+vue.$mount('#app')
 
 export default vue
