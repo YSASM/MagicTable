@@ -53,15 +53,52 @@ _this.setDefaultLaunchFuns = () => { return {
 let data = {
   scrollWidth: 1500,
   pageSizeOption: [20, 50, 100, 200],
-  fetchFun: api.getList,
   // 可以使用函数（异步）或者以下形式
   // fetchFun: {
   //   url:'链接',
   //   method:'请求方式',
   // },
+  fetchFun: api.getList,
+  // 表单请求函数
+  // subfromFun+subfromFunIndex
   subfromFunEditor: api.editorList,
   subfromFunAdd: api.addList,
   subfromFunDel: api.delList,
+  // 自定义右键菜单
+  contextmenuBodyOption_contextmenus:[
+    {
+      type: "mymenu",
+      label:"测试",
+      disabled:false
+    },
+  ],
+  // 菜单显示之前事件
+  contextmenuBodyOption_beforeShow:[({ isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes })=>{
+    console.log(_this.tableData.tableData[selectionRangeIndexes["startRowIndex"]][selectionRangeKeys["startColKey"]])
+    // 所选单元格为id时禁用mymenu选项
+    if(selectionRangeKeys["startColKey"]=="id"){
+      for(let i in _this.tableData.contextmenuBodyOption_contextmenus){
+        if(_this.tableData.contextmenuBodyOption_contextmenus[i].type=="mymenu"){
+          _this.tableData.contextmenuBodyOption_contextmenus[i].disabled = true
+          break
+        }
+      }
+    }else{
+      for(let i in _this.tableData.contextmenuBodyOption_contextmenus){
+        if(_this.tableData.contextmenuBodyOption_contextmenus[i].type=="mymenu"){
+          _this.tableData.contextmenuBodyOption_contextmenus[i].disabled = false
+          break
+        }
+      }
+    }
+    console.log(_this.tableData.contextmenuBodyOption_contextmenus)
+  }],
+  // 点击菜单事件
+  contextmenuBodyOption_afterMenuClick:[({ type, selectionRangeKeys, selectionRangeIndexes })=>{
+    if(type=="mymenu"){
+      alert("右键菜单测试")
+    }
+  }],
   fliterOption: [
     {
       name: 'input',
@@ -176,6 +213,30 @@ let data = {
       },
       fromTitle: "新建",
       subfromFunIndex: "Add"
+    },
+    {
+      name: '自定义按钮',
+      type: 'myButton',
+      disableLabel: true,
+      // 自定义一个按钮
+      click:()=>{
+        // 自定义弹窗
+        // myDialog:{
+        //   title:'自定义弹窗',
+        //   show:false,
+        //   width:'80%',
+        //   // 内容jsx格式
+        //   content:<div>弹窗内容</div>
+        // },
+        _this.tableData.myDialog.content = (h)=>{
+          return(<div>
+            <el-button v-on:click={()=>{
+              alert("你点击了测试按钮")
+            }}>一个测试按钮</el-button>
+          </div>)
+        }
+        _this.tableData.myDialog.show = true
+      }
     }
   ],
   // columns参考https://happy-coding-clans.github.io/vue-easytable/#/zh/doc/intro
