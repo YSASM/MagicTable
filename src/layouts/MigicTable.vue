@@ -66,6 +66,9 @@
             }
 
           }">{{ item.name }}</el-button>
+          <el-button type="info" v-if="item.type == 'myButton'" @click="() => {
+            item.click()
+          }">{{ item.name }}</el-button>
         </el-form-item>
         <el-form-item class="fliter-item">
           <el-button type="primary" @click="fetchData">查询</el-button>
@@ -347,17 +350,38 @@ export default {
         // multipleSort: true,
         sortChange: this.sortChange,
       },
-      contextmenuBodyOption: {
-        afterMenuClick: ({ type, selectionRangeKeys, selectionRangeIndexes }) => {
+      contextmenuBodyOption_beforeShow:[
+        ({ isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes })=>{
+          console.log(isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes)
+        }
+      ],
+      contextmenuBodyOption_afterMenuClick:[
+        ({ type, selectionRangeKeys, selectionRangeIndexes })=>{
           if (type == "COPY") {
             this.$message.success("复制成功")
           }
         },
-        contextmenus: [
-          {
-            type: "COPY",
-          },
-        ],
+        ({ type, selectionRangeKeys, selectionRangeIndexes })=>{
+          console.log(type, selectionRangeKeys, selectionRangeIndexes)
+        }
+      ],
+      contextmenuBodyOption_contextmenus: [
+        {
+          type: "COPY",
+        },
+      ],
+      contextmenuBodyOption: {
+        beforeShow: ({ isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes }) => {
+          for(let i in this.contextmenuBodyOption_beforeShow){
+            this.contextmenuBodyOption_beforeShow[i]({ isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes })
+          }
+        },
+        afterMenuClick: ({ type, selectionRangeKeys, selectionRangeIndexes }) => {
+          for(let i in this.contextmenuBodyOption_afterMenuClick){
+            this.contextmenuBodyOption_afterMenuClick[i]({ type, selectionRangeKeys, selectionRangeIndexes })
+          }
+        },
+        contextmenus: [],
       },
 
       pickerOptions: {
@@ -454,9 +478,28 @@ export default {
     // 处理浏览器参数
     _this.tableData = this.formatParams(_this.tableData)    
     // 合并数据
+    if(_this.tableData.contextmenuBodyOption_beforeShow){
+      for(let i in _this.tableData.contextmenuBodyOption_beforeShow){
+        this.contextmenuBodyOption_beforeShow.push(_this.tableData.contextmenuBodyOption_beforeShow[i])
+      }
+    }
+    _this.tableData.contextmenuBodyOption_beforeShow = this.contextmenuBodyOption_beforeShow
+    if(_this.tableData.contextmenuBodyOption_afterMenuClick){
+      for(let i in _this.tableData.contextmenuBodyOption_afterMenuClick){
+        this.contextmenuBodyOption_afterMenuClick.push(_this.tableData.contextmenuBodyOption_afterMenuClick[i])
+      }
+    }
+    _this.tableData.contextmenuBodyOption_afterMenuClick = this.contextmenuBodyOption_afterMenuClick
+    if(_this.tableData.contextmenuBodyOption_contextmenus){
+      for(let i in _this.tableData.contextmenuBodyOption_contextmenus){
+        this.contextmenuBodyOption_contextmenus.push(_this.tableData.contextmenuBodyOption_contextmenus[i])
+      }
+    }
+    _this.tableData.contextmenuBodyOption_contextmenus = this.contextmenuBodyOption_contextmenus    
     for (let k in _this.tableData) {
       this[k] = _this.tableData[k]
     }
+    this.contextmenuBodyOption.contextmenus = this.contextmenuBodyOption_contextmenus   
     // 绑定外部数据和内部数据
     _this.tableData = this
 
@@ -632,8 +675,8 @@ export default {
       }
       let subfromData = {}
       for(let key in that.subfromData){
-        if(that.subfromData[key]==="0"){
-          that.subfromData[key] = "-1"
+        if(typeof(that.subfromData[key])==='number'){
+          that.subfromData[key] = String(that.subfromData[key])
         }
         if(typeof(that.subfromData[key])==='object'){
           that.subfromData[key] = JSON.stringify(that.subfromData[key])
@@ -645,12 +688,14 @@ export default {
           subfromData[key] = that.subfromData[key]
         }
       }
-      fun(subfromData).then(() => {
-        that.fromData = []
-        that.subfromData = {}
-        that.subfromFunIndex = 0
-        this.$message.success("操作成功")
-        that.fetchData()
+      fun(subfromData).then((res) => {
+        if(res){
+          that.fromData = []
+          that.subfromData = {}
+          that.subfromFunIndex = 0
+          this.$message.success("操作成功")
+          that.fetchData()
+        }
       })
     },
     // 获取网络请求函数

@@ -12,6 +12,9 @@ export default {
       props.beforeFun()
     }
     if (props.content) {
+      if (typeof (props.content) == "function") {
+        return props.content(h)
+      }
       return props.content
     }
     return <div>test</div>
