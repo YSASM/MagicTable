@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import { requests } from '@/api/default'
 
 export async function login(data) {
   return {
@@ -9,4 +9,8 @@ export async function login(data) {
       username: "ysasm"
     }
   }
+  // return requests({
+  //   url: '/xxx',
+  //   method: 'post',
+  // })(data)
 }

@@ -1,3 +1,0 @@
-<template>
-  <mtable></mtable>
-</template>
