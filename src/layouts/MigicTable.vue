@@ -578,11 +578,7 @@ export default {
           // 运行launchFuns
           for (let key in _this.launchFuns) {
             if (typeof (_this.launchFuns[key]) == 'function') {
-              try{
-                await _this.launchFuns[key]()
-              }catch(e){
-                console.log(e)
-              }
+              await _this.launchFuns[key]()
             }
             _this.launchFuns[key] = null
           }
