@@ -5,20 +5,15 @@
   "editor.quickSuggestions": {
     "strings": true
   },
-  "workbench.colorTheme": "One Monokai",
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
   "emmet.triggerExpansionOnTab": true,
   "editor.formatOnSave": true,
-  "javascript.format.enable": true,
   "git.enableSmartCommit": true,
   "git.autofetch": true,
-  "git.confirmSync": false,
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
-  "liveServer.settings.donotShowInfoMsg": true,
-  "explorer.confirmDelete": false,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "files.exclude": {
@@ -40,15 +35,5 @@
   "editor.suggest.snippetsPreventQuickSuggestions": false,
   "prettier.htmlWhitespaceSensitivity": "ignore",
   "prettier.vueIndentScriptAndStyle": true,
-  "docthis.authorName": "https://vue-admin-beautiful.com",
-  "docthis.includeAuthorTag": true,
-  "docthis.includeDescriptionTag": true,
-  "docthis.enableHungarianNotationEvaluation": true,
-  "docthis.inferTypesFromNames": true,
-  "vetur.format.defaultFormatter.html": "prettier",
-  "files.autoSave": "onFocusChange",
-  "path-intellisense.mappings": {
-    "@": "${workspaceRoot}/src"
-  },
   "files.eol": "\n"
 }
