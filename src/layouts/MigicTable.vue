@@ -1068,12 +1068,12 @@ export default {
                 content = row[key]
               }
               else if (content.includes('***|')) {
-                // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
+                // "***|_this.methods"中包含的函数"取表格这一行中的值经过指定函数处理
                 let temp = content.split('|')
                 if(temp.length==2){
                   content = _this.methods[temp[1]](row[key])
                 }
-                // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
+                // "***|_this.methods|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
                 else if(temp.length>2){
                   content = _this.methods[temp[1]](row[key],temp[2])
                 }
@@ -1084,11 +1084,11 @@ export default {
                 if(temp.length==2){
                   content = row[temp[1]]
                 }
-                // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
+                // "&&&|指定key|_this.methods"取表格这一行中指定的值经过指定函数处理
                 else if(temp.length==3){
                   content = _this.methods[temp[2]](row[temp[1]])
                 }
-                // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
+                // "&&&|指定key|_this.methods|额外参数"取表格这一行中指定的值经过指定函数处理
                 else if(temp.length>3){
                   content = _this.methods[temp[2]](row[temp[1]],temp[3])
                 }
@@ -1113,12 +1113,12 @@ export default {
                     subfromData[key] = row[key]
                   }
                   else if (subfromData[key].includes('***|')) {
-                    // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
+                    // "***|_this.methods"中包含的函数"取表格这一行中的值经过指定函数处理
                     let temp = subfromData[key].split('|')
                     if(temp.length==2){
                       subfromData[key] = _this.methods[temp[1]](row[key])
                     }
-                    // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
+                    // "***|_this.methods|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
                     else if(temp.length>2){
                       subfromData[key] = _this.methods[temp[1]](row[key],temp[2])
                     }
@@ -1129,11 +1129,11 @@ export default {
                     if(temp.length==2){
                       subfromData[key] = row[temp[1]]
                     }
-                    // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
+                    // "&&&|指定key|_this.methods"取表格这一行中指定的值经过指定函数处理
                     else if(temp.length==3){
                       subfromData[key] = _this.methods[temp[2]](row[temp[1]])
                     }
-                    // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
+                    // "&&&|指定key|_this.methods|额外参数"取表格这一行中指定的值经过指定函数处理
                     else if(temp.length>3){
                       subfromData[key] = _this.methods[temp[2]](row[temp[1]],temp[3])
                     }
