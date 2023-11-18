@@ -578,7 +578,11 @@ export default {
           // 运行launchFuns
           for (let key in _this.launchFuns) {
             if (typeof (_this.launchFuns[key]) == 'function') {
-              await _this.launchFuns[key]()
+              try{
+                await _this.launchFuns[key]()
+              }catch(e){
+                console.log(e)
+              }
             }
             _this.launchFuns[key] = null
           }
@@ -1071,11 +1075,11 @@ export default {
                 // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
                 let temp = content.split('|')
                 if(temp.length==2){
-                  content = utils[temp[1]](row[key])
+                  content = _this.methods[temp[1]](row[key])
                 }
                 // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
                 else if(temp.length>2){
-                  content = utils[temp[1]](row[key],temp[2])
+                  content = _this.methods[temp[1]](row[key],temp[2])
                 }
               }
               else if (content.includes('&&&|')) {
@@ -1086,11 +1090,11 @@ export default {
                 }
                 // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
                 else if(temp.length==3){
-                  content = utils[temp[2]](row[temp[1]])
+                  content = _this.methods[temp[2]](row[temp[1]])
                 }
                 // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
                 else if(temp.length>3){
-                  content = utils[temp[2]](row[temp[1]],temp[3])
+                  content = _this.methods[temp[2]](row[temp[1]],temp[3])
                 }
               }
             }
@@ -1116,11 +1120,11 @@ export default {
                     // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
                     let temp = subfromData[key].split('|')
                     if(temp.length==2){
-                      subfromData[key] = utils[temp[1]](row[key])
+                      subfromData[key] = _this.methods[temp[1]](row[key])
                     }
                     // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
                     else if(temp.length>2){
-                      subfromData[key] = utils[temp[1]](row[key],temp[2])
+                      subfromData[key] = _this.methods[temp[1]](row[key],temp[2])
                     }
                   }
                   else if (subfromData[key].includes('&&&|')) {
@@ -1131,11 +1135,11 @@ export default {
                     }
                     // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
                     else if(temp.length==3){
-                      subfromData[key] = utils[temp[2]](row[temp[1]])
+                      subfromData[key] = _this.methods[temp[2]](row[temp[1]])
                     }
                     // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
                     else if(temp.length>3){
-                      subfromData[key] = utils[temp[2]](row[temp[1]],temp[3])
+                      subfromData[key] = _this.methods[temp[2]](row[temp[1]],temp[3])
                     }
                   }
                 }
