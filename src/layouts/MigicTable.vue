@@ -982,7 +982,7 @@ export default {
               }
               return (
                 <el-popover popper-class="popper-class pop-max-content" placement="top" on-show={()=>{
-                  this.tableEditorJsonContent = {};
+                  this.tableEditorJsonContent = row[item.value];
                   this.disableJsonEditorSub = false;
                   if (!row[col.field]) {
                     row[col.field] = ''
