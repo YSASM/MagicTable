@@ -523,6 +523,17 @@ export default {
         this.colsePopover()
       }
     })
+    // 运行launchFuns
+    for (let key in _this.launchFuns) {
+      if (typeof (_this.launchFuns[key]) == 'function') {
+        await _this.launchFuns[key]()
+      }
+      _this.launchFuns[key] = null
+    }
+    // 初始化表格筛选重置
+    if (!_this.globa.fliterOptionDefault&&this.fliterClearable) {
+      _this.globa.fliterOptionDefault = utils.deepClone(this.fliterOption)
+    }
     // 结束数据加载，开始渲染表格
     this.overLoad = true
     // 初始化表格设置
@@ -575,17 +586,6 @@ export default {
             target: target,
             name: "wave",
           });
-          // 运行launchFuns
-          for (let key in _this.launchFuns) {
-            if (typeof (_this.launchFuns[key]) == 'function') {
-              await _this.launchFuns[key]()
-            }
-            _this.launchFuns[key] = null
-          }
-          // 初始化表格筛选重置
-          if (!_this.globa.fliterOptionDefault&&this.fliterClearable) {
-            _this.globa.fliterOptionDefault = utils.deepClone(this.fliterOption)
-          }
           if (!_this.globa.donotFetch) {
             // 初始化表格内容
             this.initData()
