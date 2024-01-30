@@ -1,7 +1,7 @@
 <template>
   <div class="codeEditBox">
     <!-- <el-button @click="codeChange" type="success" style="width: 100%;margin-bottom: 10px;">提交</el-button> -->
-    <editor v-model="code" height="500px" @init="editorInit" lang="javascript" :options="editorOptions" theme="chrome"
+    <editor v-model="code" height="500px" @init="editorInit" lang="json" :options="editorOptions" theme="chrome"
       @input="codeChange">
     </editor>
   </div>
@@ -10,13 +10,18 @@
 import utils from '@/utils'
 import Editor from 'vue2-ace-editor'
 export default {
+  name: "CodeEditor",
   props: {
     value: {
-      type: [Object, Array],
+      type: [Object, Array, String],
       default: () => {
         return {}
       }
     },
+    backType: {
+      type: String,
+      default: "str"
+    }
   },
   components: {
     Editor,
@@ -51,22 +56,28 @@ export default {
   methods: {
     getStringJson() {
       try {
-        let value = utils.deepClone(this.value)
-        this.code = JSON.stringify(value, null, 2)
+        if (typeof this.value == "object") {
+          let value = utils.deepClone(this.value)
+          this.code = JSON.stringify(value, null, 2)
+        }
+        else {
+          this.code = JSON.stringify(JSON.parse(this.value), null, 2)
+        }
       } catch (e) {
-        this.code = this.value
+        this.code = String(this.value)
+        this.$emit('has-error')
       }
     },
     codeChange() {
-      if (this.code == '') {
-        this.$emit('error', this.code)
-        return
-      }
       try {
         let value = JSON.parse(this.code)
-        this.$emit('change', value)
+        if (this.backType == "str") {
+          this.$emit('json-change', this.code)
+        } else if (this.backType == "obj") {
+          this.$emit('json-change', value)
+        }
       } catch (e) {
-        this.$emit('error', this.code)
+        this.$emit('has-error')
       }
     },
     editorInit() {
@@ -82,6 +93,10 @@ export default {
 .codeEditBox {
   width: 100%;
   border: 1px solid #dcdee2;
+}
+
+.ace_editor {
+  height: 100% !important;
 }
 
 .ace_content {

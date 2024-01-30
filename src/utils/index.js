@@ -244,8 +244,8 @@
 
 export default {
   deepClone(obj) {
-    let objClone = Array.isArray(obj) ? [] : {};
     if (obj && typeof obj === "object") {
+      let objClone = Array.isArray(obj) ? [] : {};
       for (var key in obj) {
         if (obj.hasOwnProperty(key)) {
           //判断ojb子元素是否为对象，如果是，递归复制
@@ -257,8 +257,10 @@ export default {
           }
         }
       }
+      return objClone;
+    } else {
+      return obj
     }
-    return objClone;
   },
   strToArr(str) {
     if (typeof (str) != 'string') {
@@ -288,5 +290,17 @@ export default {
     let da = new Date()
     let date = [new Date(da.getFullYear(), da.getMonth(), da.getDate(), 0, 0, 0).getTime(), new Date(da.getFullYear(), da.getMonth(), da.getDate(), 23, 59, 59).getTime()]
     return date
-  }
+  },
+  generateUUID() {
+    var d = new Date().getTime();
+    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+      }
+    );
+    return uuid;
+  },
 }

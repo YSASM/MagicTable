@@ -16,7 +16,18 @@ _this.setDefaultMethods = () => { return {
   },
   sum(){
     return 1+1
-  }
+  },
+  strToArr(str) {
+    if (typeof (str) != 'string') {
+      return str
+    }
+    if (str === " " || str === "") {
+      return []
+    }
+    else {
+      return str.split(",")
+    }
+  },
 } }
 // 设置启动时运行的函数
 _this.setDefaultLaunchFuns = () => { return {
@@ -428,7 +439,9 @@ let data = {
       width: '700px',
       height: '500px',
       // 提交的函数，要求异步函数
-      subFun: api.editorList
+      subFun: api.editorList,
+      // 返回的数据类型str,obj默认str
+      backType:"str"
     },
   ],
   tableSwitch: [

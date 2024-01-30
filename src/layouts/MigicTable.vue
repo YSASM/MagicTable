@@ -79,8 +79,8 @@
       </el-form>
     </el-card>
     <el-card class="table" id="table">
-      <ve-table v-if="showTable" :scroll-width="scrollWidth" :columns="columnsOpt" :table-data="tableData"
-        :border-around="true" :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex"
+      <ve-table ref="ve-table" v-if="showTable" :scroll-width="scrollWidth" :max-height="500" :columns="columnsOpt"
+        :table-data="tableData" :border-around="true" :border-x="true" :border-y="true" rowKeyFieldName="fieldIndex"
         :contextmenu-header-option="contextmenuBodyOption" :contextmenu-body-option="contextmenuBodyOption"
         :sort-option="sortOption" :column-width-resize-option="columnWidthResizeOption" :editOption="editOption"
         :cell-style-option="cellStyleOption" :footer-data="footerData" />
@@ -93,8 +93,14 @@
     </el-card>
     <!-- {{ showFrom }} -->
 
-    <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%" @close="disabledSubFrom = {}"
-      :close-on-click-modal="false">
+    <el-dialog :title="fromTitle" :visible.sync="showFrom" width="30%" @open="() => {
+      fromData.forEach(item => {
+        if (item.must && subfromData[item.key] === '') {
+          disabledSubFrom[item.key] = true
+          $forceUpdate()
+        }
+      })
+    }" @close="disabledSubFrom = {}" :close-on-click-modal="false">
       <el-form v-model="subfromData" ref="form" label-width="100px">
         <el-form-item :prop="item.key" :label="item.name" v-for="item, index in  fromData " :key="index" :rules="item.must ? {
           required: true, trigger: item.trigger || ['blur', 'change'], validator: (rule, value, callback) => {
@@ -218,8 +224,12 @@
           </el-cascader>
           <JsonEditor v-if="item.type == 'jsonIinput'" copyable
             :style='"width:" + item.width + " !important;text-align:left;height:" + item.height'
-            v-model="subfromData[item.key]" :showBtns="false" mode="code" @has-error="disabledSubFrom[item.key] = true"
-            @json-change="delete disabledSubFrom[item.key]"></JsonEditor>
+            :value="subfromData[item.key]" :showBtns="false" mode="code" :backType="item.backType || 'str'"
+            @has-error="disabledSubFrom[item.key] = true; $forceUpdate()" @json-change="(value) => {
+              subfromData[item.key] = value
+              delete disabledSubFrom[item.key];
+              $forceUpdate()
+            }"></JsonEditor>
           <span v-if="item.type == 'text'" :style="'color:' + item.color || 'black'">{{
             item.startStr || "" + subfromData[item.key] + item.endStr || "" }}</span>
           <span style="font-size: 10px;color: red;position: absolute;bottom: -25px;right: 0;">{{ item.tips }}</span>
@@ -265,8 +275,8 @@
 <script>
 import _this from "@/main.js"
 import { requests } from "@/api/default";
-import JsonEditor from 'vue-json-editor';
-import JsonViewer from 'vue-json-viewer'
+import JsonEditor from '@/components/CodeEditor';
+import JsonViewer from '@/components/JsonViewer'
 import utils from "@/utils";
 import {getParams} from '@/utils/editorParams'
 import jsxElement from './element.jsx' 
@@ -325,7 +335,7 @@ export default {
       disabledSubFrom: {},
       columnWidthResizeOption: {
         // default false
-        enable: true,
+        enable: false,
         // column resize min width
         minWidth: 30,
         // column size change
@@ -350,11 +360,33 @@ export default {
         // multipleSort: true,
         sortChange: this.sortChange,
       },
-      contextmenuBodyOption_beforeShow:[
-        ({ isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes })=>{
-          console.log(isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes)
-        }
-      ],
+      contextmenuBodyOption_beforeShow:[({ isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes })=>{
+        let val = this.tableData[selectionRangeIndexes["startRowIndex"]][selectionRangeKeys["startColKey"]]
+          let item = null
+          for(let i in this.contextmenuBodyOption.contextmenus){
+            if(this.contextmenuBodyOption.contextmenus[i].type === "goUrl"){
+              item = this.contextmenuBodyOption.contextmenus[i]
+              break
+            }
+          }
+          if (val && typeof val === 'string') {
+            const reg = /http[s]?:\/\/[^一-龥 ,，。\\\'\"]*/g;
+            const arr = val.match(reg);
+            if (arr && arr.length > 0) {
+              _this.globa.goUrlArr = arr
+              if(arr.length===1){
+                item.label = "前往链接"
+              }else{
+                item.label = "查看多个链接"
+              }
+              item.disabled = false
+              return
+            } 
+          }
+          _this.globa.goUrlArr = undefined
+          item.label = "未匹配到链接"
+          item.disabled = true
+      }],
       contextmenuBodyOption_afterMenuClick:[
         ({ type, selectionRangeKeys, selectionRangeIndexes })=>{
           if (type == "COPY") {
@@ -362,12 +394,44 @@ export default {
           }
         },
         ({ type, selectionRangeKeys, selectionRangeIndexes })=>{
-          console.log(type, selectionRangeKeys, selectionRangeIndexes)
+          if(type == "goUrl"){
+            const arr = _this.globa.goUrlArr
+            if (arr && arr.length > 0) {
+              if(arr.length===1){
+                window.open(arr[0])
+                return
+              }
+              let elements = []
+              for (let i in arr){
+                elements.push(
+                <el-form-item><el-button v-on:click={()=>{
+                  if(this.myDialog.show){
+                    window.open(arr[i])
+                  }
+                }}>{arr[i]}</el-button></el-form-item>
+                )
+              }
+              this.myDialog={
+                title:'前往链接',
+                show:true,
+                width:'50%',
+                content:(h)=>{
+                  return (<el-form>{elements}</el-form>)
+                }
+              }
+              return
+            } 
+          }
         }
       ],
       contextmenuBodyOption_contextmenus: [
         {
           type: "COPY",
+        },
+        {
+          type: "goUrl",
+          label: "前往链接",
+          disabled: false,
         },
       ],
       contextmenuBodyOption: {
@@ -438,7 +502,6 @@ export default {
       tableShowJson: [],
       disableJsonEditorSub: false,
       tableEditorJson: [],
-      tableEditorJsonContent: {},
       tableSwitch : [],
       columnsOpt : [],
       tableData : [],
@@ -517,12 +580,13 @@ export default {
     _this.methods.formtData = this.formtData
     _this.methods.$forceUpdate = this.$forceUpdate
     _this.methods.setTitle = this.setTitle
+    _this.globa.$refs = this.$refs
     // 实现返回键关闭Popover弹窗
-    window.addEventListener('keydown',(event)=>{
+    window.onkeyup = (event)=>{
       if(event.key==='Escape'){
         this.colsePopover()
       }
-    })
+    }
     // 运行launchFuns
     for (let key in _this.launchFuns) {
       if (typeof (_this.launchFuns[key]) == 'function') {
@@ -653,10 +717,18 @@ export default {
       that.fromData.forEach(item => {
         if(item.type=='timeOnly'){
           try{
-            if(typeof(that.subfromData[item.key])==='object'){
+            if(!that.subfromData[item.key]){
+              that.subfromData[item.key] = ""
+            }
+            else if(typeof(that.subfromData[item.key])==='object'){
               that.subfromData[item.key] = that.subfromData[item.key].getTime()
             }
-          }catch(e){}
+            else if(typeof(that.subfromData[item.key])==='string'){
+              that.subfromData[item.key] = new Date(that.subfromData[item.key]).getTime()
+            }
+          }catch(e){
+            that.subfromData[item.key] = ""
+          }
         }
         if(item.type=='tags'){
           try{
@@ -689,13 +761,11 @@ export default {
         }
       }
       fun(subfromData).then((res) => {
-        if(res){
-          that.fromData = []
-          that.subfromData = {}
-          that.subfromFunIndex = 0
-          this.$message.success("操作成功")
-          that.fetchData()
-        }
+        that.fromData = []
+        that.subfromData = {}
+        that.subfromFunIndex = 0
+        this.$message.success("操作成功")
+        that.fetchData()
       })
     },
     // 获取网络请求函数
@@ -778,7 +848,6 @@ export default {
     },
     // 搜索
     async fetchData() {
-      this.tableEditorJsonContent = {}
       if(_this.globa.loadingInstance){_this.globa.loadingInstance.show();}
       let origin_fliter = utils.deepClone(this.fliter)
       // 获取过滤参数
@@ -859,8 +928,9 @@ export default {
         return []
       }
       let fieldIndex = 0
+      let rnum = new Date().getTime()
       data.forEach(res => {
-        res.fieldIndex = fieldIndex
+        res.fieldIndex = rnum + "_" + fieldIndex
         for (let k in res) {
           if(typeof(res[k]) == 'number'){
             res[k] = String(res[k])
@@ -877,10 +947,13 @@ export default {
       if(contentText===undefined){
         contentText = ""
       }
+      if(col.html){
+        return <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height:18px;" domPropsInnerHTML={contentText}></div>
+      }
       if(onlyStr){
         return typeof (contentText) == 'object' ? col.startStr + JSON.stringify(contentText) + col.endStr : col.startStr + contentText + col.endStr
       }
-      return <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height;18px;">{typeof (contentText) == 'object' ? col.startStr + JSON.stringify(contentText) + col.endStr : col.startStr + contentText + col.endStr}</div>
+      return <div style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height:18px;">{typeof (contentText) == 'object' ? col.startStr + JSON.stringify(contentText) + col.endStr : col.startStr + contentText + col.endStr}</div>
     },
     // 更新或者添加一个搜索过滤
     upDateAppendFliterOption(obj) {
@@ -929,39 +1002,78 @@ export default {
         //     lineClamp: 1,
         //   }
         // }
+        // 单元格tag标签
+        if (col.showTag) {
+          col.renderBodyCell = ({ row, column, rowIndex }, h) => {
+            if (!col.showTag[row[col.field]]) {
+              if(!col.showTag['default']){
+                return (
+                  <el-tag type="info">{col.startStr+row[col.field]+col.endStr}</el-tag>
+                );
+              }
+            }
+            let temp = col.showTag[row[col.field]]
+            if(!temp){temp = col.showTag['default']}
+            let content = temp.content
+            if(typeof(content)==='string'){
+              if (content == '***') {
+                content = row[key]
+              }
+              else if (content.includes('***|')) {
+                // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
+                let temp = content.split('|')
+                if(temp.length==2){
+                  content = _this.methods[temp[1]](row[key])
+                }
+                // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
+                else if(temp.length>2){
+                  content = _this.methods[temp[1]](row[key],temp[2])
+                }
+              }
+              else if (content.includes('&&&|')) {
+                let temp = content.split('|')
+                // "&&&|指定key"取表格这一行中指定的值
+                if(temp.length==2){
+                  content = row[temp[1]]
+                }
+                // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
+                else if(temp.length==3){
+                  content = _this.methods[temp[2]](row[temp[1]])
+                }
+                // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
+                else if(temp.length>3){
+                  content = _this.methods[temp[2]](row[temp[1]],temp[3])
+                }
+              }
+            }
+            return (
+              <el-tag type={temp.type}>{col.startStr+content+col.endStr}</el-tag>
+            );
+          }
+        }
         // 单元格查看json
         this.tableShowJson.forEach(item => {
           if (item.field == col.field) {
+            let renderBodyCell = col.renderBodyCell
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
               if (!row[col.field]) {
                 row[col.field] = ''
               }
-              let contant = item.value ? row[item.value] : row
-              let contanttype = typeof (contant)
               let width = item.width
               if (!width) {
                 width = "100%"
               }
-              if (contanttype == 'string') {
-                try {
-                  contant = JSON.parse(contant)
-                } catch (e) {
-                  contant = {}
-                }
-              }
-              else if (contanttype != 'object') {
-                contant = {}
-              }
+              let content = item.value ? row[item.value] : row
               return (
                 <el-popover popper-class="popper-class pop-max-content" placement="top">
                   <div style="text-align:center">
-                    <JsonViewer expanded={true} value={contant} boxed sort style={"width:" + width + " !important;text-align:start"}></JsonViewer>
+                    <JsonViewer value={content} style={"width:" + width}></JsonViewer>
                     <el-button style={"width:" + width + " !important;margin-top:10px;"} type="primary" on-click={() => {
-                      this.$copyText(JSON.stringify(contant))
+                      this.$copyText(JSON.stringify(content))
                       this.$message.success("复制成功")
                     }}>一键复制</el-button>
                   </div >
-                  <div slot="reference" class="font-blue" type="text"><i class="el-icon-view"></i>{this.getFieldContent(row,col)}</div>
+                  <div slot="reference" class="font-blue" type="text">{ renderBodyCell ? renderBodyCell({ row, column, rowIndex }, h) : [<i class="el-icon-view"></i>,this.getFieldContent(row,col)] }</div>
                 </el-popover >
               )
             }
@@ -971,6 +1083,7 @@ export default {
         // 单元格编辑json
         this.tableEditorJson.forEach(item => {
           if (item.field == col.field) {
+            let renderBodyCell = col.renderBodyCell
             col.renderBodyCell = ({ row, column, rowIndex }, h) => {
               let width = item.width
               if (!width) {
@@ -980,36 +1093,18 @@ export default {
               if (!height) {
                 height = "100%"
               }
+              let backType = item.backType || 'str'
               return (
                 <el-popover popper-class="popper-class pop-max-content" placement="top" on-show={()=>{
-                  this.tableEditorJsonContent = row[item.value];
                   this.disableJsonEditorSub = false;
-                  if (!row[col.field]) {
-                    row[col.field] = ''
-                  }
-                  let contanttype = typeof (row[item.value])
-                  if (contanttype == 'string') {
-                    try {
-                      this.tableEditorJsonContent = JSON.parse(row[item.value])
-                    } catch (e) {
-                      this.tableEditorJsonContent = {}
-                    }
-                  } else if (contanttype != 'object') {
-                    this.tableEditorJsonContent = {}
-                  } else {
-                    this.tableEditorJsonContent = row[item.value]
-                  }
-                  this.$forceUpdate()
                   }}>
                   <div style="text-align:center">
-                    <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left;height:" + height} v-model={this.tableEditorJsonContent}
-                      show-btns={false}
-                      lang="zh"
-                      mode="code"
-                      expanded-on-start={true}
+                    <JsonEditor copyable={true} style={"width:" + width + " !important;text-align:left;height:" + height} value={row[item.value]}
+                      backType={backType}
                       on-has-error={() => {
                         this.disableJsonEditorSub = true
-                      }} on-json-change={() => {
+                      }} on-json-change={(value) => {
+                        row[item.value] = value
                         this.disableJsonEditorSub = false
                       }}></JsonEditor>
                     <el-button disabled={this.disableJsonEditorSub} style={"width:" + width + " !important;margin-top:10px;"} type="primary" on-click={() => {
@@ -1017,14 +1112,14 @@ export default {
                       let params = {
                         id: String(row.id),
                       }
-                      params[item.value] = JSON.stringify(this.tableEditorJsonContent)
+                      params[item.value] = row[item.value]
                       item.subFun(params).then(() => {
                         this.$message.success("操作成功")
                         this.fetchData()
                       });
                     }}>提交</el-button>
                   </div >
-                  <div slot="reference" class="font-blue" type="text"><i class="el-icon-edit" show-overflow-tooltip="true"></i>{this.getFieldContent(row,col)}</div>
+                  <div slot="reference" class="font-blue" type="text">{renderBodyCell ? renderBodyCell({ row, column, rowIndex }, h) : [<i class="el-icon-edit" show-overflow-tooltip="true"></i>,this.getFieldContent(row,col)]}</div>
                 </el-popover >
               )
             }
@@ -1050,55 +1145,7 @@ export default {
             }
           }
         })
-        // 单元格tag标签
-        if (col.showTag) {
-          col.renderBodyCell = ({ row, column, rowIndex }, h) => {
-            if (!col.showTag[row[col.field]]) {
-              if(!col.showTag['default']){
-                return (
-                  <el-tag type="info">{col.startStr+row[col.field]+col.endStr}</el-tag>
-                );
-              }
-            }
-            let temp = col.showTag[row[col.field]]
-            if(!temp){temp = col.showTag['default']}
-            let content = temp.content
-            if(typeof(content)==='string'){
-              if (content == '***') {
-                content = row[key]
-              }
-              else if (content.includes('***|')) {
-                // "***|_this.methods"中包含的函数"取表格这一行中的值经过指定函数处理
-                let temp = content.split('|')
-                if(temp.length==2){
-                  content = _this.methods[temp[1]](row[key])
-                }
-                // "***|_this.methods|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
-                else if(temp.length>2){
-                  content = _this.methods[temp[1]](row[key],temp[2])
-                }
-              }
-              else if (content.includes('&&&|')) {
-                let temp = content.split('|')
-                // "&&&|指定key"取表格这一行中指定的值
-                if(temp.length==2){
-                  content = row[temp[1]]
-                }
-                // "&&&|指定key|_this.methods"取表格这一行中指定的值经过指定函数处理
-                else if(temp.length==3){
-                  content = _this.methods[temp[2]](row[temp[1]])
-                }
-                // "&&&|指定key|_this.methods|额外参数"取表格这一行中指定的值经过指定函数处理
-                else if(temp.length>3){
-                  content = _this.methods[temp[2]](row[temp[1]],temp[3])
-                }
-              }
-            }
-            return (
-              <el-tag type={temp.type}>{col.startStr+content+col.endStr}</el-tag>
-            );
-          }
-        }
+        
         if (col.buttons) {
           let renderBodyCell  =  col.renderBodyCell
           // 单元格中插入按钮
@@ -1113,12 +1160,12 @@ export default {
                     subfromData[key] = row[key]
                   }
                   else if (subfromData[key].includes('***|')) {
-                    // "***|_this.methods"中包含的函数"取表格这一行中的值经过指定函数处理
+                    // "***|utils"中包含的函数"取表格这一行中的值经过指定函数处理
                     let temp = subfromData[key].split('|')
                     if(temp.length==2){
                       subfromData[key] = _this.methods[temp[1]](row[key])
                     }
-                    // "***|_this.methods|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
+                    // "***|utils|额外参数"中包含的函数"取表格这一行中的值经过指定函数处理
                     else if(temp.length>2){
                       subfromData[key] = _this.methods[temp[1]](row[key],temp[2])
                     }
@@ -1129,11 +1176,11 @@ export default {
                     if(temp.length==2){
                       subfromData[key] = row[temp[1]]
                     }
-                    // "&&&|指定key|_this.methods"取表格这一行中指定的值经过指定函数处理
+                    // "&&&|指定key|utils"取表格这一行中指定的值经过指定函数处理
                     else if(temp.length==3){
                       subfromData[key] = _this.methods[temp[2]](row[temp[1]])
                     }
-                    // "&&&|指定key|_this.methods|额外参数"取表格这一行中指定的值经过指定函数处理
+                    // "&&&|指定key|utils|额外参数"取表格这一行中指定的值经过指定函数处理
                     else if(temp.length>3){
                       subfromData[key] = _this.methods[temp[2]](row[temp[1]],temp[3])
                     }
@@ -1141,7 +1188,15 @@ export default {
                 }
               }
               // 判断按钮是否禁用
-              let disabled = btn.disablekey && subfromData[btn.disablekey] == btn.disableval ? !btn.able : btn.able
+              let disabled = false
+              if (btn.disableFun){
+                disabled = btn.disableFun(row)
+              }
+              else{
+                if(btn.disablekey && btn.disableval){
+                disabled = row[btn.disablekey] == btn.disableval ? !btn.able : btn.able
+              }
+              }
               // 判断按钮颜色
               let btnType = ""
               if (!btn.buttonTypeOpt) {
@@ -1314,7 +1369,7 @@ export default {
 <style lang="scss" scoped>
 .container {
   padding: 0 !important;
-  padding-bottom: 60px !important;
+  // padding-bottom: 60px !important;
   margin: 0 !important;
   background: none;
 
