@@ -3,9 +3,8 @@
 <div align="center">
   <img src="https://avatars.githubusercontent.com/u/80308986?v=4" style="width:100px;height:100px;"/>
 </div>
-# 快速搭建一个公司管理系统
 
-## MagicTable
+# 快速搭建一个公司管理系统
 
 基于 vue-admin-beautiful,elementui,vue-easytable 等实现的网页快速生成框架，无需编写 html 和 css 代码，只需要编写 js 文件就能实现管理面板的表格页面。
 
