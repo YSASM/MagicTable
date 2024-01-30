@@ -4,9 +4,13 @@
   <img src="https://avatars.githubusercontent.com/u/80308986?v=4" style="width:100px;height:100px;"/>
 </div>
 
+<div align="center">
+
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/YSASM)
 ![Profile views](https://views.whatilearened.today/views/github/Xuenew/views.svg)
 ![](https://img.shields.io/badge/Vue.js-black?style=flat-square&logo=vue.js)
+
+</div>
 
 # 快速搭建一个公司管理系统
 
