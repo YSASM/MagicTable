@@ -1,3 +1,6 @@
+<h1 align="center"> Colya BOT </h1>
+<div align="center">v0.1.0</div>
+<img align="center" src="https://avatars.githubusercontent.com/u/80308986?v=4" style="width:50px;height:50px;"/>
 # 快速搭建一个公司管理系统
 
 ## MagicTable
