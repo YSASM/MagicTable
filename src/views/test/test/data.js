@@ -361,6 +361,7 @@ let data = {
             status:"***",
             num: 50,
             config:"***",
+            // strToArr为methods内的函数
             tags: "***|strToArr",
             time:null
           },
