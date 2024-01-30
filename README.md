@@ -4,6 +4,10 @@
   <img src="https://avatars.githubusercontent.com/u/80308986?v=4" style="width:100px;height:100px;"/>
 </div>
 
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/YSASM)
+![Profile views](https://views.whatilearened.today/views/github/Xuenew/views.svg)
+![](https://img.shields.io/badge/Vue.js-black?style=flat-square&logo=vue.js)
+
 # 快速搭建一个公司管理系统
 
 基于 vue-admin-beautiful,elementui,vue-easytable 等实现的网页快速生成框架，无需编写 html 和 css 代码，只需要编写 js 文件就能实现管理面板的表格页面。
