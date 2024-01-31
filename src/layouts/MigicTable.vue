@@ -360,33 +360,11 @@ export default {
         // multipleSort: true,
         sortChange: this.sortChange,
       },
-      contextmenuBodyOption_beforeShow:[({ isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes })=>{
-        let val = this.tableData[selectionRangeIndexes["startRowIndex"]][selectionRangeKeys["startColKey"]]
-          let item = null
-          for(let i in this.contextmenuBodyOption.contextmenus){
-            if(this.contextmenuBodyOption.contextmenus[i].type === "goUrl"){
-              item = this.contextmenuBodyOption.contextmenus[i]
-              break
-            }
-          }
-          if (val && typeof val === 'string') {
-            const reg = /http[s]?:\/\/[^一-龥 ,，。\\\'\"]*/g;
-            const arr = val.match(reg);
-            if (arr && arr.length > 0) {
-              _this.globa.goUrlArr = arr
-              if(arr.length===1){
-                item.label = "前往链接"
-              }else{
-                item.label = "查看多个链接"
-              }
-              item.disabled = false
-              return
-            } 
-          }
-          _this.globa.goUrlArr = undefined
-          item.label = "未匹配到链接"
-          item.disabled = true
-      }],
+      contextmenuBodyOption_beforeShow:[
+        ({ isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes })=>{
+        console.log(isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes)
+        }
+      ],
       contextmenuBodyOption_afterMenuClick:[
         ({ type, selectionRangeKeys, selectionRangeIndexes })=>{
           if (type == "COPY") {
@@ -394,46 +372,14 @@ export default {
           }
         },
         ({ type, selectionRangeKeys, selectionRangeIndexes })=>{
-          if(type == "goUrl"){
-            const arr = _this.globa.goUrlArr
-            if (arr && arr.length > 0) {
-              if(arr.length===1){
-                window.open(arr[0])
-                return
-              }
-              let elements = []
-              for (let i in arr){
-                elements.push(
-                <el-form-item><el-button v-on:click={()=>{
-                  if(this.myDialog.show){
-                    window.open(arr[i])
-                  }
-                }}>{arr[i]}</el-button></el-form-item>
-                )
-              }
-              this.myDialog={
-                title:'前往链接',
-                show:true,
-                width:'50%',
-                content:(h)=>{
-                  return (<el-form>{elements}</el-form>)
-                }
-              }
-              return
-            } 
-          }
+          console.log(type, selectionRangeKeys, selectionRangeIndexes)
         }
       ],
       contextmenuBodyOption_contextmenus: [
         {
           type: "COPY",
         },
-        {
-          type: "goUrl",
-          label: "前往链接",
-          disabled: false,
-        },
-      ],
+              ],
       contextmenuBodyOption: {
         beforeShow: ({ isWholeRowSelection, selectionRangeKeys, selectionRangeIndexes }) => {
           for(let i in this.contextmenuBodyOption_beforeShow){
