@@ -20,6 +20,8 @@
 
 [https://github.com/YSASM/MagicTable](https://github.com/YSASM/MagicTable)
 
+vue3.x 请移步[https://github.com/YSASM/MagicTableV2](https://github.com/YSASM/MagicTableV2)
+
 ## 特点
 
 - 轻量
